@@ -112,6 +112,7 @@ def listar_usuarios(url, session_token):
         # Si la respuesta no tiene un código de estado 200 o 206, lanza una excepción con un mensaje de error
         raise Exception("Error al obtener informacion del usuario: " + response.text)
 
+#Da error 400
 def obtener_usuario_info(url, session_token):
     """Obtiene la informacion del usuario conectado."""
     # Construye la URL completa para la solicitud de obtener la información del usuario actual
@@ -159,8 +160,8 @@ try:
 
     # Obtiene los perfiles del usuario y los permisos del perfil especificado
     user_info = obtener_getMyProfiles(URL, session_token)
-    permisos_info = obtener_permisos(URL, session_token, user_info["myprofiles"][0]["id"])
-    #user_info = obtener_getFullSession(URL, session_token)
+    #permisos_info = obtener_permisos(URL, session_token, user_info["myprofiles"][0]["id"])
+    user2_info = obtener_getFullSession(URL, session_token)
     #user_info = listar_usuarios(URL, session_token)
     #user_info = obtener_usuario_info(URL, session_token)
     print("Informacion del usuario:", user_info)
