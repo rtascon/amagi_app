@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import '../controllers/login_controller.dart'; // Importa el controlador
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _loginController = LoginController();
+  bool _obscureText = true; // Estado para controlar la visibilidad de la contraseña
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +65,18 @@ class LoginScreen extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12), // Bordes redondeados
                         ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: _obscureText,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, introduzca su contraseña';
@@ -95,11 +112,5 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class LoginController {
-  void login(String username, String password, BuildContext context) {
-    // Implementación del método de login
   }
 }
