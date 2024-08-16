@@ -21,15 +21,15 @@ class MainMenuController {
     Navigator.of(context).pop(); // Oculta la pantalla de carga
   }
 
-void _showLoadingScreen(BuildContext context) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return LoadingScreen();
-      },
-    );
-  });
-}
+  void _showLoadingScreen(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return LoadingScreen();
+        },
+      );
+    });
+  }
 }

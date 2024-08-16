@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
+import 'views/welcome_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: createMaterialColor(Color.fromARGB(255, 0, 0, 0)),
       ),
-      home: LoginScreen(),
+      home: WelcomeScreen(), // Establece la pantalla de bienvenida como la pantalla inicial
       routes: {
         '/login': (context) => LoginScreen(),
         '/mainMenu': (context) => MainMenuScreen(),
