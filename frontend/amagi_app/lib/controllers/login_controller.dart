@@ -7,32 +7,61 @@ class LoginController {
   final AuthService _authService = AuthService();
 
   void login(String username, String password, BuildContext context) async {
-    _showLoadingScreen(context);
+    try {
+      final success = await _authService.iniciarSesion(username, password);
 
-    final success = await _authService.iniciarSesion(username, password);
-    Navigator.of(context).pop(); // Oculta la pantalla de carga
-
-    if (success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainMenuScreen()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed. Please try again.')),
-      );
+      if (success) {
+        _showLoadingScreen(context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainMenuScreen()),
+        );
+      } else {
+        _showErrorMessage(context);
+      }
+    } catch (e) {
+      _showErrorMessage(context);
     }
   }
 
-void _showLoadingScreen(BuildContext context) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
+  void _showLoadingScreen(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return LoadingScreen();
+        },
+      );
+    });
+  }
+
+  void _showErrorMessage(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
-        return LoadingScreen();
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Column(
+            children: [
+              Icon(Icons.error, color: Colors.red, size: 40),
+              SizedBox(height: 10),
+              Text('Fallo al iniciar sesión'),
+            ],
+          ),
+          content: Text('Por favor intente de nuevo.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Aceptar'),
+            ),
+          ],
+        );
       },
     );
-  });
-}
+  }
 }
