@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'views/login_screen.dart';
+import 'views/main_menu_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -14,6 +22,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: createMaterialColor(Color(0xFF009FDA)),
       ),
       home: LoginScreen(),
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/mainMenu': (context) => MainMenuScreen(),
+      },
     );
   }
 }

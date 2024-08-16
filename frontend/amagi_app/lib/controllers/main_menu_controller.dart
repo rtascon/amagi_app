@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import '../views/main_menu_screen.dart';
 import '../views/loading_screen.dart';
 
-class LoginController {
+class MainMenuController {
   final AuthService _authService = AuthService();
 
-  void login(String username, String password, BuildContext context) async {
+  Future<String> getUserName(BuildContext context) async {
     _showLoadingScreen(context);
 
-    final success = await _authService.iniciarSesion(username, password);
+    final userInfo = await _authService.obtenerUsuarioInfo();
     Navigator.of(context).pop(); // Oculta la pantalla de carga
 
-    if (success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainMenuScreen()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed. Please try again.')),
-      );
-    }
+    return userInfo['session']['glpifriendlyname'];
+  }
+
+  void fetchUserInfo(BuildContext context) {
+    _showLoadingScreen(context);
+
+    // Aquí puedes agregar la lógica adicional que necesites
+    Navigator.of(context).pop(); // Oculta la pantalla de carga
   }
 
 void _showLoadingScreen(BuildContext context) {
