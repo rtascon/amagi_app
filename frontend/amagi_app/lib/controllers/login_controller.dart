@@ -7,11 +7,14 @@ class LoginController {
   final AuthService _authService = AuthService();
 
   void login(String username, String password, BuildContext context) async {
+    _showLoadingScreen(context); // Mostrar pantalla de carga
+
     try {
       final success = await _authService.iniciarSesion(username, password);
 
+      Navigator.of(context).pop(); // Ocultar pantalla de carga
+
       if (success) {
-        _showLoadingScreen(context);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainMenuScreen()),
@@ -20,6 +23,7 @@ class LoginController {
         _showErrorMessage(context);
       }
     } catch (e) {
+      Navigator.of(context).pop(); // Ocultar pantalla de carga en caso de error
       _showErrorMessage(context);
     }
   }
