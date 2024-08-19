@@ -28,14 +28,15 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF747678),
-      body: Stack(
-        children: [
-          Padding(
+      //backgroundColor: Color(0xFF747678) ESTE ES EL GRIS,
+      backgroundColor: Color(0xFF009FDA),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Spacer(flex: 1), // Reduce el espacio superior
+                SizedBox(height: 20), // Espacio superior
                 Form(
                   key: _formKey,
                   child: Column(
@@ -146,7 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF009FDA), // Color del botón
+                                //backgroundColor: Color(0xFF009FDA), COLOR AZUL
+                                backgroundColor: Color(0xFFE98300), // Color del botón
                                 foregroundColor: Colors.white, // Color del texto
                               ),
                               child: Text('Iniciar sesión'),
@@ -157,25 +159,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-                Spacer(flex: 2), // Aumenta el espacio inferior
-                Image.asset(
-                  'assets/Amagi logo azul_Pequeño.png', // Asegúrate de que la ruta sea correcta
-                  alignment: Alignment.bottomCenter,
-                  width: 100, // Ajusta el ancho de la imagen
-                  height: 100, // Ajusta la altura de la imagen
+                SizedBox(height: 20), // Espacio inferior
+                Column(
+                  children: [
+                    SizedBox(height: 90), // Espacio adicional para empujar los elementos hacia abajo
+                    Image.asset(
+                      'assets/Amagi logo blanco.png', // Asegúrate de que la ruta sea correcta
+                      alignment: Alignment.bottomCenter,
+                      width: 100, // Ajusta el ancho de la imagen
+                      height: 100, // Ajusta la altura de la imagen
+                    ),
+                    SizedBox(height: 10), // Espacio inferior para el texto
+                    Text(
+                      'V 1.0.0',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          Positioned(
-            bottom: 10,
-            left: 10,
-            child: Text(
-              'V 1.0.0',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
