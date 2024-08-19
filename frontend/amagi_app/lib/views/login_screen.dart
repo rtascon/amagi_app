@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 20), // Espacio inferior
                 Column(
                   children: [
-                    SizedBox(height: 90), // Espacio adicional para empujar los elementos hacia abajo
+                    SizedBox(height: 50), // Espacio adicional para empujar los elementos hacia abajo
                     Image.asset(
                       'assets/Amagi logo blanco.png', // Asegúrate de que la ruta sea correcta
                       alignment: Alignment.bottomCenter,
