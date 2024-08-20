@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../controllers/main_menu_controller.dart';
 
@@ -32,8 +31,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
               _scaffoldKey.currentState?.openDrawer();
             },
           ),
+          title: Text(
+            'Servicio GIA',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
+          centerTitle: true, // Ensure the title is centered
         ),
         drawer: Drawer(
           child: Container(
@@ -118,9 +125,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
             ),
           ),
         ),
-        body: Center(
-          child: Container(), // Remove the "Welcome, ..." text
-        ),
+        body: Container(), // Empty body to avoid duplication
       ),
     );
   }
