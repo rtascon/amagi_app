@@ -87,5 +87,24 @@ class AuthService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> obtenerPerfiles() async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    final profilesUrl = Uri.parse('$url/getMyProfiles');
+    final response = await http.get(
+      profilesUrl,
+      headers: <String, String>{
+        'Session-Token': sessionToken!,
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 206) {
+      final responseBody = jsonDecode(response.body);
+        return List<Map<String, dynamic>>.from(responseBody['myprofiles']);
+    } else {
+      throw Exception("Error al obtener perfiles: ${response.body}");
+    }
+  }
+
   static Future<String?> get sessionToken async => await _storage.read(key: _sessionTokenKey);
 }

@@ -17,6 +17,17 @@ class MainMenuController {
     };
   }
 
+  Future<List<String>> obtenerNombresPerfiles(BuildContext context) async {
+    _showLoadingScreen(context);
+
+    final perfiles = await _authService.obtenerPerfiles();
+    Navigator.of(context).pop(); // Oculta la pantalla de carga
+
+    return perfiles
+      .map<String>((perfil) => perfil['name'] != null ? perfil['name'] as String : 'Nombre no disponible')
+      .toList();
+  }
+
   void fetchUserInfo(BuildContext context) {
     _showLoadingScreen(context);
 
