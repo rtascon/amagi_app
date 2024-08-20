@@ -163,6 +163,49 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                       ),
                       Row(
                         children: [
+                          Icon(Icons.confirmation_number, color: Colors.black), // Ticket icon
+                          SizedBox(width: 8), // Space between icon and text
+                          TextButton(
+                            onPressed: () {
+                              // Handle button press
+                            },
+                            child: Text(
+                              'Tickets',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.add_circle, color: Colors.black), // Ticket icon with plus
+                          SizedBox(width: 8), // Space between icon and text
+                          TextButton(
+                            onPressed: () {
+                              // Handle button press
+                            },
+                            child: Text(
+                              'Crear Ticket',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Row(
+                        children: [
                           Icon(Icons.logout, color: Colors.black),
                           SizedBox(width: 8), // Space between icon and text
                           TextButton(
@@ -186,7 +229,49 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
             ),
           ),
         ),
-        body: Container(), // Empty body to avoid duplication
+        body: Stack(
+          children: [
+            Positioned(
+              top: MediaQuery.of(context).size.height * 0.1, // Position near the top
+              left: MediaQuery.of(context).size.width * 0.1, // Position near the left
+              child: Column(
+                children: [
+                  Container(
+                    width: 112, // Double the default size (56 * 2)
+                    height: 112, // Double the default size (56 * 2)
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        // Handle button press
+                      },
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.confirmation_number, color: Colors.black, size: 48), // Ticket icon
+                    ),
+                  ),
+                  SizedBox(height: 8), // Space between button and text
+                  Text(
+                    'Tickets',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 16, // Position at the bottom
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Image.asset(
+                  'assets/Amagi logo blanco.png', // Replace with your image path
+                  width: 100, // Set the width of the image
+                  height: 100, // Set the height of the image
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
