@@ -5,13 +5,16 @@ import '../views/loading_screen.dart';
 class MainMenuController {
   final AuthService _authService = AuthService();
 
-  Future<String> getUserName(BuildContext context) async {
+  Future<Map<String, String>> getUserName(BuildContext context) async {
     _showLoadingScreen(context);
 
     final userInfo = await _authService.obtenerUsuarioInfo();
     Navigator.of(context).pop(); // Oculta la pantalla de carga
 
-    return userInfo['session']['glpifriendlyname'];
+    return {
+      'glpifriendlyname': userInfo['session']['glpifriendlyname'],
+      'glpiname': userInfo['session']['glpiname'],
+    };
   }
 
   void fetchUserInfo(BuildContext context) {
@@ -19,6 +22,21 @@ class MainMenuController {
 
     // Aquí puedes agregar la lógica adicional que necesites
     Navigator.of(context).pop(); // Oculta la pantalla de carga
+  }
+
+  void cerrarSesion(BuildContext context) async {
+    _showLoadingScreen(context);
+
+    try {
+      await _authService.cerrarSesion();
+      Navigator.of(context).pop(); // Oculta la pantalla de carga
+      Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de inicio de sesión
+    } catch (e) {
+      Navigator.of(context).pop(); // Oculta la pantalla de carga
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cerrar sesión: $e')),
+      );
+    }
   }
 
   void _showLoadingScreen(BuildContext context) {

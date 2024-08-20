@@ -9,7 +9,7 @@ class MainMenuScreen extends StatefulWidget {
 
 class _MainMenuScreenState extends State<MainMenuScreen> {
   final MainMenuController _mainMenuController = MainMenuController();
-  Future<String>? _userNameFuture;
+  Future<Map<String, String>>? _userNameFuture;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -41,40 +41,74 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
             color: Colors.white,
             child: Column(
               children: <Widget>[
-                SizedBox(height: 20), // Add some space above the image and icon
+                SizedBox(height: 50), // Reduce the space above the image and icon
                 Container(
                   padding: EdgeInsets.all(16.0),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Image.asset(
-                        'assets/A logo azul_sin_Digital (1).png', // Replace with your image path
-                        width: 50,
-                        height: 50,
-                      ),
-                      SizedBox(width: 8), // Add some space between the image and the text
-                      FutureBuilder<String>(
-                        future: _userNameFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            return Text(
-                              snapshot.data ?? '',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18, // Make the font size larger
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/A logo azul_sin_Digital (1).png', // Replace with your image path
+                            width: 50,
+                            height: 50,
+                          ),
+                          SizedBox(width: 8), // Add some space between the image and the text
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FutureBuilder<Map<String, String>>(
+                                future: _userNameFuture,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          snapshot.data?['glpifriendlyname'] ?? '',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18, // Make the font size larger
+                                          ),
+                                        ),
+                                        Text(
+                                          snapshot.data?['glpiname'] ?? '',
+                                          style: TextStyle(
+                                            fontSize: 16, // Slightly smaller font size
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                },
                               ),
-                            );
-                          }
-                        },
+                            ],
+                          ),
+                          Spacer(),
+                          IconButton(
+                            icon: Icon(Icons.settings),
+                            onPressed: () {
+                              // Handle settings button tap
+                            },
+                          ),
+                        ],
                       ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.settings),
-                        onPressed: () {
-                          // Handle settings button tap
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Divider(
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.logout),
+                        title: Text('Cerrar Sesión'),
+                        onTap: () {
+                          _mainMenuController.cerrarSesion(context);
                         },
                       ),
                     ],

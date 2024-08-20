@@ -72,5 +72,20 @@ class AuthService {
     }
   }
 
+  Future<void> cerrarSesion() async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    final logoutUrl = Uri.parse('$url/killSession');
+    final response = await http.post(
+      logoutUrl,
+      headers: <String, String>{
+        'Session-Token': sessionToken!,
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Error al cerrar sesión: ${response.body}");
+    }
+  }
+
   static Future<String?> get sessionToken async => await _storage.read(key: _sessionTokenKey);
 }
