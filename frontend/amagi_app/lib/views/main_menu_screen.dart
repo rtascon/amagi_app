@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controllers/main_menu_controller.dart';
+import '../controllers/tickets_controller.dart';
 
 class MainMenuScreen extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class MainMenuScreen extends StatefulWidget {
 
 class _MainMenuScreenState extends State<MainMenuScreen> {
   final MainMenuController _mainMenuController = MainMenuController();
+  final TicketsController _ticketsController = TicketsController();
   Future<Map<String, String>>? _userNameFuture;
   Future<List<String>>? _perfilesFuture;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -167,7 +169,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                           SizedBox(width: 8), // Space between icon and text
                           TextButton(
                             onPressed: () {
-                              // Handle button press
+                              _ticketsController.navigateToTicketsScreen(context);
                             },
                             child: Text(
                               'Tickets',
@@ -181,7 +183,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                       ),
                       Row(
                         children: [
-                          Icon(Icons.add_circle, color: Colors.black), // Ticket icon with plus
+                          Stack(
+                            children: [
+                              Icon(Icons.confirmation_number, color: Colors.black, size: 24), // Ticket icon
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Icon(Icons.add, color: Colors.black, size: 12), // Plus icon
+                              ),
+                            ],
+                          ),
                           SizedBox(width: 8), // Space between icon and text
                           TextButton(
                             onPressed: () {
@@ -241,7 +252,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                     height: 112, // Double the default size (56 * 2)
                     child: FloatingActionButton(
                       onPressed: () {
-                        // Handle button press
+                        _ticketsController.navigateToTicketsScreen(context);
                       },
                       backgroundColor: Colors.white,
                       child: Icon(Icons.confirmation_number, color: Colors.black, size: 48), // Ticket icon
