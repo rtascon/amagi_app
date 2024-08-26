@@ -6,21 +6,16 @@ import '../views/tickets_screen.dart';
 class TicketsController {
   final TicketService _ticketService = TicketService();
   final Map<String, String> tickets = {};
+  final usuario = Usuario();
 
-  Future<Map<String, String>> getUserId(BuildContext context) async {
-    final usuario = Usuario();
-    Navigator.of(context).pop(); // Oculta la pantalla de carga
-
-    return {
-      'glpiId': usuario.idUsuario.toString()
-    };
+  int getUserId() {
+    return usuario.idUsuario;
   }
 
   Future<Map<String, String>> obtenerListaTickets(BuildContext context) async {
     try {
       // Obtener el ID del usuario
-      final userIdMap = await getUserId(context);
-      final userId = int.parse(userIdMap['glpiId']!);
+      final userId = getUserId();
 
       // Obtener los tickets del usuario
       List<dynamic> tickets = await _ticketService.obtenerTicketsUsuario(userId);
