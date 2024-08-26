@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'user_service.dart';
+import '../models/usuario.dart';
 
 class AuthService {
   final String url = 'http://172.20.1.55/soportegiades/apirest.php';
@@ -9,10 +11,6 @@ class AuthService {
 
   Future<bool> iniciarSesion(String username, String password) async {
     final loginUrl = Uri.parse('$url/initSession');
-    //PRUEBA DE CONEXION
-    print('loginUrl: $loginUrl');
-    print('username: $username');
-    print('password: $password');
     final response = await http.post(
       loginUrl,
       headers: <String, String>{
@@ -24,53 +22,30 @@ class AuthService {
       }),
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-    
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
       await _storage.write(key: _sessionTokenKey, value: responseBody['session_token']);
-      return true;
+      UserService userService = UserService();
+      Usuario usuario = Usuario();
+      return userService.obtenerUsuarioInfo(usuario);
+      
     } else {
       throw Exception("Error al iniciar sesion: ${response.body}");
     }
   }
 
-  Future<Map<String, dynamic>> obtenerUsuarioInfo() async {
+  Future<void> cerrarSesion() async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
-    final userUrl = Uri.parse('$url/getFullSession');
-    final response = await http.get(
-      userUrl,
+    final logoutUrl = Uri.parse('$url/killSession');
+    final response = await http.post(
+      logoutUrl,
       headers: <String, String>{
         'Session-Token': sessionToken!,
-        'Content-Type': 'application/json',
       },
     );
 
-    if (response.statusCode == 200 || response.statusCode == 206) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception("Error al obtener informacion del usuario: ${response.body}");
+    if (response.statusCode != 200) {
+      throw Exception("Error al cerrar sesión: ${response.body}");
     }
   }
-
-  Future<Map<String, dynamic>> obtenerPermisos(int idPerfil) async {
-    final sessionToken = await _storage.read(key: _sessionTokenKey);
-    final userUrl = Uri.parse('$url/Profile/$idPerfil/getActiveProfile');
-    final response = await http.get(
-      userUrl,
-      headers: <String, String>{
-        'Session-Token': sessionToken!,
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 206) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception("Error al obtener permisos: ${response.body}");
-    }
-  }
-
-  static Future<String?> get sessionToken async => await _storage.read(key: _sessionTokenKey);
 }

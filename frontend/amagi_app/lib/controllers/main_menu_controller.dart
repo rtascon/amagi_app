@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../views/loading_screen.dart';
+import '../models/usuario.dart'; // Importar Usuario
 
 class MainMenuController {
   final AuthService _authService = AuthService();
+  final Usuario _usuario = Usuario();
 
-  Future<String> getUserName(BuildContext context) async {
+  void cerrarSesion(BuildContext context) async {
     _showLoadingScreen(context);
 
-    final userInfo = await _authService.obtenerUsuarioInfo();
-    Navigator.of(context).pop(); // Oculta la pantalla de carga
-
-    return userInfo['session']['glpifriendlyname'];
-  }
-
-  void fetchUserInfo(BuildContext context) {
-    _showLoadingScreen(context);
-
-    // Aquí puedes agregar la lógica adicional que necesites
-    Navigator.of(context).pop(); // Oculta la pantalla de carga
+    try {
+      await _authService.cerrarSesion();
+      Navigator.of(context).pop(); // Oculta la pantalla de carga
+      Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de inicio de sesión
+    } catch (e) {
+      Navigator.of(context).pop(); // Oculta la pantalla de carga
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cerrar sesión: $e')),
+      );
+    }
   }
 
   void _showLoadingScreen(BuildContext context) {
@@ -32,4 +33,16 @@ class MainMenuController {
       );
     });
   }
+
+  Future<Map<String, String>> getUserName() async {
+    return {
+      'glpifriendlyname': _usuario.nombreCompleto,
+      'glpiname': _usuario.nombreUsuario,
+    };
+  }
+/*
+  Future<List<String>> obtenerNombresPerfiles() async {
+    return _usuario.perfiles.keys.toList();
+  }
+  */
 }
