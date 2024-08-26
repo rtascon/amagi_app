@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import '../controllers/tickets_controller.dart';
 
 class TicketsScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final List<dynamic> tickets;
+  final TicketsController _ticketsController = TicketsController();
+
+  TicketsScreen({required this.tickets});
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +14,7 @@ class TicketsScreen extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white), // Set the icon color to white
+          icon: Icon(Icons.menu, color: Colors.white),
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
           },
@@ -21,17 +26,17 @@ class TicketsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFF747678), // Set the background color
+        backgroundColor: Color(0xFF747678),
         elevation: 0,
-        centerTitle: true, // Ensure the title is centered
+        centerTitle: true,
       ),
       drawer: Drawer(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.75, // 75% of screen width
+          width: MediaQuery.of(context).size.width * 0.75,
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              SizedBox(height: 50), // Reduce the space above the image and icon
+              SizedBox(height: 50),
               Container(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -39,25 +44,25 @@ class TicketsScreen extends StatelessWidget {
                     Row(
                       children: [
                         Image.asset(
-                          'assets/A logo azul_sin_Digital (1).png', // Replace with your image path
+                          'assets/A logo azul_sin_Digital (1).png',
                           width: 50,
                           height: 50,
                         ),
-                        SizedBox(width: 8), // Add some space between the image and the text
+                        SizedBox(width: 8),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Usuario', // Replace with actual user name
+                              'Usuario',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18, // Make the font size larger
+                                fontSize: 18,
                               ),
                             ),
                             Text(
-                              'Email', // Replace with actual user email
+                              'Email',
                               style: TextStyle(
-                                fontSize: 16, // Slightly smaller font size
+                                fontSize: 16,
                               ),
                             ),
                           ],
@@ -80,8 +85,8 @@ class TicketsScreen extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Icon(Icons.person, color: Colors.black), // Profile icon
-                        SizedBox(width: 8), // Space between icon and text
+                        Icon(Icons.person, color: Colors.black),
+                        SizedBox(width: 8),
                         Text(
                           'Mis perfiles',
                           style: TextStyle(
@@ -91,8 +96,7 @@ class TicketsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8), // Add space between the title and the profiles
-                    // Add profiles list here
+                    SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Divider(
@@ -102,13 +106,13 @@ class TicketsScreen extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Icon(Icons.confirmation_number, color: Colors.black), // Ticket icon
-                        SizedBox(width: 8), // Space between icon and text
+                        Icon(Icons.confirmation_number, color: Colors.black),
+                        SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => TicketsScreen()),
+                              MaterialPageRoute(builder: (context) => TicketsScreen(tickets: tickets)),
                             );
                           },
                           child: Text(
@@ -125,15 +129,15 @@ class TicketsScreen extends StatelessWidget {
                       children: [
                         Stack(
                           children: [
-                            Icon(Icons.confirmation_number, color: Colors.black, size: 24), // Ticket icon
+                            Icon(Icons.confirmation_number, color: Colors.black, size: 24),
                             Positioned(
                               right: 0,
                               bottom: 0,
-                              child: Icon(Icons.add, color: Colors.black, size: 12), // Plus icon
+                              child: Icon(Icons.add, color: Colors.black, size: 12),
                             ),
                           ],
                         ),
-                        SizedBox(width: 8), // Space between icon and text
+                        SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
                             // Handle button press
@@ -158,7 +162,7 @@ class TicketsScreen extends StatelessWidget {
                     Row(
                       children: [
                         Icon(Icons.logout, color: Colors.black),
-                        SizedBox(width: 8), // Space between icon and text
+                        SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
                             // Handle logout
@@ -181,9 +185,85 @@ class TicketsScreen extends StatelessWidget {
         ),
       ),
       body: Container(
-        color: Colors.white, // Set the background color to white
-        child: Center(
-          child: Text('Lista de Tickets'), // Placeholder for the list of tickets
+        color: Colors.white,
+        child: ListView.builder(
+          padding: EdgeInsets.all(16.0),
+          itemCount: tickets.length,
+          itemBuilder: (context, index) {
+            final ticket = tickets[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Container(
+                width: double.infinity,
+                height: 150,
+                padding: EdgeInsets.all(32.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ID: ${ticket['2']}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Titulo: ${ticket['1']}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Descripción: ${ticket['21']}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Estado: ${_ticketsController.getEstado(ticket['12'])}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Fecha de creación: ${ticket['15']}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Fecha de actualización: ${ticket['19']}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Entidad asociada: ${ticket['80']}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Prioridad: ${_ticketsController.getPrioridad(ticket['3'])}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Tipo: ${ticket['14']}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(

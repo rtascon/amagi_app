@@ -4,6 +4,7 @@ import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
 
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
