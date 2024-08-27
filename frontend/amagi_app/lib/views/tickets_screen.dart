@@ -195,8 +195,7 @@ class TicketsScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Container(
                 width: double.infinity,
-                height: 150,
-                padding: EdgeInsets.all(32.0),
+                padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12.0),
@@ -205,56 +204,56 @@ class TicketsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ID: ${ticket['2']}',
+                      'ID: ${ticket.id}',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Titulo: ${ticket['1']}',
+                      'Titulo: ${ticket.titulo}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Descripción: ${ticket['21']}',
+                      'Descripción: ${ticket.descripcion}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Estado: ${_ticketsController.getEstado(ticket['12'])}',
+                      'Estado: ${_ticketsController.getEstado(ticket.estado)}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Fecha de creación: ${ticket['15']}',
+                      'Fecha de creación: ${ticket.fechaCreacion}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Fecha de actualización: ${ticket['19']}',
+                      'Fecha de actualización: ${ticket.fechaActualizacion}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Entidad asociada: ${ticket['80']}',
+                      'Entidad asociada: ${ticket.entidadAsociada}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Prioridad: ${_ticketsController.getPrioridad(ticket['3'])}',
+                      'Prioridad: ${_ticketsController.getPrioridad(ticket.prioridad)}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     Text(
-                      'Tipo: ${ticket['14']}',
+                      'Tipo: ${ticket.tipo}',
                       style: TextStyle(
                         fontSize: 16,
                       ),

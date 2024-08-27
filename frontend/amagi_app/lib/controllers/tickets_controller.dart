@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/ticket_service.dart';
 import '../models/usuario.dart'; // Importar Usuario
 import '../views/tickets_screen.dart';
+import '../models/ticket_factory.dart'; // Importar TicketFactory
+import '../models/ticket.dart'; // Importar Ticket
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -12,31 +14,43 @@ class TicketsController {
     return usuario.idUsuario;
   }
 
-  Future<Map<String, String>> obtenerListaTickets(BuildContext context) async {
+  Future<List<Ticket>> obtenerListaTickets(BuildContext context) async {
     try {
       // Obtener el ID del usuario
       final userId = getUserId();
 
       // Obtener los tickets del usuario
-      List<dynamic> tickets = await _ticketService.obtenerTicketsUsuario(userId);
+      List<dynamic> ticketsData = await _ticketService.obtenerTicketsUsuario(userId);
 
-      return {
-        'tickets': tickets.toString()
-      };
+      // Crear instancias de Ticket usando TicketFactory
+      List<Ticket> tickets = ticketsData.map((ticketData) {
+        return TicketFactory.createTicket(
+          id: ticketData['2'],
+          titulo: ticketData['1'],
+          descripcion: ticketData['21'],
+          fechaCreacion: DateTime.parse(ticketData['15']),
+          fechaActualizacion: DateTime.parse(ticketData['19']),
+          tipo: ticketData['14'],
+          estado: ticketData['12'],
+          entidadAsociada: ticketData['80'],
+          prioridad: ticketData['3'],
+        );
+      }).toList();
+
+
+      return tickets;
     } catch (e) {
       // Manejar error
-      return {
-        'error': e.toString()
-      };
+      return [];
     }
   }
 
   void navigateToTicketsScreen(BuildContext context) async {
-    Map<String, String> tickets = await obtenerListaTickets(context);
+    List<Ticket> tickets = await obtenerListaTickets(context);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TicketsScreen(tickets: [tickets]),
+        builder: (context) => TicketsScreen(tickets: tickets),
       ),
     );
   }
