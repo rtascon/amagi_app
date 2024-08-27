@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import '../controllers/tickets_controller.dart';
+import '../controllers/side_menu_controller.dart';
+import '../views/side_menu.dart';
 
 class TicketsScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<dynamic> tickets;
   final TicketsController _ticketsController = TicketsController();
+  final SideMenuController _sideMenuController = SideMenuController();
+  late final Future<Map<String, String>> _userNameFuture;
 
-  TicketsScreen({required this.tickets});
-
+  TicketsScreen({required this.tickets}){
+       _userNameFuture = _sideMenuController.getUserName();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,159 +35,10 @@ class TicketsScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
       ),
-      drawer: Drawer(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.75,
-          color: Colors.white,
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 50),
-              Container(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          'assets/A logo azul_sin_Digital (1).png',
-                          width: 50,
-                          height: 50,
-                        ),
-                        SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Usuario',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            Text(
-                              'Email',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(Icons.settings),
-                          onPressed: () {
-                            // Handle settings button tap
-                          },
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.person, color: Colors.black),
-                        SizedBox(width: 8),
-                        Text(
-                          'Mis perfiles',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.confirmation_number, color: Colors.black),
-                        SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => TicketsScreen(tickets: tickets)),
-                            );
-                          },
-                          child: Text(
-                            'Tickets',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Stack(
-                          children: [
-                            Icon(Icons.confirmation_number, color: Colors.black, size: 24),
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: Icon(Icons.add, color: Colors.black, size: 12),
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            // Handle button press
-                          },
-                          child: Text(
-                            'Crear Ticket',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.logout, color: Colors.black),
-                        SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            // Handle logout
-                          },
-                          child: Text(
-                            'Cerrar Sesión',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+      drawer: SideMenu(
+        sideMenuController: _sideMenuController,
+        ticketsController: _ticketsController,
+        userNameFuture: _userNameFuture,
       ),
       body: Container(
         color: Colors.white,
