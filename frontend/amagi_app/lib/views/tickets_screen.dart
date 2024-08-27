@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../controllers/tickets_controller.dart';
 import '../controllers/side_menu_controller.dart';
 import '../views/side_menu.dart';
@@ -10,9 +11,10 @@ class TicketsScreen extends StatelessWidget {
   final SideMenuController _sideMenuController = SideMenuController();
   late final Future<Map<String, String>> _userNameFuture;
 
-  TicketsScreen({required this.tickets}){
-       _userNameFuture = _sideMenuController.getUserName();
+  TicketsScreen({required this.tickets}) {
+    _userNameFuture = _sideMenuController.getUserName();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,91 +49,163 @@ class TicketsScreen extends StatelessWidget {
           itemCount: tickets.length,
           itemBuilder: (context, index) {
             final ticket = tickets[index];
+            final fechaCreacion = ticket.fechaCreacion is String
+                ? DateTime.parse(ticket.fechaCreacion)
+                : ticket.fechaCreacion;
+            final formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(fechaCreacion);
             return Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ID: ${ticket.id}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              child: GestureDetector(
+                onTap: () {
+                  _ticketsController.navigateToTicketDetailScreen(context, ticket);
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    if (_ticketsController.getEstado(ticket.estado) == 'Nuevo')
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        margin: EdgeInsets.only(right: 8.0),
+                                      ),
+                                    Text(
+                                      _ticketsController.getEstado(ticket.estado),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                decoration: BoxDecoration(
+                                  color: _ticketsController.getTipo(ticket.tipo) == 'Requerimiento'
+                                      ? Colors.blue[100]
+                                      : Colors.orange[100],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 20, // Aumenta el tamaño del contenedor
+                                      height: 20, // Aumenta el tamaño del contenedor
+                                      decoration: BoxDecoration(
+                                        color: _ticketsController.getTipo(ticket.tipo) == 'Requerimiento'
+                                            ? Colors.blue
+                                            : Colors.orange,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          _ticketsController.getTipo(ticket.tipo) == 'Requerimiento'
+                                              ? '?'
+                                              : '!',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16, // Aumenta el tamaño de la fuente
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      margin: EdgeInsets.only(right: 8.0),
+                                    ),
+                                    Text(
+                                      _ticketsController.getTipo(ticket.tipo),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 8.0),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '#',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    SizedBox(width: 4.0),
+                                    Text(
+                                      '${ticket.id}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      'Titulo: ${ticket.titulo}',
-                      style: TextStyle(
-                        fontSize: 16,
+                      SizedBox(height: 8.0),
+                      Text(
+                        ticket.titulo,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Descripción: ${ticket.descripcion}',
-                      style: TextStyle(
-                        fontSize: 16,
+                      SizedBox(height: 4.0),
+                      Text(
+                        formattedDate,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Estado: ${_ticketsController.getEstado(ticket.estado)}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Fecha de creación: ${ticket.fechaCreacion}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Fecha de actualización: ${ticket.fechaActualizacion}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Entidad asociada: ${ticket.entidadAsociada}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Prioridad: ${_ticketsController.getPrioridad(ticket.prioridad)}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Tipo: ${ticket.tipo}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handle button press
-        },
-        backgroundColor: Color(0xFFE98300),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        child: Icon(Icons.add, color: Colors.white),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

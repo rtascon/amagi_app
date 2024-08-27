@@ -4,6 +4,7 @@ import '../models/usuario.dart'; // Importar Usuario
 import '../views/tickets_screen.dart';
 import '../models/ticket_factory.dart'; // Importar TicketFactory
 import '../models/ticket.dart'; // Importar Ticket
+import '../views/ticket_detail_screen.dart';
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -55,6 +56,15 @@ class TicketsController {
     );
   }
 
+  void navigateToTicketDetailScreen(BuildContext context, Ticket ticket) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TicketDetailScreen(ticket: ticket),
+      ),
+    );
+  }
+
   String getPrioridad(int prioridad) {
     switch (prioridad) {
       case 1:
@@ -67,7 +77,16 @@ class TicketsController {
         return 'Desconocida';
     }
   }
-
+  String getTipo(int tipo) {
+    switch (tipo) {
+      case 1:
+        return 'Incidente';
+      case 2:
+        return 'Requerimiento';
+      default:
+        return 'Desconocido';
+    }
+  }
   String getEstado(int estado) {
     switch (estado) {
       case 1:

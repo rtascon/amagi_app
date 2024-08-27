@@ -111,7 +111,7 @@ class SideMenu extends StatelessWidget {
                           Positioned(
                             right: 0,
                             bottom: 0,
-                            child: Icon(Icons.add, color: Colors.black, size: 12), // Plus icon
+                            child: Icon(Icons.add, color: Colors.white, size: 12), // Plus icon
                           ),
                         ],
                       ),
@@ -156,6 +156,18 @@ class SideMenu extends StatelessWidget {
                     ],
                   ),
                 ],
+              ),
+            ),
+            Spacer(), // Pushes the image to the bottom
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.asset(
+                  'assets/Amagi logo azul_sin_Digital.png', // Replace with your image path
+                  width: 100, // Set the desired width
+                  height: 100, // Set the desired height
+                ),
               ),
             ),
           ],
