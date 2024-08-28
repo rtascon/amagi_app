@@ -49,4 +49,25 @@ class TicketService {
       throw Exception("Error al obtener tickets: ${response.body}");
     }
   }
+
+  Future<List<dynamic>> obtenerHistoricosTicket(int idTicket) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+
+    final comentariosUrl = Uri.parse('$url/Ticket/$idTicket/ITILFollowup');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'application/json',
+    };
+
+    final response = await http.get(comentariosUrl, headers: headers);
+
+    if (response.statusCode == 200 || response.statusCode == 206) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error al obtener comentarios del ticket: ${response.body}");
+    }
+  }
 }

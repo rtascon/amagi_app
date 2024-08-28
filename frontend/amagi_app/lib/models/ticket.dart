@@ -9,6 +9,7 @@ abstract class Ticket {
   int _estado;
   String _entidadAsociada;
   int _prioridad;
+  List<Map<String, dynamic>>? _historicos; 
 
   Ticket({
     required int id,
@@ -20,6 +21,7 @@ abstract class Ticket {
     required int estado,
     required String entidadAsociada,
     required int prioridad,
+    List<Map<String, dynamic>>? historicos, 
   })  : _id = id,
         _titulo = titulo,
         _descripcion = descripcion,
@@ -28,7 +30,8 @@ abstract class Ticket {
         _tipo = tipo,
         _estado = estado,
         _entidadAsociada = entidadAsociada,
-        _prioridad = prioridad;
+        _prioridad = prioridad,
+        _historicos = historicos; 
 
   // Getters
   int get id => _id;
@@ -40,6 +43,7 @@ abstract class Ticket {
   int get estado => _estado;
   String get entidadAsociada => _entidadAsociada;
   int get prioridad => _prioridad;
+  List<Map<String, dynamic>>? get historicos => _historicos; 
 
   // Setters
   set id(int id) => _id = id;
@@ -51,4 +55,5 @@ abstract class Ticket {
   set estado(int estado) => _estado = estado;
   set entidadAsociada(String entidadAsociada) => _entidadAsociada = entidadAsociada;
   set prioridad(int prioridad) => _prioridad = prioridad;
+  set historicos(List<Map<String, dynamic>>? historicos) => _historicos = historicos; 
 }

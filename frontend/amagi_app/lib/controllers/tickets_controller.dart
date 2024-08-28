@@ -38,7 +38,6 @@ class TicketsController {
         );
       }).toList();
 
-
       return tickets;
     } catch (e) {
       // Manejar error
@@ -56,13 +55,28 @@ class TicketsController {
     );
   }
 
-  void navigateToTicketDetailScreen(BuildContext context, Ticket ticket) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TicketDetailScreen(ticket: ticket),
-      ),
-    );
+  Future<void> navigateToTicketDetailScreen(BuildContext context, Ticket ticket) async {
+    try {
+      List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
+      ticket.historicos = historicos.map((historico) {
+        return {
+          'id': historico['id'],
+          'users_id': historico['users_id'],
+          'date': historico['date'],
+          'content': historico['content'],
+        };
+      }).toList();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TicketDetailScreen(ticket: ticket),
+        ),
+      );
+    } catch (e) {
+      // Manejar error
+      print("Error al obtener históricos del ticket: $e");
+    }
   }
 
   String getPrioridad(int prioridad) {
@@ -81,6 +95,7 @@ class TicketsController {
         return 'Desconocida';
     }
   }
+
   String getTipo(int tipo) {
     switch (tipo) {
       case 1:
@@ -91,6 +106,7 @@ class TicketsController {
         return 'Desconocido';
     }
   }
+
   String getEstado(int estado) {
     switch (estado) {
       case 1:

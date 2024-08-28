@@ -13,6 +13,7 @@ class TicketFactory {
     required int estado,
     required String entidadAsociada,
     required int prioridad,
+    List<Map<String, dynamic>>? historicos, 
   }) {
     return TicketImpl(
       id: id,
@@ -24,6 +25,7 @@ class TicketFactory {
       estado: estado,
       entidadAsociada: entidadAsociada,
       prioridad: prioridad,
+      historicos: historicos, 
     );
   }
 }

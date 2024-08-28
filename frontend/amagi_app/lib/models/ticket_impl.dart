@@ -12,15 +12,17 @@ class TicketImpl extends Ticket {
     required int estado,
     required String entidadAsociada,
     required int prioridad,
+    List<Map<String, dynamic>>? historicos, 
   }) : super(
-          id: id,
-          titulo: titulo,
-          descripcion: descripcion,
-          fechaCreacion: fechaCreacion,
-          fechaActualizacion: fechaActualizacion,
-          tipo: tipo,
-          estado: estado,
-          entidadAsociada: entidadAsociada,
-          prioridad: prioridad,
-        );
+        id: id,
+        titulo: titulo,
+        descripcion: descripcion,
+        fechaCreacion: fechaCreacion,
+        fechaActualizacion: fechaActualizacion,
+        tipo: tipo,
+        estado: estado,
+        entidadAsociada: entidadAsociada,
+        prioridad: prioridad,
+        historicos: historicos, 
+      );
 }
