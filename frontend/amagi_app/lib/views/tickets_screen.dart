@@ -92,12 +92,74 @@ class TicketsScreen extends StatelessWidget {
                                         ),
                                         margin: EdgeInsets.only(right: 8.0),
                                       ),
-                                    Text(
-                                      _ticketsController.getEstado(ticket.estado),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                    if (_ticketsController.getEstado(ticket.estado) == 'En curso (asignado)')
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.green),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        margin: EdgeInsets.only(right: 8.0),
                                       ),
+                                    if (_ticketsController.getEstado(ticket.estado) == 'En curso (Planificado)')
+                                      Container(
+                                        margin: EdgeInsets.only(right: 8.0),
+                                        child: Icon(
+                                          Icons.calendar_today,
+                                          color: Colors.black,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    if (_ticketsController.getEstado(ticket.estado) == 'En espera')
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: Colors.orange,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        margin: EdgeInsets.only(right: 8.0),
+                                      ),
+                                    if (_ticketsController.getEstado(ticket.estado) == 'Resuelto')
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.black),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        margin: EdgeInsets.only(right: 8.0),
+                                      ),
+                                    if (_ticketsController.getEstado(ticket.estado) == 'Cerrado')
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        margin: EdgeInsets.only(right: 8.0),
+                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          _ticketsController.getEstado(ticket.estado).split(' (')[0],
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        if (_ticketsController.getEstado(ticket.estado).contains(' ('))
+                                          Text(
+                                            '(${_ticketsController.getEstado(ticket.estado).split(' (')[1]}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   ],
                                 ),

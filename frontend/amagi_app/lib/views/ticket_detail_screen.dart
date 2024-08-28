@@ -22,9 +22,13 @@ class TicketDetailScreen extends StatelessWidget {
         case 'Baja':
           return Colors.green;
         case 'Media':
-          return Colors.yellow;
+          return Colors.orange;
         case 'Alta':
           return Colors.red;
+        case 'Muy Alta':
+          return Colors.blue;
+        case 'Mayor':
+          return Colors.purple;  
         default:
           return Colors.grey;
       }
@@ -54,119 +58,170 @@ class TicketDetailScreen extends StatelessWidget {
       ),
       body: Container(
         color: Colors.white,
-        child: Column(
-          children: [
-            Container(
-              color: Colors.grey[200],
-              width: double.infinity,
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  if (ticket.estado == 'Nuevo')
-                    Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      margin: EdgeInsets.only(right: 8.0),
-                    ),
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: ticket.tipo == 'Requerimiento' ? Colors.blue : Colors.orange,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        ticket.tipo == 'Requerimiento' ? '?' : '!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16, // Aumenta el tamaño de la fuente
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    margin: EdgeInsets.only(right: 8.0),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Eliminar el primer Card
+                SizedBox(height: 16.0),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  Icon(
-                    Icons.signal_cellular_alt,
-                    color: getPriorityColor(prioridad),
-                  ),
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Row(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '#',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              'Detalles',
+                              style: TextStyle(
+                                fontSize: 20, // Tamaño mediano
+                                fontWeight: FontWeight.bold, // En negrita
+                              ),
+                            ),
+                            Spacer(),
+                            if (_ticketsController.getEstado(ticket.estado) == 'Nuevo')
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                                margin: EdgeInsets.only(right: 8.0),
+                              ),
+                            if (_ticketsController.getEstado(ticket.estado) == 'En curso (asignado)')
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.green),
+                                  shape: BoxShape.circle,
+                                ),
+                                margin: EdgeInsets.only(right: 8.0),
+                              ),
+                            if (_ticketsController.getEstado(ticket.estado) == 'En curso (Planificado)')
+                              Container(
+                                margin: EdgeInsets.only(right: 8.0),
+                                child: Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.black,
+                                  size: 16,
+                                ),
+                              ),
+                            if (_ticketsController.getEstado(ticket.estado) == 'En espera')
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.orange,
+                                  shape: BoxShape.circle,
+                                ),
+                                margin: EdgeInsets.only(right: 8.0),
+                              ),
+                            if (_ticketsController.getEstado(ticket.estado) == 'Resuelto')
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                  shape: BoxShape.circle,
+                                ),
+                                margin: EdgeInsets.only(right: 8.0),
+                              ),
+                            if (_ticketsController.getEstado(ticket.estado) == 'Cerrado')
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  shape: BoxShape.circle,
+                                ),
+                                margin: EdgeInsets.only(right: 8.0),
+                              ),
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: ticket.tipo == 'Requerimiento' ? Colors.blue : Colors.orange,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  ticket.tipo == 'Requerimiento' ? '?' : '!',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16, // Aumenta el tamaño de la fuente
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              margin: EdgeInsets.only(right: 8.0),
+                            ),
+                            Icon(
+                              Icons.flash_on_outlined,
+                              color: getPriorityColor(prioridad),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '#',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4.0),
+                                  Text(
+                                    '${ticket.id}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 4.0),
-                        Text(
-                          '${ticket.id}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                        SizedBox(height: 8.0),
+                        ListTile(
+                          leading: Icon(Icons.date_range),
+                          title: Text('Fecha de Creación'),
+                          subtitle: Text(fechaCreacion),
                         ),
+                        ListTile(
+                          leading: Icon(Icons.update),
+                          title: Text('Fecha de Modificación'),
+                          subtitle: Text(fechaModificacion),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.description),
+                          title: Text('Descripción'),
+                          subtitle: Text('${ticket.descripcion}'),
+                        ),
+                        // Agrega más detalles del ticket aquí
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 8.0),
-                    Text(
-                      'Detalles',
-                      style: TextStyle(
-                        fontSize: 20, // Tamaño mediano
-                        fontWeight: FontWeight.bold, // En negrita
-                      ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      'Fecha de Creación: $fechaCreacion',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Fecha de Modificación: $fechaModificacion',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      'Descripción: ${ticket.descripcion}',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    // Agrega más detalles del ticket aquí
-                  ],
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

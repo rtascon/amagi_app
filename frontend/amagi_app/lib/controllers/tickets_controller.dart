@@ -67,12 +67,16 @@ class TicketsController {
 
   String getPrioridad(int prioridad) {
     switch (prioridad) {
-      case 1:
-        return 'Baja';
       case 2:
-        return 'Media';
+        return 'Baja';
       case 3:
+        return 'Media';
+      case 4:
         return 'Alta';
+      case 5:
+        return 'Muy Alta';
+      case 6:
+        return 'Mayor';
       default:
         return 'Desconocida';
     }
