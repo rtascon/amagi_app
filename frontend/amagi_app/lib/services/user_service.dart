@@ -43,4 +43,23 @@ Future<bool> obtenerUsuarioInfo(Usuario usuario) async {
     }
   }
 
+Future<String> obtenerNombreUsuario(int id) async {
+  final sessionToken = await _storage.read(key: _sessionTokenKey);
+  final userUrl = Uri.parse('$url/User/$id');
+  final response = await http.get(
+    userUrl,
+    headers: <String, String>{
+      'Session-Token': sessionToken!,
+      'Content-Type': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200 || response.statusCode == 206) {
+    final userInfo = jsonDecode(response.body);
+          return userInfo['firstname'] + ' ' + userInfo['realname'];
+  } else {
+    throw Exception("Error al obtener el nombre del usuario: ${response.body}");
+  }
+}
+
 }

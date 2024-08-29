@@ -5,9 +5,11 @@ import '../views/tickets_screen.dart';
 import '../models/ticket_factory.dart'; // Importar TicketFactory
 import '../models/ticket.dart'; // Importar Ticket
 import '../views/ticket_detail_screen.dart';
+import '../services/user_service.dart';
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
+  final UserService _userService = UserService();
   final Map<String, String> tickets = {};
   final usuario = Usuario();
 
@@ -56,28 +58,30 @@ class TicketsController {
   }
 
   Future<void> navigateToTicketDetailScreen(BuildContext context, Ticket ticket) async {
-    try {
-      List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
-      ticket.historicos = historicos.map((historico) {
-        return {
-          'id': historico['id'],
-          'users_id': historico['users_id'],
-          'date': historico['date'],
-          'content': historico['content'],
-        };
-      }).toList();
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TicketDetailScreen(ticket: ticket),
-        ),
-      );
-    } catch (e) {
-      // Manejar error
-      print("Error al obtener históricos del ticket: $e");
+      try {
+        List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
+        ticket.historicos = await Future.wait(historicos.map((historico) async {
+          final nombreUsuario = await _userService.obtenerNombreUsuario(historico['users_id']);
+          return {
+            'id': historico['id'],
+            'users_id': historico['users_id'],
+            'date': historico['date'],
+            'content': historico['content'],
+            'nombre_usuario': nombreUsuario,
+          };
+        }).toList());
+  
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TicketDetailScreen(ticket: ticket),
+          ),
+        );
+      } catch (e) {
+        // Manejar error
+        print("Error al obtener históricos del ticket: $e");
+      }
     }
-  }
 
   String getPrioridad(int prioridad) {
     switch (prioridad) {

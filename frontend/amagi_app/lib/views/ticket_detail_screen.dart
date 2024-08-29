@@ -5,7 +5,7 @@ import '../controllers/tickets_controller.dart'; // Importar TicketsController
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
-  final TicketsController _ticketsController = TicketsController(); // Instancia de TicketsController
+  final TicketsController _ticketsController = TicketsController(); 
 
   TicketDetailScreen({required this.ticket});
 
@@ -37,7 +37,7 @@ class TicketDetailScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final historico = ticket.historicos[index];
             final fecha = historico['date'];
-            //final usuario = historico['usuario'];
+            final usuario = historico['nombre_usuario'];
             return Align(
               alignment: Alignment.centerLeft,
               child: Container(
@@ -61,8 +61,8 @@ class TicketDetailScreen extends StatelessWidget {
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
@@ -75,6 +75,7 @@ class TicketDetailScreen extends StatelessWidget {
                               Text(fecha),
                             ],
                           ),
+                          SizedBox(height: 5),
                           Row(
                             children: [
                               Text(
@@ -83,7 +84,12 @@ class TicketDetailScreen extends StatelessWidget {
                               ),
                               Icon(Icons.person, size: 16, color: Colors.black),
                               SizedBox(width: 5),
-                              Text(''), // Cambiar por el nombre del usuario
+                              Flexible(
+                                child: Text(
+                                  usuario,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -93,7 +99,7 @@ class TicketDetailScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: historico.entries.where((entry) {
-                        return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date';
+                        return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date' && entry.key != 'nombre_usuario';
                       }).map<Widget>((entry) {
                         return Text('${entry.value}');
                       }).toList(),
