@@ -6,6 +6,8 @@ import '../models/ticket_factory.dart'; // Importar TicketFactory
 import '../models/ticket.dart'; // Importar Ticket
 import '../views/ticket_detail_screen.dart';
 import '../services/user_service.dart';
+import 'dart:typed_data';
+import 'dart:io';
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -58,30 +60,44 @@ class TicketsController {
   }
 
   Future<void> navigateToTicketDetailScreen(BuildContext context, Ticket ticket) async {
-      try {
-        List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
-        ticket.historicos = await Future.wait(historicos.map((historico) async {
-          final nombreUsuario = await _userService.obtenerNombreUsuario(historico['users_id']);
+    try {
+      List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
+      ticket.historicos = await Future.wait(historicos.map((historico) async {
+        final nombreUsuario = await _userService.obtenerNombreUsuario(historico['users_id']);
+        final detalleComentario = await _ticketService.obtenerDetalleComentario(historico['id']);
+        
+        List<Map<String, dynamic>> documentos = await Future.wait(detalleComentario.map((detalle) async {
+          final documento = await _ticketService.obtenerDocumentoHistorico(detalle['documents_id']);
+          final String filePath = await _ticketService.obtenerDocumentoCrudo(detalle['documents_id']);
           return {
-            'id': historico['id'],
-            'users_id': historico['users_id'],
-            'date': historico['date'],
-            'content': historico['content'],
-            'nombre_usuario': nombreUsuario,
+            'filename': documento['filename'],
+            'filepath': filePath,
+            'mime': documento['mime'],
+            
           };
         }).toList());
-  
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TicketDetailScreen(ticket: ticket),
-          ),
-        );
-      } catch (e) {
-        // Manejar error
-        print("Error al obtener históricos del ticket: $e");
-      }
+        
+        return {
+          'id': historico['id'],
+          'users_id': historico['users_id'],
+          'date': historico['date'],
+          'content': historico['content'],
+          'nombre_usuario': nombreUsuario,
+          'documentos': documentos.isNotEmpty ? documentos : null,
+        };
+      }).toList());
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TicketDetailScreen(ticket: ticket),
+        ),
+      );
+    } catch (e) {
+      // Manejar error
+      print("Error al obtener históricos del ticket: $e");
     }
+  }
 
   String getPrioridad(int prioridad) {
     switch (prioridad) {

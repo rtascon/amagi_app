@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:photo_view/photo_view.dart';
 import '../controllers/ticket_detail_controller.dart';
-import '../controllers/tickets_controller.dart'; // Importar TicketsController
+import '../controllers/tickets_controller.dart';
+import 'dart:io';
 
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
-  final TicketsController _ticketsController = TicketsController(); 
+  final TicketsController _ticketsController = TicketsController();
 
   TicketDetailScreen({required this.ticket});
 
@@ -38,6 +42,8 @@ class TicketDetailScreen extends StatelessWidget {
             final historico = ticket.historicos[index];
             final fecha = historico['date'];
             final usuario = historico['nombre_usuario'];
+            final documentos = historico['documentos'] ?? [];
+
             return Align(
               alignment: Alignment.centerLeft,
               child: Container(
@@ -99,9 +105,78 @@ class TicketDetailScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: historico.entries.where((entry) {
-                        return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date' && entry.key != 'nombre_usuario';
+                        return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date' && entry.key != 'nombre_usuario' && entry.key != 'documentos';
                       }).map<Widget>((entry) {
                         return Text('${entry.value}');
+                      }).toList(),
+                    ),
+                    SizedBox(height: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: documentos.map<Widget>((documento) {
+                        final mime = documento['mime'];
+                        final String filePath = documento['filepath'];
+                        final file = File(filePath);
+                        if (mime.startsWith('image/')) {
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => Dialog(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: PhotoView(
+                                          imageProvider: FileImage(file),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // Implement download functionality
+                                        },
+                                        child: Text('Descargar'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Image.file(
+                              file,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        } else if (mime == 'application/pdf') {
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => Dialog(
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: PDFView(
+                                          filePath: file.path,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // Implement download functionality
+                                        },
+                                        child: Text('Descargar'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Icon(Icons.picture_as_pdf, size: 50, color: Colors.red),
+                          );
+                        } else {
+                          return Container();
+                        }
                       }).toList(),
                     ),
                   ],
