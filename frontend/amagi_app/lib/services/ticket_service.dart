@@ -1,7 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 

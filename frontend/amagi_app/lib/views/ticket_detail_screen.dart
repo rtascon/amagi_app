@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:intl/intl.dart'; // Importar el paquete intl
 import '../controllers/ticket_detail_controller.dart';
-import '../controllers/tickets_controller.dart';
 import '../models/usuario.dart'; 
 import 'dart:io';
 
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
-  final TicketsController _ticketsController = TicketsController();
   final Usuario usuario = Usuario(); 
 
   TicketDetailScreen({required this.ticket});
@@ -23,6 +21,7 @@ class TicketDetailScreen extends StatelessWidget {
       'nombre_usuario': usuario.nombreCompleto,
       'content': ticket.descripcion,
       'documentos': [],
+      'isInitial': true, // Marcar este histórico como inicial
     };
     ticket.historicos.insert(0, historicoInicial);
 
@@ -62,6 +61,10 @@ class TicketDetailScreen extends StatelessWidget {
             final usuarioNombre = historico['nombre_usuario'];
             final documentos = historico['documentos'] ?? [];
             final esUsuarioLogueado = usuarioNombre == usuario.nombreCompleto;
+            final esHistoricoInicial = historico['isInitial'] == true;
+
+            // Formatear la fecha para no mostrar milisegundos
+            final formattedFecha = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(fecha));
 
             return Align(
               alignment: esUsuarioLogueado ? Alignment.centerRight : Alignment.centerLeft,
@@ -69,7 +72,7 @@ class TicketDetailScreen extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: esUsuarioLogueado ? Colors.lightGreen[50] : Colors.lightBlue[50], // Verde claro para el usuario logueado
+                  color: esHistoricoInicial ? Colors.yellow[100] : (esUsuarioLogueado ? Colors.lightGreen[50] : Colors.lightBlue[50]), // Amarillo claro para el histórico inicial
                   border: Border.all(color: Colors.black), // Borde negro
                   borderRadius: esUsuarioLogueado
                       ? BorderRadius.only(
@@ -103,7 +106,7 @@ class TicketDetailScreen extends StatelessWidget {
                               ),
                               Icon(Icons.access_time, size: 16, color: Colors.black),
                               SizedBox(width: 5),
-                              Text(fecha),
+                              Text(formattedFecha), // Usar la fecha formateada
                             ],
                           ),
                           SizedBox(height: 5),
@@ -126,11 +129,27 @@ class TicketDetailScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (esHistoricoInicial) ...[
+                      SizedBox(height: 10),
+                      Text(
+                        '${ticket.titulo}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                        indent: 10,
+                        endIndent: 10,
+                      ),
+                    ],
                     SizedBox(height: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: historico.entries.where((entry) {
-                        return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date' && entry.key != 'nombre_usuario' && entry.key != 'documentos';
+                        return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date' && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial';
                       }).map<Widget>((entry) {
                         return Text('${entry.value}');
                       }).toList(),

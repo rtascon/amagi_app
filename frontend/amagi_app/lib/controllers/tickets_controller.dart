@@ -8,8 +8,6 @@ import '../views/ticket_detail_screen.dart';
 import '../services/user_service.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart' show parse;
-import 'dart:typed_data';
-import 'dart:io';
 import '../views/loading_screen.dart'; // Importar la pantalla de carga
 
 class TicketsController {
