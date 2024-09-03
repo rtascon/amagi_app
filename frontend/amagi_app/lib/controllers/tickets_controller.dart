@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import '../services/ticket_service.dart';
-import '../models/usuario.dart'; // Importar Usuario
+import '../models/usuario.dart'; 
 import '../views/tickets_screen.dart';
-import '../models/ticket_factory.dart'; // Importar TicketFactory
-import '../models/ticket.dart'; // Importar Ticket
+import '../models/ticket_factory.dart'; 
+import '../models/ticket.dart'; 
 import '../views/ticket_detail_screen.dart';
 import '../services/user_service.dart';
+import 'package:html_unescape/html_unescape.dart';
+import 'package:html/parser.dart' show parse;
 import 'dart:typed_data';
 import 'dart:io';
+import '../views/loading_screen.dart'; // Importar la pantalla de carga
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
   final UserService _userService = UserService();
   final Map<String, String> tickets = {};
   final usuario = Usuario();
+  final HtmlUnescape unescape = HtmlUnescape();
 
   int getUserId() {
     return usuario.idUsuario;
@@ -32,7 +36,7 @@ class TicketsController {
         return TicketFactory.createTicket(
           id: ticketData['2'],
           titulo: ticketData['1'],
-          descripcion: ticketData['21'],
+          descripcion: _stripHtmlTags(unescape.convert(ticketData['21'])),
           fechaCreacion: DateTime.parse(ticketData['15']),
           fechaActualizacion: DateTime.parse(ticketData['19']),
           tipo: ticketData['14'],
@@ -50,17 +54,46 @@ class TicketsController {
   }
 
   void navigateToTicketsScreen(BuildContext context) async {
-    List<Ticket> tickets = await obtenerListaTickets(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TicketsScreen(tickets: tickets),
-      ),
-    );
+    try {
+      
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return LoadingScreen();
+        },
+      );
+
+      List<Ticket> tickets = await obtenerListaTickets(context);
+
+      
+      Navigator.of(context).pop();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TicketsScreen(tickets: tickets),
+        ),
+      );
+    } catch (e) {
+      
+      print("Error al obtener la lista de tickets: $e");
+      
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> navigateToTicketDetailScreen(BuildContext context, Ticket ticket) async {
     try {
+      // Mostrar la pantalla de carga
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return LoadingScreen();
+        },
+      );
+
       List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
       ticket.historicos = await Future.wait(historicos.map((historico) async {
         final nombreUsuario = await _userService.obtenerNombreUsuario(historico['users_id']);
@@ -81,11 +114,14 @@ class TicketsController {
           'id': historico['id'],
           'users_id': historico['users_id'],
           'date': historico['date'],
-          'content': historico['content'],
+          'content': _stripHtmlTags(unescape.convert(historico['content'])),
           'nombre_usuario': nombreUsuario,
           'documentos': documentos.isNotEmpty ? documentos : null,
         };
       }).toList());
+
+      // Ocultar la pantalla de carga
+      Navigator.of(context).pop();
 
       Navigator.push(
         context,
@@ -96,6 +132,8 @@ class TicketsController {
     } catch (e) {
       // Manejar error
       print("Error al obtener históricos del ticket: $e");
+      // Ocultar la pantalla de carga en caso de error
+      Navigator.of(context).pop();
     }
   }
 
@@ -144,5 +182,10 @@ class TicketsController {
       default:
         return 'Desconocido';
     }
+  }
+
+  String _stripHtmlTags(String htmlString) {
+    final document = parse(htmlString);
+    return document.body?.text ?? '';
   }
 }

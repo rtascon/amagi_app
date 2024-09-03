@@ -278,7 +278,7 @@ class TicketsScreen extends StatelessWidget {
                                 final String prioridad = _ticketsController.getPrioridad(ticket.prioridad);
                                 return AlertDialog(
                                   title: Text(
-                                    'Detalles',
+                                    'Más detalles',
                                     style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   content: SingleChildScrollView(
@@ -298,11 +298,6 @@ class TicketsScreen extends StatelessWidget {
                                           leading: Icon(Icons.flash_on_outlined),
                                           title: Text('Prioridad'),
                                           subtitle: Text(prioridad),
-                                        ),
-                                        ListTile(
-                                          leading: Icon(Icons.description),
-                                          title: Text('Descripción'),
-                                          subtitle: Text('${ticket.descripcion}'),
                                         ),
                                       ],
                                     ),

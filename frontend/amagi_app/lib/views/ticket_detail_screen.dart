@@ -4,17 +4,35 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:photo_view/photo_view.dart';
 import '../controllers/ticket_detail_controller.dart';
 import '../controllers/tickets_controller.dart';
+import '../models/usuario.dart'; 
 import 'dart:io';
 
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
   final TicketsController _ticketsController = TicketsController();
+  final Usuario usuario = Usuario(); 
 
   TicketDetailScreen({required this.ticket});
 
   @override
   Widget build(BuildContext context) {
+    // Agregar el histórico creado por el usuario logueado
+    final historicoInicial = {
+      'date': ticket.fechaCreacion.toString(),
+      'nombre_usuario': usuario.nombreCompleto,
+      'content': ticket.descripcion,
+      'documentos': [],
+    };
+    ticket.historicos.insert(0, historicoInicial);
+
+    // Ordenar los históricos por fecha en orden ascendente
+    ticket.historicos.sort((a, b) {
+      DateTime fechaA = DateTime.parse(a['date']);
+      DateTime fechaB = DateTime.parse(b['date']);
+      return fechaB.compareTo(fechaA); 
+    });
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -24,7 +42,7 @@ class TicketDetailScreen extends StatelessWidget {
           },
         ),
         title: Text(
-          '${ticket.titulo}',
+          'Ticket ${ticket.id}',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -41,22 +59,29 @@ class TicketDetailScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final historico = ticket.historicos[index];
             final fecha = historico['date'];
-            final usuario = historico['nombre_usuario'];
+            final usuarioNombre = historico['nombre_usuario'];
             final documentos = historico['documentos'] ?? [];
+            final esUsuarioLogueado = usuarioNombre == usuario.nombreCompleto;
 
             return Align(
-              alignment: Alignment.centerLeft,
+              alignment: esUsuarioLogueado ? Alignment.centerRight : Alignment.centerLeft,
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.lightBlue[50], // Azul más claro
+                  color: esUsuarioLogueado ? Colors.lightGreen[50] : Colors.lightBlue[50], // Verde claro para el usuario logueado
                   border: Border.all(color: Colors.black), // Borde negro
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                    bottomRight: Radius.circular(15),
-                  ),
+                  borderRadius: esUsuarioLogueado
+                      ? BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                          bottomLeft: Radius.circular(15),
+                        )
+                      : BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                          bottomRight: Radius.circular(15),
+                        ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +117,7 @@ class TicketDetailScreen extends StatelessWidget {
                               SizedBox(width: 5),
                               Flexible(
                                 child: Text(
-                                  usuario,
+                                  usuarioNombre,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -130,22 +155,45 @@ class TicketDetailScreen extends StatelessWidget {
                                           imageProvider: FileImage(file),
                                         ),
                                       ),
-                                      TextButton(
-                                        onPressed: () {
-                                          // Implement download functionality
-                                        },
-                                        child: Text('Descargar'),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Cerrar'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // Implement download functionality
+                                            },
+                                            child: Text('Descargar'),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
                               );
                             },
-                            child: Image.file(
-                              file,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Image.file(
+                                file,
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         } else if (mime == 'application/pdf') {
@@ -161,18 +209,40 @@ class TicketDetailScreen extends StatelessWidget {
                                           filePath: file.path,
                                         ),
                                       ),
-                                      TextButton(
-                                        onPressed: () {
-                                          // Implement download functionality
-                                        },
-                                        child: Text('Descargar'),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Cerrar'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // Implement download functionality
+                                            },
+                                            child: Text('Descargar'),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
                               );
                             },
-                            child: Icon(Icons.picture_as_pdf, size: 50, color: Colors.red),
+                            child: Row(
+                              children: [
+                                Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    documento['filename'],
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
                           );
                         } else {
                           return Container();

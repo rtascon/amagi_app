@@ -30,7 +30,7 @@ class SideMenu extends StatelessWidget {
                   Row(
                     children: [
                       Image.asset(
-                        'assets/A logo azul_sin_Digital (1).png', // Replace with your image path
+                        'assets/Solo la a (1).png', // Replace with your image path
                         width: 50,
                         height: 50,
                       ),
