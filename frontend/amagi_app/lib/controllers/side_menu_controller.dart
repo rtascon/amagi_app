@@ -40,4 +40,9 @@ class SideMenuController {
       'glpiname': _usuario.nombreUsuario,
     };
   }
+
+  void navigateToCreateTicketScreen(BuildContext context) {
+    Navigator.of(context).pushNamed('/create-ticket');
+  }
+
 }
