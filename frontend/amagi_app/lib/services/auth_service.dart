@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'user_service.dart';
-import '../models/usuario.dart';
+import '../models/user.dart';
 
 class AuthService {
   final String url = 'http://172.20.1.55/soportegiades/apirest.php';
@@ -26,7 +26,7 @@ class AuthService {
       final responseBody = jsonDecode(response.body);
       await _storage.write(key: _sessionTokenKey, value: responseBody['session_token']);
       UserService userService = UserService();
-      Usuario usuario = Usuario();
+      User usuario = User();
       return userService.obtenerUsuarioInfo(usuario);
       
     } else {

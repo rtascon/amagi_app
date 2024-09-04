@@ -147,4 +147,39 @@ class TicketService {
     }
 
   }
+
+  Future<Map<String, dynamic>> crearTicket(Map<String, dynamic> ticketData) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+
+    final ticketUrl = Uri.parse('$url/Ticket');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'application/json',
+    };
+    final body = jsonEncode({
+      "input": {
+        "name": ticketData['name'],
+        "content": ticketData['content'],
+        "_users_id_requester": ticketData['_users_id_requester'],
+        "status": ticketData['status'],
+        "type": ticketData['type'],
+      }
+    });
+
+    final response = await http.post(ticketUrl, headers: headers, body: body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final resp = jsonDecode(response.body);
+      return {
+        'success': true,
+        'ticketId': resp['id'], 
+      };
+    } else {
+      throw Exception("Error al crear ticket: ${response.body}");
+    }
+  }
+
+
 }

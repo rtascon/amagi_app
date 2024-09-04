@@ -3,13 +3,13 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart'; 
 import '../controllers/ticket_detail_controller.dart';
-import '../models/usuario.dart'; 
+import '../models/user.dart'; 
 import 'dart:io';
 
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
-  final Usuario usuario = Usuario(); 
+  final User usuario = User(); 
 
   TicketDetailScreen({required this.ticket});
 

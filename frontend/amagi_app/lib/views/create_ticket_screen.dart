@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../controllers/create_ticket_controller.dart';
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 
 class CreateTicketScreen extends StatefulWidget {
   @override
@@ -14,6 +15,11 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
   String? _tipo;
   String? _descripcion;
   File? _archivo;
+
+  // Mapa para almacenar los datos del ticket
+  Map<String, dynamic> ticketData = {
+    "status": 1,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +74,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _titulo = value;
+                  ticketData['name'] = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -175,6 +181,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                 onChanged: (value) {
                   setState(() {
                     _tipo = value;
+                    ticketData['type'] = value == 'Requerimiento' ? 2 : 1;
                   });
                 },
                 validator: (value) {
@@ -211,7 +218,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _descripcion = value;
+                  ticketData['content'] = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -233,9 +240,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                     _formKey.currentState?.save();
                     _createTicketController.submitTicket(
                       context,
-                      _titulo!,
-                      _tipo!,
-                      _descripcion!,
+                      ticketData,
                     );
                   }
                 },

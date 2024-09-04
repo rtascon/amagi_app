@@ -13,6 +13,12 @@ class TicketsScreen extends StatelessWidget {
 
   TicketsScreen({required this.tickets}) {
     _userNameFuture = _sideMenuController.getUserName();
+    // Ordenar los tickets por fecha en orden ascendente
+    tickets.sort((a, b) {
+      DateTime fechaA = a.fechaCreacion is String ? DateTime.parse(a.fechaCreacion) : a.fechaCreacion;
+      DateTime fechaB = b.fechaCreacion is String ? DateTime.parse(b.fechaCreacion) : b.fechaCreacion;
+      return fechaB.compareTo(fechaA);
+    });
   }
 
   @override
