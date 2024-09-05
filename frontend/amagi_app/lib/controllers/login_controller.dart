@@ -10,7 +10,8 @@ class LoginController {
     _showLoadingScreen(context); // Mostrar pantalla de carga
 
     try {
-      final success = await _authService.iniciarSesion(username, password);
+      final formattedUsername = username.toLowerCase().trim();
+      final success = await _authService.iniciarSesion(formattedUsername, password);
 
       Navigator.of(context).pop(); // Ocultar pantalla de carga
 

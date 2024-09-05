@@ -303,7 +303,7 @@ class TicketsScreen extends StatelessWidget {
                                               subtitle: Text(fechaModificacion),
                                             ),
                                             ListTile(
-                                              leading: Icon(Icons.flash_on_outlined),
+                                              leading: Icon(Icons.priority_high),
                                               title: Text('Prioridad'),
                                               subtitle: Text(prioridad),
                                             ),

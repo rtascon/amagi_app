@@ -4,9 +4,11 @@ import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
 import 'views/create_ticket_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "general.env");
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -21,7 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Login',
       theme: ThemeData(
-        primarySwatch: createMaterialColor(Color.fromARGB(255, 0, 0, 0)),
+        //primarySwatch: createMaterialColor(Color.fromARGB(255, 0, 0, 0)),
+        primarySwatch: Colors.grey,
       ),
       home: WelcomeScreen(), // Establece la pantalla de bienvenida como la pantalla inicial
       routes: {
@@ -32,7 +35,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+/*
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
   Map<int, Color> swatch = {};
@@ -52,3 +55,4 @@ MaterialColor createMaterialColor(Color color) {
   });
   return MaterialColor(color.value, swatch);
 }
+*/

@@ -43,11 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        width: 250, // Ajusta el ancho de la imagen
-                        height: 250, // Ajusta la altura de la imagen
-                        child: Image.asset('assets/GIA IOT BLANCO.png'), // Asegúrate de que la ruta sea correcta
+                        width: 150, // Ajusta el ancho de la imagen
+                        height: 150, // Ajusta la altura de la imagen
+                        child: Image.asset('assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png'), // Asegúrate de que la ruta sea correcta
                       ),
-                      SizedBox(height: 10), // Reduce el espacio entre la imagen y el cuadro
+                      SizedBox(height: 50), // Reduce el espacio entre la imagen y el cuadro
                       Container(
                         padding: EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 20), // Espacio inferior
                 Column(
                   children: [
-                    SizedBox(height: 50), // Espacio adicional para empujar los elementos hacia abajo
+                    SizedBox(height: 100), // Espacio adicional para empujar los elementos hacia abajo
                     Image.asset(
                       'assets/Amagi logo blanco.png', // Asegúrate de que la ruta sea correcta
                       alignment: Alignment.bottomCenter,
