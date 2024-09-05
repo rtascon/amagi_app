@@ -15,6 +15,7 @@ class TicketDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     // Agregar el histórico creado por el usuario logueado
     final historicoInicial = {
       'date': ticket.fechaCreacion.toString(),
@@ -47,7 +48,7 @@ class TicketDetailScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFF747678),
+        backgroundColor: Color(0xFF005586),
         elevation: 0,
         centerTitle: true,
       ),
@@ -183,13 +184,13 @@ class TicketDetailScreen extends StatelessWidget {
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text('Cerrar'),
+                                                child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                               TextButton(
                                                 onPressed: () {
                                                   // Implement download functionality
                                                 },
-                                                child: Text('Descargar'),
+                                                child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                             ],
                                           ),

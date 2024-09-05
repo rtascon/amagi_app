@@ -81,6 +81,8 @@ flutter:
    - assets/Solo la a (1).png
    - assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png
    - general.env
+   - assets/fonts/HvDTrial_Brandon_Grotesque_bold-BF64a625c9151d5.otf
+   - assets/fonts/HvDTrial_Brandon_Grotesque_light-BF64a625c93e709.otf
      
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -94,12 +96,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Brandon Grotesque
+      fonts:
+        - asset: assets/fonts/HvDTrial_Brandon_Grotesque_bold-BF64a625c9151d5.otf
+          weight: 700
+        - asset: assets/fonts/HvDTrial_Brandon_Grotesque_light-BF64a625c93e709.otf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

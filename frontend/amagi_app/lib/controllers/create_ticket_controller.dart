@@ -29,6 +29,7 @@ class CreateTicketController {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -37,30 +38,28 @@ class CreateTicketController {
             children: [
               Icon(Icons.check_circle, color: Colors.green, size: 40),
               SizedBox(height: 10),
-              Text('Solicitud registrada con éxito'),
+              Center(
+                child: Text(
+                  'Solicitud registrada con éxito',
+                  style: Theme.of(context).textTheme.headlineSmall, // Usa el estilo de texto principal
+                ),
+              ),
             ],
           ),
           content: RichText(
             text: TextSpan(
-              text: 'El ticket ha sido creado correctamente con el ID: ',
-              style: TextStyle(
-                fontSize: 14, // Tamaño de fuente más pequeño
-                color: Colors.black, // Color negro
-              ),
+              text: 'El ticket ha sido creado con el ID: ',
+              style: Theme.of(context).textTheme.bodyMedium, // Usa el estilo de texto principal
               children: <TextSpan>[
                 TextSpan(
                   text: '${resp['ticketId']}',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14, // Mantener el mismo tamaño de fuente
                   ),
                 ),
                 TextSpan(
                   text: '.',
-                  style: TextStyle(
-                    fontSize: 14, // Tamaño de fuente más pequeño
-                    color: Colors.black, // Color negro
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -71,7 +70,7 @@ class CreateTicketController {
                 Navigator.of(context).pop(); // Cerrar el diálogo
                 Navigator.of(context).pushNamedAndRemoveUntil('/mainMenu', (Route<dynamic> route) => false); // Navegar al menú principal
               },
-              child: Text('Aceptar'),
+              child: Text('Aceptar', style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );
@@ -83,6 +82,7 @@ class CreateTicketController {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -100,7 +100,7 @@ class CreateTicketController {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Aceptar'),
+              child: Text('Aceptar',style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );

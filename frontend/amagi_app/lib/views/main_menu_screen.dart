@@ -25,7 +25,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFF747678), // Set the background color for the entire screen
+      color: Color(0xFF005586), // Set the background color for the entire screen
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.transparent, // Make the Scaffold background transparent

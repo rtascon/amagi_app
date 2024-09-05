@@ -23,8 +23,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Login',
       theme: ThemeData(
-        //primarySwatch: createMaterialColor(Color.fromARGB(255, 0, 0, 0)),
-        primarySwatch: Colors.grey,
+        primarySwatch: createMaterialColor(Color(0xFF000000)),
+        primaryColor: Color(0xFF000000),
+        fontFamily: 'Brandon Grotesque',
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Color(0xFF005586), // Cambia el color del cursor
+          selectionColor: Color(0xFF009FDA), // Cambia el color de la selección
+          selectionHandleColor: Color(0xFF747678), // Cambia el color del handle de selección
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white, // Color de fondo del campo de texto
+          labelStyle: TextStyle(color: Colors.black), // Color del label
+          border: UnderlineInputBorder(), // Línea debajo del campo
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF005586)), // Color de la línea cuando está enfocado
+          ),
+        ),
       ),
       home: WelcomeScreen(), // Establece la pantalla de bienvenida como la pantalla inicial
       routes: {
@@ -35,7 +50,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-/*
+
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
   Map<int, Color> swatch = {};
@@ -55,4 +70,3 @@ MaterialColor createMaterialColor(Color color) {
   });
   return MaterialColor(color.value, swatch);
 }
-*/
