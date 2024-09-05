@@ -1,8 +1,8 @@
-class Usuario {
-  static final Usuario _instance = Usuario._internal();
+class User {
+  static final User _instance = User._internal();
   
-  Usuario._internal();
-  factory Usuario() {
+  User._internal();
+  factory User() {
     return _instance;
   }
 
@@ -17,7 +17,7 @@ class Usuario {
   late String nombreEntidadActiva;
   late Map<String, dynamic> otrasEntidadesActivas;
 
-  void setUsuario({
+  void setUser({
     required int idUsuario,
     required String nombreUsuario,
     required String nombreCompleto,

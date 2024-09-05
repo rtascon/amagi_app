@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
-
+import 'views/create_ticket_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginScreen(),
         '/mainMenu': (context) => MainMenuScreen(),
+        '/create-ticket': (context) => CreateTicketScreen(),
       },
     );
   }

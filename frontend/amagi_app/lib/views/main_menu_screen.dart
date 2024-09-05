@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
-import '../views/side_menu.dart'; // Import the side menu
+import '../views/side_menu.dart'; 
+import 'package:flutter/cupertino.dart';
 
 class MainMenuScreen extends StatefulWidget {
   @override
@@ -66,7 +67,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                         _ticketsController.navigateToTicketsScreen(context);
                       },
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.confirmation_number, color: Colors.black, size: 48), // Ticket icon
+                      child: Icon(CupertinoIcons.doc, color: Colors.black, size: 48), // Ticket icon
                     ),
                   ),
                   SizedBox(height: 8), // Space between button and text

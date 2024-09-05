@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../views/loading_screen.dart';
-import '../models/usuario.dart'; // Importar Usuario
+import '../models/user.dart'; 
 
 class SideMenuController {
   final AuthService _authService = AuthService();
-  final Usuario _usuario = Usuario();
+  final User _usuario = User();
 
   void cerrarSesion(BuildContext context) async {
     _showLoadingScreen(context);
@@ -40,4 +40,9 @@ class SideMenuController {
       'glpiname': _usuario.nombreUsuario,
     };
   }
+
+  void navigateToCreateTicketScreen(BuildContext context) {
+    Navigator.of(context).pushNamed('/create-ticket');
+  }
+
 }

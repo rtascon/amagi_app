@@ -1,7 +1,7 @@
-// side_menu.dart
 import 'package:flutter/material.dart';
 import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
+import 'package:flutter/cupertino.dart';
 
 class SideMenu extends StatelessWidget {
   final SideMenuController sideMenuController;
@@ -87,7 +87,7 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.confirmation_number, color: Colors.black), // Ticket icon
+                      Icon(CupertinoIcons.doc, color: Colors.black), // Ticket icon
                       SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
@@ -107,18 +107,13 @@ class SideMenu extends StatelessWidget {
                     children: [
                       Stack(
                         children: [
-                          Icon(Icons.confirmation_number, color: Colors.black, size: 24), // Ticket icon
-                          Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: Icon(Icons.add, color: Colors.white, size: 12), // Plus icon
-                          ),
+                          Icon(CupertinoIcons.doc_richtext, color: Colors.black, size: 24), 
                         ],
                       ),
-                      SizedBox(width: 8), // Space between icon and text
+                      SizedBox(width: 8), 
                       TextButton(
                         onPressed: () {
-                          // Handle button press
+                          sideMenuController.navigateToCreateTicketScreen(context);
                         },
                         child: Text(
                           'Crear Ticket',

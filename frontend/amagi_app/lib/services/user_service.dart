@@ -1,14 +1,14 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../models/usuario.dart'; // Asegúrate de importar la clase Usuario
+import '../models/user.dart'; // Asegúrate de importar la clase Usuario
 
 class UserService {
   final String url = 'http://172.20.1.55/soportegiades/apirest.php';
   static final _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
   
-Future<bool> obtenerUsuarioInfo(Usuario usuario) async {
+Future<bool> obtenerUsuarioInfo(User usuario) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     final userUrl = Uri.parse('$url/getFullSession');
     final response = await http.get(
@@ -23,7 +23,7 @@ Future<bool> obtenerUsuarioInfo(Usuario usuario) async {
       final userInfo = jsonDecode(response.body);
 
       // Configurar el objeto Usuario
-      usuario.setUsuario(
+      usuario.setUser(
         idUsuario: userInfo['session']['glpiID'] ?? 0,
         nombreUsuario: userInfo['session']['glpiname'] ?? '',
         nombreCompleto: userInfo['session']['glpifriendlyname'] ?? '',

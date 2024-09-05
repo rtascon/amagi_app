@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/ticket_service.dart';
-import '../models/usuario.dart'; 
+import '../models/user.dart'; 
 import '../views/tickets_screen.dart';
 import '../models/ticket_factory.dart'; 
 import '../models/ticket.dart'; 
@@ -14,7 +14,7 @@ class TicketsController {
   final TicketService _ticketService = TicketService();
   final UserService _userService = UserService();
   final Map<String, String> tickets = {};
-  final usuario = Usuario();
+  final usuario = User();
   final HtmlUnescape unescape = HtmlUnescape();
 
   int getUserId() {
