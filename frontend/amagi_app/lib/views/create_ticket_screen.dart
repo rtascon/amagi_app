@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../controllers/create_ticket_controller.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 
 class CreateTicketScreen extends StatefulWidget {
   @override
@@ -14,7 +12,6 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
   String? _titulo;
   String? _tipo;
   String? _descripcion;
-  File? _archivo;
 
   // Mapa para almacenar los datos del ticket
   Map<String, dynamic> ticketData = {
@@ -220,18 +217,6 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                 onSaved: (value) {
                   ticketData['content'] = value;
                 },
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton.icon(
-                icon: Icon(Icons.attach_file),
-                label: Text('Subir Archivo'),
-                onPressed: () async {
-                  // Implementar la lógica para subir un archivo
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
-                  foregroundColor: Colors.black,
-                ),
               ),
               SizedBox(height: 16.0),
               ElevatedButton(

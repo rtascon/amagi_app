@@ -13,10 +13,10 @@ class CreateTicketController {
   void submitTicket(BuildContext context, Map<String, dynamic> ticketData) async {
     try {
       ticketData['_users_id_requester'] = await user.getIdUsuario;
-      final resp = await _ticketService.crearTicket(ticketData);
-
-      if (resp['success']) {
-        _showSuccessMessage(context,resp);
+      final response = await _ticketService.crearTicket(ticketData);
+  
+      if (response['success']) {
+        _showSuccessMessage(context, response);
       } else {
         _showErrorMessage(context);
       }
