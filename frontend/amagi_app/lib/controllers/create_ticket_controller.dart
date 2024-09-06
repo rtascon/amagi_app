@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/ticket_service.dart';
 import '../models/user.dart';
+import '../views/main_menu_screen.dart';
 
 class CreateTicketController {
   final TicketService _ticketService = TicketService();
@@ -9,6 +10,16 @@ class CreateTicketController {
   void navigateBack(BuildContext context) {
     Navigator.of(context).pop();
   }
+
+
+  void navigateBackToMainMenu(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => MainMenuScreen()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
 
   void submitTicket(BuildContext context, Map<String, dynamic> ticketData) async {
     try {
@@ -41,7 +52,10 @@ class CreateTicketController {
               Center(
                 child: Text(
                   'Solicitud registrada con éxito',
-                  style: Theme.of(context).textTheme.headlineSmall, // Usa el estilo de texto principal
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

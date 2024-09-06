@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       //backgroundColor: Color(0xFF747678) ESTE ES EL GRIS,
-      backgroundColor: Color(0xFF009FDA),
+      backgroundColor: Color(0xFF005586),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

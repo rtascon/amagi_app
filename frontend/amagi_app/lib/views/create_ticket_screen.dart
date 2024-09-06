@@ -102,7 +102,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                           width: 24,
                           height: 24,
                           decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Color(0xFF009FDA),
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -120,7 +120,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                         Text(
                           'Requerimiento',
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Color(0xFF009FDA),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -135,7 +135,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                           width: 24,
                           height: 24,
                           decoration: BoxDecoration(
-                            color: Colors.orange,
+                            color: Color(0xFFE98300),
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -153,7 +153,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                         Text(
                           'Incidente',
                           style: TextStyle(
-                            color: Colors.orange,
+                            color: Color(0xFFE98300),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -181,7 +181,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                           width: 24,
                           height: 24,
                           decoration: BoxDecoration(
-                            color: value == 'Requerimiento' ? Colors.blue : Colors.orange,
+                            color: value == 'Requerimiento' ? Color(0xFF009FDA) : Color(0xFFE98300),
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -199,7 +199,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                         Text(
                           value,
                           style: TextStyle(
-                            color: value == 'Requerimiento' ? Colors.blue : Colors.orange,
+                            color: value == 'Requerimiento' ? Color(0xFF009FDA) : Color(0xFFE98300),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

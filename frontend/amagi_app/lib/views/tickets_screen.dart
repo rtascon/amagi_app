@@ -127,7 +127,7 @@ class TicketsScreen extends StatelessWidget {
                                                 width: 10,
                                                 height: 10,
                                                 decoration: BoxDecoration(
-                                                  color: Colors.orange,
+                                                  color: Color(0xFFE98300),
                                                   shape: BoxShape.circle,
                                                 ),
                                                 margin: EdgeInsets.only(right: 8.0),
@@ -194,8 +194,8 @@ class TicketsScreen extends StatelessWidget {
                                               height: 20,
                                               decoration: BoxDecoration(
                                                 color: _ticketsController.getTipo(ticket.tipo) == 'Requerimiento'
-                                                    ? Colors.blue
-                                                    : Colors.orange,
+                                                    ? Color(0xFF009FDA)
+                                                    : Color(0xFFE98300),
                                                 shape: BoxShape.circle,
                                               ),
                                               child: Center(
@@ -216,8 +216,8 @@ class TicketsScreen extends StatelessWidget {
                                               _ticketsController.getTipo(ticket.tipo),
                                               style: TextStyle(
                                                 color: _ticketsController.getTipo(ticket.tipo) == 'Requerimiento'
-                                                    ? Colors.blue
-                                                    : Colors.orange,
+                                                    ? Color(0xFF009FDA)
+                                                    : Color(0xFFE98300),
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),

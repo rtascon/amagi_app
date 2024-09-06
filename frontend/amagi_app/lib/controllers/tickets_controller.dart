@@ -8,7 +8,8 @@ import '../views/ticket_detail_screen.dart';
 import '../services/user_service.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart' show parse;
-import '../views/loading_screen.dart'; // Importar la pantalla de carga
+import '../views/loading_screen.dart';
+import '../views/main_menu_screen.dart'; 
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -134,6 +135,16 @@ class TicketsController {
       Navigator.of(context).pop();
     }
   }
+
+  void navigateBackToMainMenu(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => MainMenuScreen()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
+
 
   String getPrioridad(int prioridad) {
     switch (prioridad) {
