@@ -35,7 +35,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFF747678),
+        backgroundColor: Color(0xFF005586),
         elevation: 0,
         centerTitle: true,
       ),
@@ -96,82 +96,68 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                 items: [
                   DropdownMenuItem(
                     value: 'Requerimiento',
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '?',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: Color(0xFF009FDA),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '?',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            'Requerimiento',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                          'Requerimiento',
+                          style: TextStyle(
+                            color: Color(0xFF009FDA),
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   DropdownMenuItem(
                     value: 'Incidente',
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.orange[100],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: Colors.orange,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '!',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFE98300),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            'Incidente',
-                            style: TextStyle(
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                          'Incidente',
+                          style: TextStyle(
+                            color: Color(0xFFE98300),
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -186,6 +172,40 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                     return 'Por favor seleccione un tipo';
                   }
                   return null;
+                },
+                selectedItemBuilder: (BuildContext context) {
+                  return ['Requerimiento', 'Incidente'].map<Widget>((String value) {
+                    return Row(
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: value == 'Requerimiento' ? Color(0xFF009FDA) : Color(0xFFE98300),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              value == 'Requerimiento' ? '?' : '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                          value,
+                          style: TextStyle(
+                            color: value == 'Requerimiento' ? Color(0xFF009FDA) : Color(0xFFE98300),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList();
                 },
               ),
               SizedBox(height: 16.0),
@@ -219,20 +239,26 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                 },
               ),
               SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    _formKey.currentState?.save();
-                    _createTicketController.submitTicket(
-                      context,
-                      ticketData,
-                    );
-                  }
-                },
-                child: Text('Enviar'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF747678),
-                  foregroundColor: Colors.white,
+              Align(
+                alignment: Alignment.center, 
+                child: SizedBox(
+                  width: 150, 
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _formKey.currentState?.save();
+                        _createTicketController.submitTicket(
+                          context,
+                          ticketData,
+                        );
+                      }
+                    },
+                    child: Text('Enviar'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF005586),
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],

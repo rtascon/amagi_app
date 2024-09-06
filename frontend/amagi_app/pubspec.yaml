@@ -39,6 +39,7 @@ dependencies:
   html_unescape: ^2.0.0
   html: ^0.15.0
   file_picker: ^5.0.1
+  flutter_dotenv: ^5.0.2
 
 
 
@@ -78,6 +79,11 @@ flutter:
    - assets/Amagi logo azul_sin_Digital.png
    - assets/Amagi logo blanco.png
    - assets/Solo la a (1).png
+   - assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png
+   - assets/a de Amagi Blanca.png
+   - general.env
+   - assets/fonts/BrandonGrotesque-Bold.ttf
+   - assets/fonts/BrandonGrotesque-Light.ttf
      
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -91,12 +97,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Brandon Grotesque
+      fonts:
+        - asset: assets/fonts/BrandonGrotesque-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/BrandonGrotesque-Light.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

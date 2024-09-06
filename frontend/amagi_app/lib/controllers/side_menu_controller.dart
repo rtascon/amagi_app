@@ -45,4 +45,7 @@ class SideMenuController {
     Navigator.of(context).pushNamed('/create-ticket');
   }
 
+  void navigateToMainMenuScreen(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed('/mainMenu');
+  }
 }

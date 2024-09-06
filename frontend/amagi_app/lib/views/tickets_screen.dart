@@ -23,6 +23,7 @@ class TicketsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -39,7 +40,7 @@ class TicketsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFF747678),
+        backgroundColor: Color(0xFF005586),
         elevation: 0,
         centerTitle: true,
       ),
@@ -126,7 +127,7 @@ class TicketsScreen extends StatelessWidget {
                                                 width: 10,
                                                 height: 10,
                                                 decoration: BoxDecoration(
-                                                  color: Colors.orange,
+                                                  color: Color(0xFFE98300),
                                                   shape: BoxShape.circle,
                                                 ),
                                                 margin: EdgeInsets.only(right: 8.0),
@@ -193,8 +194,8 @@ class TicketsScreen extends StatelessWidget {
                                               height: 20,
                                               decoration: BoxDecoration(
                                                 color: _ticketsController.getTipo(ticket.tipo) == 'Requerimiento'
-                                                    ? Colors.blue
-                                                    : Colors.orange,
+                                                    ? Color(0xFF009FDA)
+                                                    : Color(0xFFE98300),
                                                 shape: BoxShape.circle,
                                               ),
                                               child: Center(
@@ -215,8 +216,8 @@ class TicketsScreen extends StatelessWidget {
                                               _ticketsController.getTipo(ticket.tipo),
                                               style: TextStyle(
                                                 color: _ticketsController.getTipo(ticket.tipo) == 'Requerimiento'
-                                                    ? Colors.blue
-                                                    : Colors.orange,
+                                                    ? Color(0xFF009FDA)
+                                                    : Color(0xFFE98300),
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
@@ -303,7 +304,7 @@ class TicketsScreen extends StatelessWidget {
                                               subtitle: Text(fechaModificacion),
                                             ),
                                             ListTile(
-                                              leading: Icon(Icons.flash_on_outlined),
+                                              leading: Icon(Icons.priority_high),
                                               title: Text('Prioridad'),
                                               subtitle: Text(prioridad),
                                             ),
@@ -312,7 +313,7 @@ class TicketsScreen extends StatelessWidget {
                                       ),
                                       actions: <Widget>[
                                         TextButton(
-                                          child: Text('Cerrar'),
+                                          child: Text('Cerrar', style: TextStyle(color: defaultTextButtonColor)),
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },

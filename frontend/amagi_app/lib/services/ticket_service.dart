@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import '../config/enviroment.dart';
 
 class TicketService {
-  final String url = 'http://172.20.1.55/soportegiades/apirest.php';
+  final String url = Environment.apiUrl;
   static final _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 

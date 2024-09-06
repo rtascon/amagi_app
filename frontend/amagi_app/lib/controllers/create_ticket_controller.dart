@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/ticket_service.dart';
 import '../models/user.dart';
+import '../views/main_menu_screen.dart';
 
 class CreateTicketController {
   final TicketService _ticketService = TicketService();
@@ -9,6 +10,16 @@ class CreateTicketController {
   void navigateBack(BuildContext context) {
     Navigator.of(context).pop();
   }
+
+
+  void navigateBackToMainMenu(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => MainMenuScreen()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
 
   void submitTicket(BuildContext context, Map<String, dynamic> ticketData) async {
     try {
@@ -29,6 +40,7 @@ class CreateTicketController {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -37,30 +49,31 @@ class CreateTicketController {
             children: [
               Icon(Icons.check_circle, color: Colors.green, size: 40),
               SizedBox(height: 10),
-              Text('Solicitud registrada con éxito'),
+              Center(
+                child: Text(
+                  'Solicitud registrada con éxito',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
           content: RichText(
             text: TextSpan(
-              text: 'El ticket ha sido creado correctamente con el ID: ',
-              style: TextStyle(
-                fontSize: 14, // Tamaño de fuente más pequeño
-                color: Colors.black, // Color negro
-              ),
+              text: 'El ticket ha sido creado con el ID: ',
+              style: Theme.of(context).textTheme.bodyMedium, // Usa el estilo de texto principal
               children: <TextSpan>[
                 TextSpan(
                   text: '${resp['ticketId']}',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14, // Mantener el mismo tamaño de fuente
                   ),
                 ),
                 TextSpan(
                   text: '.',
-                  style: TextStyle(
-                    fontSize: 14, // Tamaño de fuente más pequeño
-                    color: Colors.black, // Color negro
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -71,7 +84,7 @@ class CreateTicketController {
                 Navigator.of(context).pop(); // Cerrar el diálogo
                 Navigator.of(context).pushNamedAndRemoveUntil('/mainMenu', (Route<dynamic> route) => false); // Navegar al menú principal
               },
-              child: Text('Aceptar'),
+              child: Text('Aceptar', style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );
@@ -83,6 +96,7 @@ class CreateTicketController {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -100,7 +114,7 @@ class CreateTicketController {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Aceptar'),
+              child: Text('Aceptar',style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );

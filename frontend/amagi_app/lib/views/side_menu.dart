@@ -87,14 +87,32 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(CupertinoIcons.doc, color: Colors.black), // Ticket icon
+                      Icon(Icons.home, color: Colors.black), // Home icon
+                      SizedBox(width: 8), // Space between icon and text
+                      TextButton(
+                        onPressed: () {
+                          sideMenuController.navigateToMainMenuScreen(context);
+                        },
+                        child: Text(
+                          'Menú',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(CupertinoIcons.doc_text_search, color: Colors.black), // Ticket icon
                       SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           ticketsController.navigateToTicketsScreen(context);
                         },
                         child: Text(
-                          'Tickets',
+                          'Consulta de Tickets',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -117,6 +135,24 @@ class SideMenu extends StatelessWidget {
                         },
                         child: Text(
                           'Crear Ticket',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(CupertinoIcons.doc_checkmark, color: Colors.black), // Resolved tickets icon
+                      SizedBox(width: 8), // Space between icon and text
+                      TextButton(
+                        onPressed: () {
+                          //sideMenuController.navigateToResolvedTicketsScreen(context);
+                        },
+                        child: Text(
+                          'Tickets Resueltos',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -159,7 +195,7 @@ class SideMenu extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Image.asset(
-                  'assets/Amagi logo azul_sin_Digital.png', // Replace with your image path
+                  'assets/Amagi logo azul_Pequeño.png', // Replace with your image path
                   width: 100, // Set the desired width
                   height: 100, // Set the desired height
                 ),

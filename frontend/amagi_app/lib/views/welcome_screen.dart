@@ -23,7 +23,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Colors.white, // Color de fondo
       body: Center(
         child: Image.asset(
-          'assets/Amagi logo azul_sin_Digital.png', // Asegúrate de que la ruta sea correcta
+          'assets/Amagi logo azul_Pequeño.png', // Asegúrate de que la ruta sea correcta
           width: 200, // Ajusta el ancho de la imagen según sea necesario
           height: 200, // Ajusta la altura de la imagen según sea necesario
         ),
