@@ -3,21 +3,57 @@ import 'package:intl/intl.dart';
 import '../controllers/tickets_controller.dart';
 import '../controllers/side_menu_controller.dart';
 import '../views/side_menu.dart';
+import '../views/filter_ticket_menu.dart';
 
-class TicketsScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class TicketsScreen extends StatefulWidget {
   final List<dynamic> tickets;
+
+  TicketsScreen({required this.tickets});
+
+  @override
+  _TicketsScreenState createState() => _TicketsScreenState();
+}
+
+class _TicketsScreenState extends State<TicketsScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TicketsController _ticketsController = TicketsController();
   final SideMenuController _sideMenuController = SideMenuController();
   late final Future<Map<String, String>> _userNameFuture;
+  List<dynamic> _filteredTickets = [];
 
-  TicketsScreen({required this.tickets}) {
+  @override
+  void initState() {
+    super.initState();
     _userNameFuture = _sideMenuController.getUserName();
+    _filteredTickets = widget.tickets;
     // Ordenar los tickets por fecha en orden ascendente
-    tickets.sort((a, b) {
+    _filteredTickets.sort((a, b) {
       DateTime fechaA = a.fechaCreacion is String ? DateTime.parse(a.fechaCreacion) : a.fechaCreacion;
       DateTime fechaB = b.fechaCreacion is String ? DateTime.parse(b.fechaCreacion) : b.fechaCreacion;
       return fechaB.compareTo(fechaA);
+    });
+  }
+
+  void _applyFilters(Map<String, dynamic> filters) {
+    setState(() {
+      _filteredTickets = widget.tickets.where((ticket) {
+        if (filters['ticketId'] != null && ticket.id != filters['ticketId']) {
+          return false;
+        }
+        if (filters['type'] != null && _ticketsController.getTipo(ticket.tipo) != filters['type']) {
+          return false;
+        }
+        if (filters['status'] != null && _ticketsController.getEstado(ticket.estado) != filters['status']) {
+          return false;
+        }
+        if (filters['dateRange'] != null) {
+          DateTime fechaCreacion = ticket.fechaCreacion is String ? DateTime.parse(ticket.fechaCreacion) : ticket.fechaCreacion;
+          if (fechaCreacion.isBefore(filters['dateRange'].start) || fechaCreacion.isAfter(filters['dateRange'].end)) {
+            return false;
+          }
+        }
+        return true;
+      }).toList();
     });
   }
 
@@ -40,6 +76,14 @@ class TicketsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_list, color: Colors.white),
+            onPressed: () {
+              _scaffoldKey.currentState?.openEndDrawer();
+            },
+          ),
+        ],
         backgroundColor: Color(0xFF005586),
         elevation: 0,
         centerTitle: true,
@@ -49,15 +93,18 @@ class TicketsScreen extends StatelessWidget {
         ticketsController: _ticketsController,
         userNameFuture: _userNameFuture,
       ),
+      endDrawer: FilterTicketMenu(
+        onFilterChanged: _applyFilters,
+      ), // Pasar la función de filtro
       body: Stack(
         children: [
           Container(
             color: Colors.white,
             child: ListView.builder(
               padding: EdgeInsets.all(16.0),
-              itemCount: tickets.length,
+              itemCount: _filteredTickets.length, // Usar _filteredTickets en lugar de tickets
               itemBuilder: (context, index) {
-                final ticket = tickets[index];
+                final ticket = _filteredTickets[index]; // Usar _filteredTickets en lugar de tickets
                 final fechaCreacion = ticket.fechaCreacion is String
                     ? DateTime.parse(ticket.fechaCreacion)
                     : ticket.fechaCreacion;
