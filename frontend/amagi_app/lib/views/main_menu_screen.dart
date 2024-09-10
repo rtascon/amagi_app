@@ -85,7 +85,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                       icon: CupertinoIcons.doc_checkmark,
                       label: 'Tickets Resueltos',
                       onPressed: () {
-                        //_ticketsController.navigateToResolvedTicketsScreen(context);
+                        _ticketsController.navigateToTicketsScreen(context, filters: {'status': 5});
                       },
                     ),
                     // Add more buttons here if needed

@@ -94,7 +94,7 @@ class SideMenu extends StatelessWidget {
                           sideMenuController.navigateToMainMenuScreen(context);
                         },
                         child: Text(
-                          'Menú',
+                          'Inicio',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
