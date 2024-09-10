@@ -28,7 +28,6 @@ class TicketService {
   };
 
 
-
   Future<List<dynamic>> obtenerTicketsUsuarioFiltroPorDefecto(int userId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -79,6 +78,13 @@ class TicketService {
 
     // Add additional filters
     int criteriaIndex = 1;
+    if (filters['ticketId'] != null) {
+      criteria['criteria[$criteriaIndex][link]'] = 'AND';
+      criteria['criteria[$criteriaIndex][field]'] = '2';
+      criteria['criteria[$criteriaIndex][searchtype]'] = 'equals';
+      criteria['criteria[$criteriaIndex][value]'] = filters['ticketId'].toString();
+      criteriaIndex++;
+    }
     if (filters['status'] != null) {
       criteria['criteria[$criteriaIndex][link]'] = 'AND';
       criteria['criteria[$criteriaIndex][field]'] = '12';

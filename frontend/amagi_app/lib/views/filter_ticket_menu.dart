@@ -119,7 +119,7 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(labelText: 'Estado'),
                   dropdownColor: Colors.grey[200], // Color de fondo del menú desplegable
-                  items: ['Nuevo', 'En curso (asignado)', 'En curso (Planificado)', 'En espera'].map((String status) {
+                  items: ['Nuevo', 'En curso (asignado)', 'En curso (Planificado)', 'En espera','Resuelto','Cerrado'].map((String status) {
                     return DropdownMenuItem<String>(
                       value: status,
                       child: Text(status),

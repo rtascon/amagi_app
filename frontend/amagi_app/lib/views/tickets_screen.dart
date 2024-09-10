@@ -9,8 +9,9 @@ import '../models/type_conversion.dart';
 
 class TicketsScreen extends StatefulWidget {
   final List<dynamic> tickets;
+  final Map<String, dynamic>? initialFilters;
 
-  TicketsScreen({required this.tickets});
+  TicketsScreen({required this.tickets,this.initialFilters});
 
   @override
   _TicketsScreenState createState() => _TicketsScreenState();
@@ -28,9 +29,13 @@ class _TicketsScreenState extends State<TicketsScreen> {
   @override
   void initState() {
     super.initState();
-    _userNameFuture = _sideMenuController.getUserName();
     _filteredTickets = widget.tickets;
-    _sortTicketsByDate();
+    _userNameFuture = _sideMenuController.getUserName();
+    if (widget.initialFilters != null) {
+      _applyFilters(widget.initialFilters!);
+    } else {
+      _sortTicketsByDate();
+    }
   }
 
   void _sortTicketsByDate() {

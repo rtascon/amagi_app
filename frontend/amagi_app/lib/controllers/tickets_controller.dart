@@ -57,7 +57,7 @@ class TicketsController {
     }
   }
 
-  void navigateToTicketsScreen(BuildContext context) async {
+  void navigateToTicketsScreen(BuildContext context,{Map<String, dynamic>? filters}) async {
     try {
       
       showDialog(
@@ -67,8 +67,13 @@ class TicketsController {
           return LoadingScreen();
         },
       );
-
-      List<Ticket> tickets = await obtenerListaTickets(context, true);
+      List<Ticket> tickets = [];
+      if (filters != null) {
+        tickets = await obtenerListaTickets(context, false,filters: filters);
+      }
+      else{
+        tickets = await obtenerListaTickets(context, true);
+      }
 
       
       Navigator.of(context).pop();
