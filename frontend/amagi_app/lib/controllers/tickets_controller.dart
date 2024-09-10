@@ -22,13 +22,18 @@ class TicketsController {
     return usuario.idUsuario;
   }
 
-  Future<List<Ticket>> obtenerListaTickets(BuildContext context) async {
+  Future<List<Ticket>> obtenerListaTickets(BuildContext context, bool primeraVez,{Map<String, dynamic>? filters}) async {
     try {
       // Obtener el ID del usuario
       final userId = getUserId();
-
+      List<dynamic> ticketsData = [];
+      if(primeraVez){
       // Obtener los tickets del usuario
-      List<dynamic> ticketsData = await _ticketService.obtenerTicketsUsuario(userId);
+        ticketsData = await _ticketService.obtenerTicketsUsuarioFiltroPorDefecto(userId);
+      }
+      else{
+        ticketsData = await _ticketService.obtenerTicketsUsuarioFiltrado(userId,filters ?? {});
+      }
 
       // Crear instancias de Ticket usando TicketFactory
       List<Ticket> tickets = ticketsData.map((ticketData) {
@@ -63,7 +68,7 @@ class TicketsController {
         },
       );
 
-      List<Ticket> tickets = await obtenerListaTickets(context);
+      List<Ticket> tickets = await obtenerListaTickets(context, true);
 
       
       Navigator.of(context).pop();
@@ -144,54 +149,6 @@ class TicketsController {
     );
   }
 
-
-
-  String getPrioridad(int prioridad) {
-    switch (prioridad) {
-      case 2:
-        return 'Baja';
-      case 3:
-        return 'Media';
-      case 4:
-        return 'Alta';
-      case 5:
-        return 'Muy Alta';
-      case 6:
-        return 'Mayor';
-      default:
-        return 'Desconocida';
-    }
-  }
-
-  String getTipo(int tipo) {
-    switch (tipo) {
-      case 1:
-        return 'Incidente';
-      case 2:
-        return 'Requerimiento';
-      default:
-        return 'Desconocido';
-    }
-  }
-
-  String getEstado(int estado) {
-    switch (estado) {
-      case 1:
-        return 'Nuevo';
-      case 2:
-        return 'En curso (asignado)';
-      case 3:
-        return 'En curso (Planificado)';
-      case 4:
-        return 'En espera';
-      case 5:
-        return 'Resuelto';
-      case 6:
-        return 'Cerrado';
-      default:
-        return 'Desconocido';
-    }
-  }
 
   String _stripHtmlTags(String htmlString) {
     final document = parse(htmlString);

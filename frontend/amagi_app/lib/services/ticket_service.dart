@@ -4,13 +4,32 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../config/enviroment.dart';
+import 'package:intl/intl.dart';
 
 class TicketService {
   final String url = Environment.apiUrl;
   static final _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
+  static final Map<String, String> criteriaBaseTicketAutogestion = {
+    'criteria[0][field]': '4',  // 5 es el campo para el ID del solicitante (requester)
+    'criteria[0][searchtype]': 'equals',
+    'criteria[0][value]': ''//Id de usuario
+  };
+  static const Map<String, String> forceDisplayTicket = {
+      'forcedisplay[0]': '2',  // ID del ticket
+      'forcedisplay[1]': '1',  // Nombre del ticket
+      'forcedisplay[2]': '21',  // Descripción del ticket
+      'forcedisplay[3]': '12',  // Estado del ticket
+      'forcedisplay[4]': '15',  // Fecha de creación
+      'forcedisplay[5]': '19',  // Fecha de actualización
+      'forcedisplay[6]': '80',  // Nombre de entidad asociada
+      'forcedisplay[7]': '3',  // prioridad
+      'forcedisplay[8]': '14',  // tipo
+  };
 
-  Future<List<dynamic>> obtenerTicketsUsuario(int userId) async {
+
+
+  Future<List<dynamic>> obtenerTicketsUsuarioFiltroPorDefecto(int userId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -21,10 +40,8 @@ class TicketService {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
-    final params = {
-      'criteria[0][field]': '4',  // 5 es el campo para el ID del solicitante (requester)
-      'criteria[0][searchtype]': 'equals',
-      'criteria[0][value]': userId.toString(),
+    criteriaBaseTicketAutogestion['criteria[0][value]'] = userId.toString();
+    Map<String, String> criteriaBodyAutogestion = {
       'criteria[1][link]': 'AND NOT',
       'criteria[1][field]': '12', 
       'criteria[1][searchtype]': 'equals',
@@ -33,16 +50,8 @@ class TicketService {
       'criteria[2][field]': '12', 
       'criteria[2][searchtype]': 'equals',
       'criteria[2][value]': '5',  // es el estado de los tickets resueltos
-      'forcedisplay[0]': '2',  // ID del ticket
-      'forcedisplay[1]': '1',  // Nombre del ticket
-      'forcedisplay[2]': '21',  // Descripción del ticket
-      'forcedisplay[3]': '12',  // Estado del ticket
-      'forcedisplay[4]': '15',  // Fecha de creación
-      'forcedisplay[5]': '19',  // Fecha de actualización
-      'forcedisplay[6]': '80',  // Nombre de entidad asociada
-      'forcedisplay[7]': '3',  // prioridad
-      'forcedisplay[8]': '14',  // tipo
     };
+    final params = {...criteriaBaseTicketAutogestion, ...criteriaBodyAutogestion, ...forceDisplayTicket};
 
     final response = await http.get(ticketsUrl.replace(queryParameters: params), headers: headers);
 
@@ -52,6 +61,63 @@ class TicketService {
       throw Exception("Error al obtener tickets: ${response.body}");
     }
   }
+
+  Future<List<dynamic>> obtenerTicketsUsuarioFiltrado(int userId, Map<String, dynamic> filters) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+
+    final ticketsUrl = Uri.parse('$url/search/Ticket');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'application/json',
+    };
+    criteriaBaseTicketAutogestion['criteria[0][value]'] = userId.toString();
+    // Base criteria
+    Map<String, String> criteria = criteriaBaseTicketAutogestion;
+
+    // Add additional filters
+    int criteriaIndex = 1;
+    if (filters['status'] != null) {
+      criteria['criteria[$criteriaIndex][link]'] = 'AND';
+      criteria['criteria[$criteriaIndex][field]'] = '12';
+      criteria['criteria[$criteriaIndex][searchtype]'] = 'equals';
+      criteria['criteria[$criteriaIndex][value]'] = filters['status'].toString();
+      criteriaIndex++;
+    }
+    if (filters['type'] != null) {
+      criteria['criteria[$criteriaIndex][link]'] = 'AND';
+      criteria['criteria[$criteriaIndex][field]'] = '14';
+      criteria['criteria[$criteriaIndex][searchtype]'] = 'equals';
+      criteria['criteria[$criteriaIndex][value]'] = filters['type'].toString();
+      criteriaIndex++;
+    }
+    if (filters['dateRange'] != null) {
+      final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+      criteria['criteria[$criteriaIndex][link]'] = 'AND';
+      criteria['criteria[$criteriaIndex][field]'] = '15';
+      criteria['criteria[$criteriaIndex][searchtype]'] = 'morethan';
+      criteria['criteria[$criteriaIndex][value]'] = formatter.format(filters['dateRange'].start);
+      criteriaIndex++;
+      criteria['criteria[$criteriaIndex][link]'] = 'AND';
+      criteria['criteria[$criteriaIndex][field]'] = '15';
+      criteria['criteria[$criteriaIndex][searchtype]'] = 'lessthan';
+      criteria['criteria[$criteriaIndex][value]'] = formatter.format(filters['dateRange'].end);
+      criteriaIndex++;
+    }
+
+    final params = {...criteria, ...forceDisplayTicket};
+
+    final response = await http.get(ticketsUrl.replace(queryParameters: params), headers: headers);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['data'];
+    } else {
+      throw Exception("Error al obtener tickets: ${response.body}");
+    }
+  }
+
 
   Future<List<dynamic>> obtenerHistoricosTicket(int idTicket) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);

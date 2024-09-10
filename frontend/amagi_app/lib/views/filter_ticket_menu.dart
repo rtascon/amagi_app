@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../controllers/tickets_controller.dart';
+import '../models/ticket.dart'; 
+import '../models/type_conversion.dart';
 
 class FilterTicketMenu extends StatefulWidget {
   final Function(Map<String, dynamic>) onFilterChanged;
@@ -16,6 +19,7 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
   String? _selectedType;
   String? _selectedStatus;
   DateTimeRange? _selectedDateRange;
+  final TypeConversion _typeConversion = TypeConversion();
 
   @override
   void initState() {
@@ -28,8 +32,8 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> filters = {
         'ticketId': _ticketIdController.text.isNotEmpty ? int.parse(_ticketIdController.text) : null,
-        'type': _selectedType,
-        'status': _selectedStatus,
+        'type': _selectedType != null ?  _typeConversion.getTipoReversa(_selectedType!) : null,
+        'status': _selectedStatus != null ?  _typeConversion.getEstadoReversa(_selectedStatus!) : null,
         'dateRange': _selectedDateRange,
       };
       widget.onFilterChanged(filters);
@@ -37,18 +41,20 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
     }
   }
 
-  void _clearFilters() {
+  void _clearFilters() async{
     setState(() {
       _ticketIdController.clear();
       _selectedType = null;
       _selectedStatus = null;
       _selectedDateRange = null;
     });
+    List<Ticket> tickets = await TicketsController().obtenerListaTickets(context, true);
     widget.onFilterChanged({
       'ticketId': null,
       'type': null,
       'status': null,
       'dateRange': null,
+      'tickets': tickets,
     });
     Navigator.of(context).pop();
   }
