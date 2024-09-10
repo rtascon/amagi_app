@@ -10,6 +10,7 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart' show parse;
 import '../views/loading_screen.dart';
 import '../views/main_menu_screen.dart'; 
+import '../views/satisfaction_popup.dart';
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -22,13 +23,56 @@ class TicketsController {
     return usuario.idUsuario;
   }
 
+  Future<void> closeTicket(BuildContext context, Ticket ticket) async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return LoadingScreen();
+        },
+      );
+      Map<String, dynamic> updateData = {
+        'status': 'Cerrado',
+      };
+      await _ticketService.updateTicket(ticket.id, updateData);
+
+      Navigator.of(context).pop();
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return SatisfactionPopup(
+            onSubmit: (rating, comentarios) async {
+              await _ticketService.sendRatings(ticket.id, rating, comentarios);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Calificación enviada exitosamente')),
+              );
+              navigateToTicketsScreen(context);
+            },
+            onCancel: () {
+              navigateToTicketsScreen(context);
+            },
+          );
+        },
+      );
+    } catch (e) {
+      
+      print("Error al cerrar el ticket: $e");
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cerrar el ticket')),
+      );
+    }
+  }
+
   Future<List<Ticket>> obtenerListaTickets(BuildContext context, bool primeraVez,{Map<String, dynamic>? filters}) async {
     try {
-      // Obtener el ID del usuario
+     
       final userId = getUserId();
       List<dynamic> ticketsData = [];
       if(primeraVez){
-      // Obtener los tickets del usuario
         ticketsData = await _ticketService.obtenerTicketsUsuarioFiltroPorDefecto(userId);
       }
       else{

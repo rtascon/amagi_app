@@ -124,6 +124,49 @@ class TicketService {
     }
   }
 
+  Future<void> updateTicket(int ticketId, Map<String, dynamic> updateData) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+
+    final ticketUrl = Uri.parse('$url/Ticket/$ticketId');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'application/json',
+    };
+    final body = jsonEncode({
+      "input": updateData,
+    });
+
+    final response = await http.put(ticketUrl, headers: headers, body: body);
+    if (response.statusCode != 200) {
+      throw Exception("Error al actualizar el ticket: ${response.body}");
+    }
+  }
+
+  Future<void> sendRatings(int ticketId, int rating, String comentarios) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+
+    final calificacionUrl = Uri.parse('$url/Ticket/$ticketId/Calificacion');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'application/json',
+    };
+    final body = jsonEncode({
+      "rating": rating,
+      "comentarios": comentarios,
+    });
+
+    final response = await http.post(calificacionUrl, headers: headers, body: body);
+    if (response.statusCode != 200) {
+      throw Exception("Error al enviar la calificación: ${response.body}");
+    }
+  }
+
 
   Future<List<dynamic>> obtenerHistoricosTicket(int idTicket) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);

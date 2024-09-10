@@ -65,9 +65,6 @@ class _TicketsScreenState extends State<TicketsScreen> {
     });
   }
 
-  
-
-
   @override
   Widget build(BuildContext context) {
     Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
@@ -213,13 +210,12 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                                     ),
                                                   if (_typeConversion.getEstado(ticket.estado) == 'Resuelto')
                                                     Container(
-                                                      width: 10,
-                                                      height: 10,
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(color: Colors.black),
-                                                        shape: BoxShape.circle,
-                                                      ),
                                                       margin: EdgeInsets.only(right: 8.0),
+                                                      child: Icon(
+                                                        Icons.check_circle_outline,
+                                                        color: Colors.green,
+                                                        size: 16,
+                                                      ),
                                                     ),
                                                   if (_typeConversion.getEstado(ticket.estado) == 'Cerrado')
                                                     Container(
@@ -335,12 +331,17 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 8.0),
-                                    Text(
-                                      ticket.titulo,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          ticket.titulo,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(height: 4.0),
                                     Text(
@@ -352,8 +353,24 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                     ),
                                   ],
                                 ),
+                                if (_typeConversion.getEstado(ticket.estado) == 'Resuelto')
+                                  Positioned(
+                                    right: -10,
+                                    bottom: -10,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white,
+                                        minimumSize: Size(60, 20), 
+                                      ),
+                                      onPressed: () {
+                                        _ticketsController.closeTicket(context, ticket);
+                                      },
+                                      child: Text('Cerrar Ticket'),
+                                    ),
+                                  ),
                                 Positioned(
-                                  bottom: 8,
+                                  bottom: 18,
                                   right: 8,
                                   child: IconButton(
                                     icon: Icon(Icons.info_outline),
