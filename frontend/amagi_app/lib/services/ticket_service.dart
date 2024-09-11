@@ -151,7 +151,7 @@ class TicketService {
       throw Exception("No session token found");
     }
 
-    final calificacionUrl = Uri.parse('$url/Ticket/$ticketId/Calificacion');
+    final calificacionUrl = Uri.parse('$url/Ticket/$ticketId/');
     final headers = {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',

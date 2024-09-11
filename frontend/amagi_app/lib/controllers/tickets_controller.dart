@@ -33,12 +33,12 @@ class TicketsController {
         },
       );
       Map<String, dynamic> updateData = {
-        'status': 'Cerrado',
+        'status': '6',
       };
       await _ticketService.updateTicket(ticket.id, updateData);
 
       Navigator.of(context).pop();
-
+/*
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -57,6 +57,13 @@ class TicketsController {
           );
         },
       );
+
+    */
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ticket cerrado exitosamente')),
+      );
+      navigateToTicketsScreen(context);
+
     } catch (e) {
       
       print("Error al cerrar el ticket: $e");
