@@ -12,7 +12,7 @@ class RegistrationRequestController {
   final String _appServiceCredentialPassword = Environment.appServiceCredentialPassword;
   final User _user = User();
 
-  void submitRegistrationRequest(
+  Future<bool> submitRegistrationRequest(
     BuildContext context,
     String nombre,
     String apellido,
@@ -42,6 +42,7 @@ Cédula: $cedula
 
         if (response['success']) {
           await _showSuccessMessage(context);
+
         } else {
           throw Exception('Error al crear la solicitud');
         }
@@ -54,9 +55,11 @@ Cédula: $cedula
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
+      return true;
 
     } else {
       _showErrorMessage(context, 'No pudimos enviar su solicitud de registro. Por favor, intente más tarde.');
+      return false;
     }
   }
 

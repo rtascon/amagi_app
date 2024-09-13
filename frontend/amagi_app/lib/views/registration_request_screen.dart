@@ -21,6 +21,7 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
 
   bool _isCaptchaValid = false;
   final SliderController _sliderController = SliderController();
+  bool _isLoading = false;
 
 
   @override
@@ -169,10 +170,14 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                 SliderCaptcha(
                   controller: _sliderController,
                   title: 'Deslice para confirmar que no es un robot',
-                  image: Image.asset(
-                    'assets/captcha_image.png',
-                    fit: BoxFit.fitWidth,
-                  ),
+                    image: SizedBox(
+                      width: 300, // Ajusta el ancho según tus necesidades
+                      height: 180, // Ajusta la altura según tus necesidades
+                      child: Image.asset(
+                        'assets/captcha_image.png',
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
                   colorBar: Colors.grey,
                   colorCaptChar: Colors.grey,
                   onConfirm: (value) async {
@@ -195,10 +200,14 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                   child: SizedBox(
                     width: 150,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
                           if (_isCaptchaValid) {
-                            _registrationRequestController.submitRegistrationRequest(
+                            setState(() {
+                              _isLoading = true;
+                            });
+
+                            await _registrationRequestController.submitRegistrationRequest(
                               context,
                               _nombreController.text.trim(),
                               _apellidoController.text.trim(),
@@ -207,6 +216,10 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                               _telefonoController.text.trim(),
                               _cedulaController.text.trim(),
                             );
+
+                            setState(() {
+                              _isLoading = false;
+                            });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Por favor, complete el CAPTCHA')),
@@ -215,10 +228,14 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor : Color(0xFF005586), 
+                        backgroundColor: Color(0xFF005586), 
                         foregroundColor: Colors.white, 
                       ),
-                      child: Text('Enviar'),
+                      child: _isLoading
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : Text('Enviar'),
                     ),
                   ),
                 ),
@@ -240,7 +257,7 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: Colors.grey[200] ?? Colors.grey,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: BorderSide(color: Colors.black),
