@@ -20,14 +20,14 @@ class User {
   void setUser({
     required int idUsuario,
     required String nombreUsuario,
-    required String nombreCompleto,
-    required int idEntidadActiva,
-    required Map<String, Map<String, dynamic>> perfiles,
-    required int idPerfilActivo,
-    required String perfilActivo,
     required String tokenSesion,
-    required String nombreEntidadActiva,
-    required Map<String, dynamic> otrasEntidadesActivas,
+    String nombreCompleto = '',
+    int idEntidadActiva = 0,
+    Map<String, Map<String, dynamic>> perfiles = const {},
+    int idPerfilActivo = 0,
+    String perfilActivo = '',
+    String nombreEntidadActiva = '',
+    Map<String, dynamic> otrasEntidadesActivas = const {},
   }) {
     this.idUsuario = idUsuario;
     this.nombreUsuario = nombreUsuario;

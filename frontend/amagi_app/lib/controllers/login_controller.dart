@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../views/main_menu_screen.dart';
 import '../views/loading_screen.dart';
+import '../views/registration_request_screen.dart';
 
 class LoginController {
   final AuthService _authService = AuthService();
@@ -28,6 +29,14 @@ class LoginController {
       _showErrorMessage(context);
     }
   }
+
+  void redirectToRegistration(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegistrationRequestScreen()),
+    );
+  }
+
 
   void _showLoadingScreen(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {

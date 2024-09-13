@@ -4,6 +4,7 @@ import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
 import 'views/create_ticket_screen.dart';
+import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/mainMenu': (context) => MainMenuScreen(),
         '/create-ticket': (context) => CreateTicketScreen(),
+        '/register': (context) => RegistrationRequestScreen(),
       },
     );
   }

@@ -22,6 +22,17 @@ Future<bool> obtenerUsuarioInfo(User usuario) async {
 
     if (response.statusCode == 200 || response.statusCode == 206) {
       final userInfo = jsonDecode(response.body);
+      var otrasEntidadesActivas;
+      if (userInfo['session']['glpiactiveentities'] is Map) {
+        otrasEntidadesActivas = Map<String, dynamic>.from(userInfo['session']['glpiactiveentities']);
+      } else if (userInfo['session']['glpiactiveentities'] is List) {
+        otrasEntidadesActivas = {
+          for (var i = 0; i < userInfo['session']['glpiactiveentities'].length; i++)
+            i.toString(): userInfo['session']['glpiactiveentities'][i]
+        };
+      } else {
+        otrasEntidadesActivas = {};
+      }
 
       // Configurar el objeto Usuario
       usuario.setUser(
@@ -34,7 +45,7 @@ Future<bool> obtenerUsuarioInfo(User usuario) async {
         perfilActivo: userInfo['session']['glpiactiveprofile'][1] ?? '',
         tokenSesion: sessionToken,
         nombreEntidadActiva: userInfo['session']['glpiactive_entity_shortname'] ?? '',
-        otrasEntidadesActivas: Map<String, dynamic>.from(userInfo['session']['glpiactiveentities'] ?? {}),
+        otrasEntidadesActivas: otrasEntidadesActivas,
       );
       return true;
       

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../controllers/login_controller.dart'; // Importa el controlador
+import '../controllers/login_controller.dart'; 
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -147,11 +148,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                //backgroundColor: Color(0xFF009FDA), COLOR AZUL
                                 backgroundColor: Color(0xFFE98300), // Color del botón
                                 foregroundColor: Colors.white, // Color del texto
+                                minimumSize: Size(MediaQuery.of(context).size.width * 0.5, 40), // Ajusta el ancho del botón
                               ),
                               child: Text('Iniciar sesión'),
+                            ),
+                            SizedBox(height: 5), // Espacio entre los botones
+                            ElevatedButton(
+                              onPressed: () {
+                                _loginController.redirectToRegistration(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF747678), // Color del botón
+                                foregroundColor: Colors.white, // Color del texto
+                                minimumSize: Size(MediaQuery.of(context).size.width * 0.2, 30), // Ajusta el ancho del botón
+                              ),
+                              child: Text('Registrarse'),
                             ),
                           ],
                         ),
@@ -162,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 20), // Espacio inferior
                 Column(
                   children: [
-                    SizedBox(height: 100), // Espacio adicional para empujar los elementos hacia abajo
+                    SizedBox(height: 50), // Espacio adicional para empujar los elementos hacia abajo
                     Image.asset(
                       'assets/Amagi logo blanco.png', // Asegúrate de que la ruta sea correcta
                       alignment: Alignment.bottomCenter,
