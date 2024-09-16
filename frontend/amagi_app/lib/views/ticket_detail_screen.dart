@@ -204,17 +204,20 @@ class TicketDetailScreen extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black26,
+                                        color: Colors.black12,
                                         blurRadius: 5,
                                         offset: Offset(0, 2),
                                       ),
                                     ],
                                   ),
-                                  child: Image.file(
-                                    file,
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0), // Optional: Add border radius if needed
+                                    child: Image.file(
+                                      file,
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
                                 ),
                               );

@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../services/auth_service.dart';
 import '../views/main_menu_screen.dart';
 import '../views/loading_screen.dart';
 import '../views/registration_request_screen.dart';
+import '../views/common_pop_ups.dart'; 
+import 'dart:async';
 
 class LoginController {
   final AuthService _authService = AuthService();
 
   void login(String username, String password, BuildContext context) async {
-    _showLoadingScreen(context); // Mostrar pantalla de carga
+    final connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context); 
+      return;
+    }
+
+    _showLoadingScreen(context); 
 
     try {
       final formattedUsername = username.toLowerCase().trim();
       final success = await _authService.iniciarSesion(formattedUsername, password);
 
-      Navigator.of(context).pop(); // Ocultar pantalla de carga
+      Navigator.of(context).pop(); 
 
       if (success) {
         Navigator.pushReplacement(
@@ -25,8 +35,12 @@ class LoginController {
         _showErrorMessage(context);
       }
     } catch (e) {
-      Navigator.of(context).pop(); // Ocultar pantalla de carga en caso de error
-      _showErrorMessage(context);
+      Navigator.of(context).pop(); 
+      if (e is TimeoutException) {
+        showTimeoutMessage(context); 
+      } else {
+        _showErrorMessage(context);
+      }
     }
   }
 
@@ -36,7 +50,6 @@ class LoginController {
       MaterialPageRoute(builder: (context) => RegistrationRequestScreen()),
     );
   }
-
 
   void _showLoadingScreen(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,6 +64,7 @@ class LoginController {
   }
 
   void _showErrorMessage(BuildContext context) {
+    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -71,7 +85,7 @@ class LoginController {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Aceptar'),
+              child: Text('Aceptar', style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );
