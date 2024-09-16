@@ -26,7 +26,7 @@ class CreateTicketController {
   void submitTicket(BuildContext context, Map<String, dynamic> ticketData) async {
     try {
       ticketData['_users_id_requester'] = await user.getIdUsuario;
-      List<dynamic> requestTypes = await _glpiGeneralService.getRequestType;
+      List<dynamic> requestTypes = await _glpiGeneralService.getRequestType();
 
       var requestType = requestTypes.firstWhere(
         (element) => element['name'] == 'App Amagi',

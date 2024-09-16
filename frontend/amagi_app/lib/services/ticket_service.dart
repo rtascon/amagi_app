@@ -282,6 +282,7 @@ class TicketService {
         "_users_id_requester": ticketData['_users_id_requester'],
         "status": ticketData['status'],
         "type": ticketData['type'],
+        "requesttypes_id": ticketData['requesttypes_id'],
       }
     });
 
