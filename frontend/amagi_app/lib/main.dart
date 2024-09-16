@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Login',
+      title: 'Amagi App',
       theme: ThemeData(
         primarySwatch: createMaterialColor(Color(0xFF000000)),
         primaryColor: Color(0xFF000000),

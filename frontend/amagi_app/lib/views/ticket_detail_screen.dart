@@ -187,8 +187,8 @@ class TicketDetailScreen extends StatelessWidget {
                                                 child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                               TextButton(
-                                                onPressed: () {
-                                                  // Implement download functionality
+                                                onPressed: () async {
+                                                  await _ticketDetailController.downloadFile(filePath, documento['filename']);
                                                 },
                                                 child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
@@ -241,13 +241,13 @@ class TicketDetailScreen extends StatelessWidget {
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text('Cerrar'),
+                                                child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                               TextButton(
-                                                onPressed: () {
-                                                  // Implement download functionality
+                                                onPressed: () async {
+                                                 await _ticketDetailController.downloadFile(filePath, documento['filename']);
                                                 },
-                                                child: Text('Descargar'),
+                                                child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                             ],
                                           ),
