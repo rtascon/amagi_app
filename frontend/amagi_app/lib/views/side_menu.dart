@@ -149,7 +149,7 @@ class SideMenu extends StatelessWidget {
                       SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
-                          //sideMenuController.navigateToResolvedTicketsScreen(context);
+                          ticketsController.navigateToTicketsScreen(context, filters: {'status': 5});
                         },
                         child: Text(
                           'Tickets Resueltos',
