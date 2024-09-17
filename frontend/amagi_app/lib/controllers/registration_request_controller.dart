@@ -34,7 +34,7 @@ class RegistrationRequestController {
     if (success) {
       final Map<String, dynamic> ticketData = {
         "_users_id_requester": _user.getIdUsuario,
-        'name': 'Solicitud de registro: $empresa - usuario $nombre $apellido',
+        'name': 'Solicitud de registro: $empresa - $nombre $apellido',
         'content': '''
 Nombre: $nombre
 Apellido: $apellido

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
@@ -42,7 +43,16 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: WelcomeScreen(), // Establece la pantalla de bienvenida como la pantalla inicial
+      home: FutureBuilder<bool>(
+        future: checkLoginStatus(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else {
+            return snapshot.data == true ? MainMenuScreen() : WelcomeScreen();
+          }
+        },
+      ), 
       routes: {
         '/login': (context) => LoginScreen(),
         '/mainMenu': (context) => MainMenuScreen(),
@@ -50,6 +60,11 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegistrationRequestScreen(),
       },
     );
+  }
+
+  Future<bool> checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
   }
 }
 

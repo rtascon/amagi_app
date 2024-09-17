@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../views/main_menu_screen.dart';
 import '../views/loading_screen.dart';
@@ -27,6 +28,11 @@ class LoginController {
       Navigator.of(context).pop(); 
 
       if (success) {
+        // Guardar el estado de inicio de sesión
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        await prefs.setString('username', formattedUsername);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainMenuScreen()),
