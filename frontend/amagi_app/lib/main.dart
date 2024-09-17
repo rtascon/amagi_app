@@ -8,9 +8,6 @@ import 'views/welcome_screen.dart';
 import 'views/create_ticket_screen.dart';
 import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../models/user.dart';
-import '../services/user_service.dart';
-import '../views/loading_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,16 +52,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: FutureBuilder<bool>(
-        future: checkLoginStatus(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return LoadingScreen();
-          } else {
-            return snapshot.data == true ? MainMenuScreen() : WelcomeScreen();
-          }
-        },
-      ), 
+      home: WelcomeScreen(), // Siempre muestra WelcomeScreen primero
       routes: {
         '/login': (context) => LoginScreen(),
         '/mainMenu': (context) => MainMenuScreen(),
@@ -72,19 +60,6 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegistrationRequestScreen(),
       },
     );
-  }
-
-  Future<bool> checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-    if (isLoggedIn) {
-      User usuario = User();
-      UserService userService = UserService();
-      await userService.obtenerUsuarioInfo(usuario);
-    }
-
-    return isLoggedIn;
   }
 }
 

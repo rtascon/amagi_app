@@ -70,12 +70,14 @@ class SideMenu extends StatelessWidget {
                         ],
                       ),
                       Spacer(),
+                      /*
                       IconButton(
                         icon: Icon(Icons.settings),
                         onPressed: () {
                           // Handle settings button tap
                         },
                       ),
+                      */
                     ],
                   ),
                   Padding(
