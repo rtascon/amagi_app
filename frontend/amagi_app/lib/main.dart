@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
@@ -13,7 +15,15 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
+  ]).then((_) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? sessionToken = prefs.getString('sessionToken');
+
+    if (sessionToken != null) {
+      final _storage = FlutterSecureStorage();
+      await _storage.write(key: 'session_token', value: sessionToken);
+    }
+
     runApp(MyApp());
   });
 }
@@ -22,7 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Login',
+      title: 'Amagi App',
       theme: ThemeData(
         primarySwatch: createMaterialColor(Color(0xFF000000)),
         primaryColor: Color(0xFF000000),
@@ -42,7 +52,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: WelcomeScreen(), // Establece la pantalla de bienvenida como la pantalla inicial
+      home: WelcomeScreen(), // Siempre muestra WelcomeScreen primero
       routes: {
         '/login': (context) => LoginScreen(),
         '/mainMenu': (context) => MainMenuScreen(),

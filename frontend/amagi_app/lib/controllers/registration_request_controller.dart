@@ -4,6 +4,9 @@ import '../services/auth_service.dart';
 import '../models/user.dart';
 import '../views/login_screen.dart';
 import '../config/enviroment.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import '../views/common_pop_ups.dart'; 
+import 'dart:async';
 
 class RegistrationRequestController {
   final TicketService _ticketService = TicketService();
@@ -21,12 +24,17 @@ class RegistrationRequestController {
     String telefono,
     String cedula,
   ) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context); 
+      return false;
+    }
     final success = await _authService.iniciarSesion(_appServiceCredentialUsername, _appServiceCredentialPassword);
     
     if (success) {
       final Map<String, dynamic> ticketData = {
         "_users_id_requester": _user.getIdUsuario,
-        'name': 'Solicitud de registro: $empresa - usuario $nombre $apellido',
+        'name': 'Solicitud de registro: $empresa - $nombre $apellido',
         'content': '''
 Nombre: $nombre
 Apellido: $apellido
@@ -47,7 +55,12 @@ Cédula: $cedula
           throw Exception('Error al crear la solicitud');
         }
       } catch (e) {
-        _showErrorMessage(context, 'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
+        Navigator.of(context).pop(); 
+        if (e is TimeoutException) {
+          showTimeoutMessage(context); 
+        } else {
+          _showErrorMessage(context,'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
+        }
       }
 
       _authService.cerrarSesion();

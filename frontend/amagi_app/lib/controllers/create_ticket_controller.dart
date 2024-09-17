@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import '../services/ticket_service.dart';
 import '../models/user.dart';
 import '../views/main_menu_screen.dart';
+import '../services/glpi_general_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import '../views/common_pop_ups.dart'; 
+import 'dart:async';
 
 class CreateTicketController {
   final TicketService _ticketService = TicketService();
+  final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
   final user = User();
 
   void navigateBack(BuildContext context) {
@@ -22,8 +27,26 @@ class CreateTicketController {
 
 
   void submitTicket(BuildContext context, Map<String, dynamic> ticketData) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context); 
+      return;
+    }
     try {
       ticketData['_users_id_requester'] = await user.getIdUsuario;
+      List<dynamic> requestTypes = await _glpiGeneralService.getRequestType();
+
+      var requestType = requestTypes.firstWhere(
+        (element) => element['name'] == 'App Amagi',
+        orElse: () => null,
+      );
+
+      if (requestType != null) {
+        ticketData['requesttypes_id'] = requestType['id'];
+      } else {
+        throw Exception('Request type "App Amagi" not found');
+      }
+      
       final response = await _ticketService.crearTicket(ticketData);
   
       if (response['success']) {
@@ -32,7 +55,12 @@ class CreateTicketController {
         _showErrorMessage(context);
       }
     } catch (e) {
-      _showErrorMessage(context);
+      Navigator.of(context).pop(); 
+      if (e is TimeoutException) {
+        showTimeoutMessage(context); 
+      } else {
+        _showErrorMessage(context);
+      }
     }
   }
 

@@ -187,8 +187,8 @@ class TicketDetailScreen extends StatelessWidget {
                                                 child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                               TextButton(
-                                                onPressed: () {
-                                                  // Implement download functionality
+                                                onPressed: () async {
+                                                  await _ticketDetailController.downloadFile(filePath, documento['filename']);
                                                 },
                                                 child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
@@ -204,17 +204,20 @@ class TicketDetailScreen extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black26,
+                                        color: Colors.black12,
                                         blurRadius: 5,
                                         offset: Offset(0, 2),
                                       ),
                                     ],
                                   ),
-                                  child: Image.file(
-                                    file,
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0), // Optional: Add border radius if needed
+                                    child: Image.file(
+                                      file,
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
                                 ),
                               );
@@ -238,13 +241,13 @@ class TicketDetailScreen extends StatelessWidget {
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text('Cerrar'),
+                                                child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                               TextButton(
-                                                onPressed: () {
-                                                  // Implement download functionality
+                                                onPressed: () async {
+                                                 await _ticketDetailController.downloadFile(filePath, documento['filename']);
                                                 },
-                                                child: Text('Descargar'),
+                                                child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
                                               ),
                                             ],
                                           ),

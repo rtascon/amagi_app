@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../controllers/welcome_controller.dart'; // Importar el controlador
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -6,15 +7,13 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  late WelcomeController _controller;
+
   @override
   void initState() {
     super.initState();
-    _navigateToLogin();
-  }
-
-  _navigateToLogin() async {
-    await Future.delayed(Duration(seconds: 3), () {});
-    Navigator.pushReplacementNamed(context, '/login');
+    _controller = WelcomeController(context);
+    _controller.checkLoginStatus();
   }
 
   @override

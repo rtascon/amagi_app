@@ -11,6 +11,9 @@ import 'package:html/parser.dart' show parse;
 import '../views/loading_screen.dart';
 import '../views/main_menu_screen.dart'; 
 import '../views/satisfaction_popup.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import '../views/common_pop_ups.dart'; 
+import 'dart:async';
 
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -24,6 +27,12 @@ class TicketsController {
   }
 
   Future<void> closeTicket(BuildContext context, Ticket ticket) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context); 
+      return;
+    }
     try {
       showDialog(
         context: context,
@@ -65,12 +74,16 @@ class TicketsController {
       navigateToTicketsScreen(context);
 
     } catch (e) {
-      
-      print("Error al cerrar el ticket: $e");
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al cerrar el ticket')),
-      );
+      Navigator.of(context).pop(); 
+      if (e is TimeoutException) {
+        showTimeoutMessage(context); 
+      } else {
+        print("Error al cerrar el ticket: $e");
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cerrar el ticket')),
+        );
+      }
     }
   }
 
@@ -103,12 +116,17 @@ class TicketsController {
 
       return tickets;
     } catch (e) {
-      // Manejar error
       return [];
     }
   }
 
   void navigateToTicketsScreen(BuildContext context,{Map<String, dynamic>? filters}) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context); 
+      return;
+    }
     try {
       
       showDialog(
@@ -136,14 +154,23 @@ class TicketsController {
         ),
       );
     } catch (e) {
-      
+      Navigator.of(context).pop(); 
+      if (e is TimeoutException) {
+        showTimeoutMessage(context); 
+      } else {
       print("Error al obtener la lista de tickets: $e");
-      
       Navigator.of(context).pop();
+      }
     }
   }
 
   Future<void> navigateToTicketDetailScreen(BuildContext context, Ticket ticket) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context); 
+      return;
+    }
     try {
       // Mostrar la pantalla de carga
       showDialog(
@@ -190,10 +217,13 @@ class TicketsController {
         ),
       );
     } catch (e) {
-      // Manejar error
-      print("Error al obtener históricos del ticket: $e");
-      // Ocultar la pantalla de carga en caso de error
+      Navigator.of(context).pop(); 
+      if (e is TimeoutException) {
+        showTimeoutMessage(context); 
+      } else {
+      print("Error al obtener históricos del ticket: $e"); 
       Navigator.of(context).pop();
+      }
     }
   }
 

@@ -73,7 +73,7 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                         label: 'Nombre',
                         validator: (value) {
                           value = value?.trim();
-                          if (value == null || value.isEmpty || !RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                          if (value == null || value.isEmpty || !RegExp(r'^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$').hasMatch(value)) {
                             return 'Por favor ingrese un nombre válido';
                           }
                           return null;
@@ -87,7 +87,7 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                         label: 'Apellido',
                         validator: (value) {
                           value = value?.trim();
-                          if (value == null || value.isEmpty || !RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                          if (value == null || value.isEmpty || !RegExp(r'^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$').hasMatch(value)) {
                             return 'Por favor ingrese un apellido válido';
                           }
                           return null;
@@ -102,7 +102,7 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                   label: 'Empresa',
                   validator: (value) {
                     value = value?.trim();
-                    if (value == null || value.isEmpty || !RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
+                    if (value == null || value.isEmpty || !RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(value)) {
                       return 'Por favor ingrese una empresa válida';
                     }
                     return null;

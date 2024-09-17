@@ -65,6 +65,13 @@ class _TicketsScreenState extends State<TicketsScreen> {
     });
   }
 
+  String truncateTitle(String title) {
+    if (title.length > 30) {
+      return title.substring(0, 30) + '...';
+    }
+    return title;
+  }
+
   @override
   Widget build(BuildContext context) {
     Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
@@ -335,7 +342,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          ticket.titulo,
+                                          truncateTitle(ticket.titulo),
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
