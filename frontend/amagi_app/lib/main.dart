@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'views/login_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
 import 'views/create_ticket_screen.dart';
 import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../models/user.dart';
+import '../services/user_service.dart';
+import '../views/loading_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +18,15 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
+  ]).then((_) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? sessionToken = prefs.getString('sessionToken');
+
+    if (sessionToken != null) {
+      final _storage = FlutterSecureStorage();
+      await _storage.write(key: 'session_token', value: sessionToken);
+    }
+
     runApp(MyApp());
   });
 }
@@ -47,7 +59,7 @@ class MyApp extends StatelessWidget {
         future: checkLoginStatus(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return LoadingScreen();
           } else {
             return snapshot.data == true ? MainMenuScreen() : WelcomeScreen();
           }
@@ -64,7 +76,15 @@ class MyApp extends StatelessWidget {
 
   Future<bool> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLoggedIn') ?? false;
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      User usuario = User();
+      UserService userService = UserService();
+      await userService.obtenerUsuarioInfo(usuario);
+    }
+
+    return isLoggedIn;
   }
 }
 

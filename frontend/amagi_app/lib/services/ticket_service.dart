@@ -340,7 +340,7 @@ class TicketService {
         "status": ticketData['status'],
         "type": ticketData['type'],
         "requesttypes_id": ticketData['requesttypes_id'],
-        "entities_id": 0,
+        //"entities_id": 0,
       }
     });
   

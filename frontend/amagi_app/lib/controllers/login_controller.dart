@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/auth_service.dart';
 import '../views/main_menu_screen.dart';
 import '../views/loading_screen.dart';
@@ -10,6 +11,7 @@ import 'dart:async';
 
 class LoginController {
   final AuthService _authService = AuthService();
+  final _storage = FlutterSecureStorage();
 
   void login(String username, String password, BuildContext context) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
@@ -32,6 +34,8 @@ class LoginController {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('username', formattedUsername);
+        String? sessionToken = await _storage.read(key: 'session_token'); // Await the result
+        await prefs.setString('sessionToken', sessionToken ?? '');
 
         Navigator.pushReplacement(
           context,

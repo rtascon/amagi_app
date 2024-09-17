@@ -16,6 +16,7 @@ class SideMenuController {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('isLoggedIn');
       await prefs.remove('username');
+      await prefs.remove('sessionToken');
       Navigator.of(context).pop(); // Oculta la pantalla de carga
       Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de inicio de sesión
     } catch (e) {

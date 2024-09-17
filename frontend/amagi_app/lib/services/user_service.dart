@@ -20,7 +20,7 @@ class UserService {
           'Session-Token': sessionToken!,
           'Content-Type': 'application/json',
         },
-      ).timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+      ).timeout(Duration(seconds: 15)); 
 
       if (response.statusCode == 200 || response.statusCode == 206) {
         final userInfo = jsonDecode(response.body);
