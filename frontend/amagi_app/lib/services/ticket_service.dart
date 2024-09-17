@@ -6,6 +6,8 @@ import 'dart:io';
 import '../config/enviroment.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
+import 'package:file_picker/file_picker.dart';
+import 'package:http_parser/http_parser.dart';
 
 class TicketService {
   final String url = Environment.apiUrl;
@@ -340,7 +342,7 @@ class TicketService {
         "status": ticketData['status'],
         "type": ticketData['type'],
         "requesttypes_id": ticketData['requesttypes_id'],
-        //"entities_id": 0,
+        //"entities_id": ticketData['entities_id'],
       }
     });
   
@@ -361,6 +363,92 @@ class TicketService {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
     } catch (e) {
       throw Exception("Error al crear ticket: $e");
+    }
+  }
+
+  Future<List<int>> uploadFiles(List<PlatformFile> selectedFiles) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+
+    final uploadUrl = Uri.parse('$url/Document');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'multipart/form-data',
+    };
+
+    List<int> uploadedDocumentIds = [];
+    for (var file in selectedFiles) {
+      final bytes = await File(file.path!).readAsBytes();
+
+      final request = http.MultipartRequest('POST', uploadUrl)
+        ..headers.addAll(headers)
+        ..fields['uploadManifest'] = jsonEncode({
+          'input': {
+            'name': 'Uploaded document',
+            '_filename': [file.name],
+          }
+        })
+        ..files.add(http.MultipartFile.fromBytes(
+          'file',
+          bytes,
+          filename: file.name,
+          contentType: MediaType('application', file.extension ?? 'octet-stream'),
+        ));
+
+      try {
+        final streamedResponse = await request.send().timeout(Duration(seconds: 15));
+        final response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 201) {
+          final responseData = jsonDecode(response.body);
+          uploadedDocumentIds.add(responseData['id']);
+        } else {
+          throw Exception("Error al subir el archivo: ${response.body}");
+        }
+      } on TimeoutException catch (e) {
+        throw Exception("La solicitud ha excedido el tiempo de espera: $e");
+      } catch (e) {
+        throw Exception("Error al subir el archivo: $e");
+      }
+    }
+
+    return uploadedDocumentIds;
+  }
+
+  Future<void> addFollowupToTicket(int ticketId, String descripcion,List<int> documentIds) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+
+    final followupUrl = Uri.parse('$url/Ticket/$ticketId/ITILFollowup');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      "input": {
+        "items_id": ticketId,
+        "itemtype": "Ticket",
+        "content": descripcion,
+        "documents_id": documentIds,
+      }
+    });
+
+    try {
+      final response = await http.post(followupUrl, headers: headers, body: body)
+          .timeout(Duration(seconds: 15));
+
+      if (response.statusCode != 200 || response.statusCode != 201) {
+        throw Exception("Error al añadir el comentario/histórico: ${response.body}");
+      }
+    } on TimeoutException catch (e) {
+      throw Exception("La solicitud ha excedido el tiempo de espera: $e");
+    } catch (e) {
+      throw Exception("Error al añadir el comentario/histórico: $e");
     }
   }
 

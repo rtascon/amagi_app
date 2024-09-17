@@ -34,6 +34,7 @@ class CreateTicketController {
     }
     try {
       ticketData['_users_id_requester'] = await user.getIdUsuario;
+      //ticketData['entities_id'] = 0;
       List<dynamic> requestTypes = await _glpiGeneralService.getRequestType();
 
       var requestType = requestTypes.firstWhere(

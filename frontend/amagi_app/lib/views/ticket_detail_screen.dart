@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../controllers/ticket_detail_controller.dart';
 import '../models/user.dart'; 
 import 'dart:io';
+import 'create_historical_screen.dart';
 
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
@@ -286,7 +287,10 @@ class TicketDetailScreen extends StatelessWidget {
             right: 16,
             child: FloatingActionButton(
               onPressed: () {
-                // Acción del botón
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateHistoricalScreen(ticketId: ticket.id)),
+                );
               },
               backgroundColor: Colors.orange,
               shape: RoundedRectangleBorder(
