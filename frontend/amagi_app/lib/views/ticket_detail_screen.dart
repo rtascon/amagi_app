@@ -3,12 +3,15 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart'; 
 import '../controllers/ticket_detail_controller.dart';
+import '../controllers/tickets_controller.dart';
 import '../models/user.dart'; 
 import 'dart:io';
+import 'create_historical_screen.dart';
 
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
+  final TicketsController _ticketsController = TicketsController();
   final User usuario = User(); 
 
   TicketDetailScreen({required this.ticket});
@@ -38,7 +41,7 @@ class TicketDetailScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            _ticketDetailController.navigateBack(context);
+            _ticketsController.navigateToTicketsScreen(context);
           },
         ),
         title: Text(
@@ -286,7 +289,10 @@ class TicketDetailScreen extends StatelessWidget {
             right: 16,
             child: FloatingActionButton(
               onPressed: () {
-                // Acción del botón
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateHistoricalScreen(ticketId: ticket.id,ticket: ticket)),
+                );
               },
               backgroundColor: Colors.orange,
               shape: RoundedRectangleBorder(
