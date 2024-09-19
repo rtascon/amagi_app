@@ -3,12 +3,11 @@ import 'package:file_picker/file_picker.dart';
 import '../controllers/create_historical_controller.dart';
 import '../models/ticket.dart';
 
-
 class CreateHistoricalScreen extends StatefulWidget {
   final int ticketId;
   final Ticket ticket;
 
-  CreateHistoricalScreen({required this.ticketId,required this.ticket});
+  CreateHistoricalScreen({required this.ticketId, required this.ticket});
 
   @override
   _CreateHistoricalScreenState createState() => _CreateHistoricalScreenState();
@@ -23,13 +22,22 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
   Future<void> _pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'png', 'jpg', 'mp4'],
+      allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
       allowMultiple: true,
     );
 
     if (result != null) {
       setState(() {
         _selectedFiles = result.files.where((file) => file.size <= 10 * 1024 * 1024).toList();
+      });
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    PlatformFile? image = await _createHistoricalController.pickImageFromCamera();
+    if (image != null) {
+      setState(() {
+        _selectedFiles.add(image);
       });
     }
   }
@@ -93,20 +101,38 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
               ),
               SizedBox(height: 16.0),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     flex: 2,
-                    child: ElevatedButton.icon(
-                      onPressed: _pickFiles,
-                      icon: Icon(Icons.attach_file, color: Colors.white),
-                      label: Text('Seleccionar Archivos'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF005586),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
+                    child: Column(
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _pickFiles,
+                          icon: Icon(Icons.attach_file, color: Colors.white),
+                          label: Text('Seleccionar Archivos'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF005586),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 16.0),
+                        ElevatedButton.icon(
+                          onPressed: _pickImageFromCamera,
+                          icon: Icon(Icons.camera_alt, color: Colors.white),
+                          label: Text('Tomar Foto'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF005586),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(width: 16.0),
@@ -119,9 +145,14 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: _selectedFiles.isEmpty
-                          ? Text(
-                              'No se han cargado archivos',
-                              style: TextStyle(color: Color(0xFF005586)),
+                          ? Container(
+                              height: 100, // Ajusta la altura según sea necesario
+                              child: Center(
+                                child: Text(
+                                  'No se han cargado archivos',
+                                  style: TextStyle(color: Color(0xFF005586)),
+                                ),
+                              ),
                             )
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

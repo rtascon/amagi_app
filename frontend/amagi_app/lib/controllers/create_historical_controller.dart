@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/ticket_service.dart';
 import 'tickets_controller.dart';
 import '../models/ticket.dart';
 
 class CreateHistoricalController {
   final TicketService _ticketService = TicketService();
+  final ImagePicker _imagePicker = ImagePicker();
 
-  void submitHistorical(BuildContext context, int ticketId, String descripcion, List<PlatformFile> selectedFiles,Ticket ticket) async {
+  Future<void> submitHistorical(BuildContext context, int ticketId, String descripcion, List<PlatformFile> selectedFiles, Ticket ticket) async {
     try {
-
       int followupId = await _ticketService.addFollowupToTicket(ticketId, descripcion);
-
       await _ticketService.uploadFiles(selectedFiles, followupId);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Histórico enviado con éxito')),
       );
+
       // Navegar a la pantalla de detalles del ticket actualizada
       final TicketsController ticketsController = TicketsController();
       await ticketsController.navigateToTicketDetailScreen(context, ticket);
@@ -26,4 +27,19 @@ class CreateHistoricalController {
       );
     }
   }
+
+  Future<PlatformFile?> pickImageFromCamera() async {
+    final XFile? image = await _imagePicker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      // Convertir XFile a PlatformFile
+      PlatformFile platformFile = PlatformFile(
+        name: image.name,
+        size: await image.length(),
+        path: image.path,
+      );
+      return platformFile;
+    }
+    return null;
+  }
+
 }
