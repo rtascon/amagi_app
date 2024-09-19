@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../services/user_service.dart';
+import '../services/glpi_general_service.dart';
 
 class WelcomeController {
   final BuildContext context;
@@ -26,6 +27,8 @@ class WelcomeController {
       User usuario = User();
       UserService userService = UserService();
       await userService.obtenerUsuarioInfo(usuario);
+      GlpiGeneralService glpiGeneralService = GlpiGeneralService();
+      await glpiGeneralService.changeActiveEntity(prefs.getInt('root_entity') ?? 0);
     }
 
     return isLoggedIn;
