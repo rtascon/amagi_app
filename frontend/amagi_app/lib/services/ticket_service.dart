@@ -342,13 +342,13 @@ class TicketService {
         "status": ticketData['status'],
         "type": ticketData['type'],
         "requesttypes_id": ticketData['requesttypes_id'],
-        //"entities_id": ticketData['entities_id'],
+        "entities_id": ticketData['entities_id'],
       }
     });
   
     try {
       final response = await http.post(ticketUrl, headers: headers, body: body)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+          .timeout(Duration(seconds: 15)); 
   
       if (response.statusCode == 200 || response.statusCode == 201) {
         final resp = jsonDecode(response.body);
@@ -366,7 +366,7 @@ class TicketService {
     }
   }
 
-  Future<List<int>> uploadFiles(List<PlatformFile> selectedFiles) async {
+  Future<void> uploadFiles(List<PlatformFile> selectedFiles, int followupId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -378,7 +378,6 @@ class TicketService {
       'Content-Type': 'multipart/form-data',
     };
 
-    List<int> uploadedDocumentIds = [];
     for (var file in selectedFiles) {
       final bytes = await File(file.path!).readAsBytes();
 
@@ -388,6 +387,8 @@ class TicketService {
           'input': {
             'name': 'Uploaded document',
             '_filename': [file.name],
+            'itemtype': 'ITILFollowup',
+            'items_id': followupId,
           }
         })
         ..files.add(http.MultipartFile.fromBytes(
@@ -401,10 +402,7 @@ class TicketService {
         final streamedResponse = await request.send().timeout(Duration(seconds: 15));
         final response = await http.Response.fromStream(streamedResponse);
 
-        if (response.statusCode == 201) {
-          final responseData = jsonDecode(response.body);
-          uploadedDocumentIds.add(responseData['id']);
-        } else {
+        if (response.statusCode != 201) {
           throw Exception("Error al subir el archivo: ${response.body}");
         }
       } on TimeoutException catch (e) {
@@ -413,11 +411,9 @@ class TicketService {
         throw Exception("Error al subir el archivo: $e");
       }
     }
-
-    return uploadedDocumentIds;
   }
 
-  Future<void> addFollowupToTicket(int ticketId, String descripcion,List<int> documentIds) async {
+  Future<int> addFollowupToTicket(int ticketId, String descripcion) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -429,12 +425,13 @@ class TicketService {
       'Content-Type': 'application/json',
     };
 
+    int followupId = 0;
+
     final body = jsonEncode({
       "input": {
         "items_id": ticketId,
         "itemtype": "Ticket",
         "content": descripcion,
-        "documents_id": documentIds,
       }
     });
 
@@ -442,9 +439,11 @@ class TicketService {
       final response = await http.post(followupUrl, headers: headers, body: body)
           .timeout(Duration(seconds: 15));
 
-      if (response.statusCode != 200 || response.statusCode != 201) {
-        throw Exception("Error al añadir el comentario/histórico: ${response.body}");
+      if (response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+        followupId = responseData['id'];
       }
+      return followupId;
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
     } catch (e) {

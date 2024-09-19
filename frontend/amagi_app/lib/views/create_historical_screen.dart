@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../controllers/create_historical_controller.dart';
+import '../models/ticket.dart';
+
 
 class CreateHistoricalScreen extends StatefulWidget {
   final int ticketId;
+  final Ticket ticket;
 
-  CreateHistoricalScreen({required this.ticketId});
+  CreateHistoricalScreen({required this.ticketId,required this.ticket});
 
   @override
   _CreateHistoricalScreenState createState() => _CreateHistoricalScreenState();
@@ -142,6 +145,7 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                           widget.ticketId,
                           _descripcion!,
                           _selectedFiles,
+                          widget.ticket,
                         );
                       }
                     },
