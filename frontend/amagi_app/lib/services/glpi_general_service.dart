@@ -74,6 +74,7 @@ class GlpiGeneralService {
     };
     final body = json.encode({
     'entities_id': entityId,
+    "is_recursive": true,
     });
 
     try {
