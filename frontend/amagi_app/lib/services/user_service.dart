@@ -76,7 +76,7 @@ class UserService {
         final userInfo = jsonDecode(response.body);
         return userInfo['firstname'] + ' ' + userInfo['realname'];
       } else {
-        throw Exception("Error al obtener el nombre del usuario: ${response.body}");
+        return 'Usuario desconocido';
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");

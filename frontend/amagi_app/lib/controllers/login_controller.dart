@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/auth_service.dart';
+import '../services/glpi_general_service.dart';
 import '../views/main_menu_screen.dart';
 import '../views/loading_screen.dart';
 import '../views/registration_request_screen.dart';
@@ -11,6 +12,7 @@ import 'dart:async';
 
 class LoginController {
   final AuthService _authService = AuthService();
+  final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
   final _storage = FlutterSecureStorage();
 
   void login(String username, String password, BuildContext context) async {
@@ -34,8 +36,28 @@ class LoginController {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('username', formattedUsername);
-        String? sessionToken = await _storage.read(key: 'session_token'); // Await the result
+        String? sessionToken = await _storage.read(key: 'session_token'); 
         await prefs.setString('sessionToken', sessionToken ?? '');
+        
+        Map<String, dynamic> myEntities = await _glpiGeneralService.getMyEntities();
+
+        var myEntitiesList = myEntities['myentities'];
+        if (myEntitiesList != null && myEntitiesList is List) {
+          var myEntity = myEntitiesList.firstWhere(
+            (element) => element['name'] == 'GIA',
+            orElse: () => null,
+          );
+
+          if (myEntity != null) {
+            int entityId = int.parse(myEntity['id'].toString());
+            await _glpiGeneralService.changeActiveEntity(entityId);
+            await prefs.setInt('root_entity', entityId);
+          } else {
+            throw Exception('Entity "GIA" not found');
+          }
+        } else {
+          throw Exception('Invalid structure for myEntities');
+        }
 
         Navigator.pushReplacement(
           context,
