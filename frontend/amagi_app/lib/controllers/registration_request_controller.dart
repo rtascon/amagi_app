@@ -29,13 +29,15 @@ class RegistrationRequestController {
       showNoInternetMessage(context); 
       return false;
     }
-    final success = await _authService.iniciarSesion(_appServiceCredentialUsername, _appServiceCredentialPassword);
-    
-    if (success) {
-      final Map<String, dynamic> ticketData = {
-        "_users_id_requester": _user.getIdUsuario,
-        'name': 'Solicitud de registro: $empresa - $nombre $apellido',
-        'content': '''
+
+    try {
+      final success = await _authService.iniciarSesion(_appServiceCredentialUsername, _appServiceCredentialPassword);
+      
+      if (success) {
+        final Map<String, dynamic> ticketData = {
+          "_users_id_requester": _user.getIdUsuario,
+          'name': 'Solicitud de registro: $empresa - $nombre $apellido',
+          'content': '''
 Nombre: $nombre
 Apellido: $apellido
 Empresa: $empresa
@@ -43,35 +45,33 @@ Correo Electrónico: $correo
 Número de Teléfono: $telefono
 Cédula: $cedula
 ''',
-      };
+        };
 
-      try {
         final response = await _ticketService.crearTicket(ticketData);
 
         if (response['success']) {
           await _showSuccessMessage(context);
-
         } else {
           throw Exception('Error al crear la solicitud');
         }
-      } catch (e) {
-        Navigator.of(context).pop(); 
-        if (e is TimeoutException) {
-          showTimeoutMessage(context); 
-        } else {
-          _showErrorMessage(context,'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
-        }
+
+        _authService.cerrarSesion();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+        return true;
+      } else {
+        _showErrorMessage(context, 'No pudimos enviar su solicitud de registro. Por favor, intente más tarde.');
+        return false;
       }
-
-      _authService.cerrarSesion();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-      return true;
-
-    } else {
-      _showErrorMessage(context, 'No pudimos enviar su solicitud de registro. Por favor, intente más tarde.');
+    } catch (e) {
+      Navigator.of(context).pop(); 
+      if (e is TimeoutException) {
+        showTimeoutMessage(context); 
+      } else {
+        _showErrorMessage(context,'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
+      }
       return false;
     }
   }

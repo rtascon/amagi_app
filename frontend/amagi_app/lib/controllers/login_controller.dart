@@ -28,8 +28,7 @@ class LoginController {
     try {
       final formattedUsername = username.toLowerCase().trim();
       final success = await _authService.iniciarSesion(formattedUsername, password);
-
-      Navigator.of(context).pop(); 
+ 
 
       if (success) {
         // Guardar el estado de inicio de sesión
@@ -58,7 +57,7 @@ class LoginController {
         } else {
           throw Exception('Invalid structure for myEntities');
         }
-
+        Navigator.of(context).pop();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainMenuScreen()),
