@@ -151,16 +151,16 @@ class _TicketsScreenState extends State<TicketsScreen> {
                           onTap: () {
                             _ticketsController.navigateToTicketDetailScreen(context, ticket);
                           },
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            child: Stack(
-                              children: [
-                                Column(
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
@@ -360,76 +360,76 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                     ),
                                   ],
                                 ),
-                                if (_typeConversion.getEstado(ticket.estado) == 'Resuelto')
-                                  Positioned(
-                                    right: -10,
-                                    bottom: -10,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        foregroundColor: Colors.white,
-                                        minimumSize: Size(60, 20), 
-                                      ),
-                                      onPressed: () {
-                                        _ticketsController.closeTicket(context, ticket);
-                                      },
-                                      child: Text('Cerrar Ticket'),
-                                    ),
-                                  ),
+                              ),
+                              if (_typeConversion.getEstado(ticket.estado) == 'Resuelto')
                                 Positioned(
-                                  bottom: 18,
-                                  right: 8,
-                                  child: IconButton(
-                                    icon: Icon(Icons.info_outline),
+                                  right: -10,
+                                  top: 80,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFF005586),
+                                      foregroundColor: Colors.white,
+                                      minimumSize: Size(60, 30), 
+                                    ),
                                     onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          final String fechaCreacion = DateFormat('yyyy-MM-dd HH:mm').format(ticket.fechaCreacion);
-                                          final String fechaModificacion = DateFormat('yyyy-MM-dd HH:mm').format(ticket.fechaActualizacion);
-                                          final String prioridad = _typeConversion.getPrioridad(ticket.prioridad);
-                                          return AlertDialog(
-                                            title: Text(
-                                              'Más detalles',
-                                              style: TextStyle(fontWeight: FontWeight.bold),
-                                            ),
-                                            content: SingleChildScrollView(
-                                              child: ListBody(
-                                                children: <Widget>[
-                                                  ListTile(
-                                                    leading: Icon(Icons.date_range),
-                                                    title: Text('Fecha de Creación'),
-                                                    subtitle: Text(fechaCreacion),
-                                                  ),
-                                                  ListTile(
-                                                    leading: Icon(Icons.update),
-                                                    title: Text('Fecha de Modificación'),
-                                                    subtitle: Text(fechaModificacion),
-                                                  ),
-                                                  ListTile(
-                                                    leading: Icon(Icons.priority_high),
-                                                    title: Text('Prioridad'),
-                                                    subtitle: Text(prioridad),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: Text('Cerrar', style: TextStyle(color: defaultTextButtonColor)),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
+                                      _ticketsController.closeTicket(context, ticket);
                                     },
+                                    child: Text('Cerrar Ticket'),
                                   ),
                                 ),
-                              ],
-                            ),
+                              Positioned(
+                                bottom: 30,
+                                right: 8,
+                                child: IconButton(
+                                  icon: Icon(Icons.info_outline),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        final String fechaCreacion = DateFormat('yyyy-MM-dd HH:mm').format(ticket.fechaCreacion);
+                                        final String fechaModificacion = DateFormat('yyyy-MM-dd HH:mm').format(ticket.fechaActualizacion);
+                                        final String prioridad = _typeConversion.getPrioridad(ticket.prioridad);
+                                        return AlertDialog(
+                                          title: Text(
+                                            'Más detalles',
+                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                ListTile(
+                                                  leading: Icon(Icons.date_range),
+                                                  title: Text('Fecha de Creación'),
+                                                  subtitle: Text(fechaCreacion),
+                                                ),
+                                                ListTile(
+                                                  leading: Icon(Icons.update),
+                                                  title: Text('Fecha de Modificación'),
+                                                  subtitle: Text(fechaModificacion),
+                                                ),
+                                                ListTile(
+                                                  leading: Icon(Icons.priority_high),
+                                                  title: Text('Prioridad'),
+                                                  subtitle: Text(prioridad),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text('Cerrar', style: TextStyle(color: defaultTextButtonColor)),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
