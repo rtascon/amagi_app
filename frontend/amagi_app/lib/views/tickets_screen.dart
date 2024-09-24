@@ -7,6 +7,9 @@ import '../views/filter_ticket_menu.dart';
 import '../models/ticket.dart'; 
 import '../models/type_conversion.dart';
 
+/// Esta vista muestra una lista de tickets del usuario, permitiendo filtrar y ordenar
+/// los tickets según diferentes criterios. También proporciona acceso a los detalles de cada ticket.
+
 class TicketsScreen extends StatefulWidget {
   final List<dynamic> tickets;
   final Map<String, dynamic>? initialFilters;

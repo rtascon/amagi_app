@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../controllers/create_ticket_controller.dart';
 
+/// Esta vista permite a los usuarios crear un nuevo ticket, proporcionando un título,
+/// tipo y descripción del problema o solicitud.
+
 class CreateTicketScreen extends StatefulWidget {
   @override
   _CreateTicketScreenState createState() => _CreateTicketScreenState();

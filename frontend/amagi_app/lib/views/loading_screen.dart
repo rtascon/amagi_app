@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+/// Esta vista muestra una pantalla de carga animada, utilizada para indicar que una operación
+/// está en progreso y el usuario debe esperar.
+
 class LoadingScreen extends StatefulWidget {
   @override
   _LoadingScreenState createState() => _LoadingScreenState();

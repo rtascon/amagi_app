@@ -4,6 +4,9 @@ import '../controllers/tickets_controller.dart';
 import '../models/ticket.dart'; 
 import '../models/type_conversion.dart';
 
+/// Esta vista proporciona una interfaz para filtrar tickets según diferentes criterios,
+/// como el ID del ticket, el tipo, el estado y el rango de fechas.
+
 class FilterTicketMenu extends StatefulWidget {
   final Function(Map<String, dynamic>) onFilterChanged;
 

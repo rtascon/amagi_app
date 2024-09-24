@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart'; 
 
+/// Esta vista permite a los usuarios iniciar sesión en la aplicación, proporcionando su nombre
+/// de usuario y contraseña. También incluye opciones para mostrar u ocultar la contraseña.
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -8,6 +8,9 @@ import '../models/user.dart';
 import 'dart:io';
 import 'create_historical_screen.dart';
 
+/// Esta vista muestra los detalles de un ticket específico, incluyendo su descripción,
+/// históricos y documentos adjuntos. Permite a los usuarios ver y gestionar la información del ticket.
+
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
