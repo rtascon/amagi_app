@@ -29,7 +29,7 @@ class WelcomeController {
       try {
         User usuario = User();
         UserService userService = UserService();
-        await userService.obtenerUsuarioInfo(usuario);
+        await userService.getUserInfo(usuario);
         GlpiGeneralService glpiGeneralService = GlpiGeneralService();
         await glpiGeneralService.changeActiveEntity(prefs.getInt('root_entity') ?? 0);
       } catch (e) {

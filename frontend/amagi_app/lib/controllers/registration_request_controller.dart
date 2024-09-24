@@ -31,7 +31,7 @@ class RegistrationRequestController {
     }
 
     try {
-      final success = await _authService.iniciarSesion(_appServiceCredentialUsername, _appServiceCredentialPassword);
+      final success = await _authService.logIn(_appServiceCredentialUsername, _appServiceCredentialPassword);
       
       if (success) {
         final Map<String, dynamic> ticketData = {
@@ -47,7 +47,7 @@ Cédula: $cedula
 ''',
         };
 
-        final response = await _ticketService.crearTicket(ticketData);
+        final response = await _ticketService.createTicket(ticketData);
 
         if (response['success']) {
           await _showSuccessMessage(context);
@@ -55,7 +55,7 @@ Cédula: $cedula
           throw Exception('Error al crear la solicitud');
         }
 
-        _authService.cerrarSesion();
+        _authService.logOut();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),

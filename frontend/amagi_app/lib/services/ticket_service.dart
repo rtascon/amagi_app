@@ -31,7 +31,7 @@ class TicketService {
   };
 
 
-  Future<List<dynamic>> obtenerTicketsUsuarioFiltroPorDefecto(int userId) async {
+  Future<List<dynamic>> getUserTicketFilterDefault(int userId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -71,7 +71,7 @@ class TicketService {
     }
   }
 
-  Future<List<dynamic>> obtenerTicketsUsuarioFiltrado(int userId, Map<String, dynamic> filters) async {
+  Future<List<dynamic>> getUserTicketFiltered(int userId, Map<String, dynamic> filters) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -170,6 +170,10 @@ class TicketService {
     }
   }
 
+
+  //El siguiente fragmento de código es un ejemplo de cómo se puede implementar la función para enviar una calificación a un ticket.
+  //Estado: No funciona
+/*
   Future<void> sendRatings(int ticketId, int rating, String comentarios) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -199,9 +203,9 @@ class TicketService {
       throw Exception("Error al enviar la calificación: $e");
     }
   }
+*/
 
-
-  Future<List<dynamic>> obtenerHistoricosTicket(int idTicket) async {
+  Future<List<dynamic>> getTicketFollowup(int idTicket) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -229,7 +233,7 @@ class TicketService {
     }
   }
 
-  Future<Map<String, dynamic>> obtenerDocumentoHistorico(int docId) async {
+  Future<Map<String, dynamic>> getDocFollowup(int docId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -257,7 +261,7 @@ class TicketService {
     }
   }
 
-  Future<String> obtenerDocumentoCrudo(int docId, {String? appToken}) async {
+  Future<String> getRawDoc(int docId, {String? appToken}) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -295,7 +299,7 @@ class TicketService {
 
 
 
-  Future<List<dynamic>> obtenerDetalleComentario(int ticketCommentId) async {
+  Future<List<dynamic>> getFollowupDetail(int ticketCommentId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -323,7 +327,7 @@ class TicketService {
     }
   }
 
-  Future<Map<String, dynamic>> crearTicket(Map<String, dynamic> ticketData) async {
+  Future<Map<String, dynamic>> createTicket(Map<String, dynamic> ticketData) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");

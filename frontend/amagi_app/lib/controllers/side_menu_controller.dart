@@ -8,11 +8,11 @@ class SideMenuController {
   final AuthService _authService = AuthService();
   final User _usuario = User();
 
-  void cerrarSesion(BuildContext context) async {
+  void logOut(BuildContext context) async {
     _showLoadingScreen(context);
 
     try {
-      await _authService.cerrarSesion();
+      await _authService.logOut();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('isLoggedIn');
       await prefs.remove('username');

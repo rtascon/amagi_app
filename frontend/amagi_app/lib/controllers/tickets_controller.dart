@@ -10,7 +10,7 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart' show parse;
 import '../views/loading_screen.dart';
 import '../views/main_menu_screen.dart'; 
-import '../views/satisfaction_popup.dart';
+//import '../views/satisfaction_popup.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart'; 
 import 'dart:async';
@@ -87,16 +87,16 @@ class TicketsController {
     }
   }
 
-  Future<List<Ticket>> obtenerListaTickets(BuildContext context, bool primeraVez,{Map<String, dynamic>? filters}) async {
+  Future<List<Ticket>> getTicketsList(BuildContext context, bool primeraVez,{Map<String, dynamic>? filters}) async {
     try {
      
       final userId = getUserId();
       List<dynamic> ticketsData = [];
       if(primeraVez){
-        ticketsData = await _ticketService.obtenerTicketsUsuarioFiltroPorDefecto(userId);
+        ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
       }
       else{
-        ticketsData = await _ticketService.obtenerTicketsUsuarioFiltrado(userId,filters ?? {});
+        ticketsData = await _ticketService.getUserTicketFiltered(userId,filters ?? {});
       }
 
       // Crear instancias de Ticket usando TicketFactory
@@ -138,10 +138,10 @@ class TicketsController {
       );
       List<Ticket> tickets = [];
       if (filters != null) {
-        tickets = await obtenerListaTickets(context, false,filters: filters);
+        tickets = await getTicketsList(context, false,filters: filters);
       }
       else{
-        tickets = await obtenerListaTickets(context, true);
+        tickets = await getTicketsList(context, true);
       }
 
       
@@ -181,14 +181,14 @@ class TicketsController {
         },
       );
 
-      List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
+      List<dynamic> historicos = await _ticketService.getTicketFollowup(ticket.id);
       ticket.historicos = await Future.wait(historicos.map((historico) async {
-        final nombreUsuario = await _userService.obtenerNombreUsuario(historico['users_id']);
-        final detalleComentario = await _ticketService.obtenerDetalleComentario(historico['id']);
+        final nombreUsuario = await _userService.getUserName(historico['users_id']);
+        final detalleComentario = await _ticketService.getFollowupDetail(historico['id']);
         
         List<Map<String, dynamic>> documentos = await Future.wait(detalleComentario.map((detalle) async {
-          final documento = await _ticketService.obtenerDocumentoHistorico(detalle['documents_id']);
-          final String filePath = await _ticketService.obtenerDocumentoCrudo(detalle['documents_id']);
+          final documento = await _ticketService.getDocFollowup(detalle['documents_id']);
+          final String filePath = await _ticketService.getRawDoc(detalle['documents_id']);
           return {
             'filename': documento['filename'],
             'filepath': filePath,

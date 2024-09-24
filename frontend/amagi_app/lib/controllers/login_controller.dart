@@ -27,7 +27,7 @@ class LoginController {
 
     try {
       final formattedUsername = username.toLowerCase().trim();
-      final success = await _authService.iniciarSesion(formattedUsername, password);
+      final success = await _authService.logIn(formattedUsername, password);
  
 
       if (success) {

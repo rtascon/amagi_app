@@ -55,7 +55,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
     if (filters.containsKey('tickets')) {
       filteredTickets = filters['tickets'];
     } else {
-      filteredTickets = await _ticketsController.obtenerListaTickets(context, false, filters: filters);
+      filteredTickets = await _ticketsController.getTicketsList(context, false, filters: filters);
     }
   
     setState(() {

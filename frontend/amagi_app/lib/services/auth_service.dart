@@ -12,7 +12,7 @@ class AuthService {
   static final _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
-  Future<bool> iniciarSesion(String username, String password) async {
+  Future<bool> logIn(String username, String password) async {
     final loginUrl = Uri.parse('$url/initSession');
     try {
       var response = await http.post(
@@ -44,7 +44,7 @@ class AuthService {
           await _storage.write(key: _sessionTokenKey, value: responseBody['session_token']);
           UserService userService = UserService();
           User usuario = User();
-          return userService.obtenerUsuarioInfo(usuario);
+          return userService.getUserInfo(usuario);
         } else {
           throw Exception("Error al iniciar sesión: ${response.body}");
         }
@@ -55,7 +55,7 @@ class AuthService {
         await _storage.write(key: _sessionTokenKey, value: responseBody['session_token']);
         UserService userService = UserService();
         User usuario = User();
-        return userService.obtenerUsuarioInfo(usuario);
+        return userService.getUserInfo(usuario);
       } else {
         throw Exception("Error al iniciar sesión: ${response.body}");
       }
@@ -66,7 +66,7 @@ class AuthService {
     }
   }
 
-  Future<void> cerrarSesion() async {
+  Future<void> logOut() async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     final logoutUrl = Uri.parse('$url/killSession');
     try {

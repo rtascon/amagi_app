@@ -176,7 +176,7 @@ class SideMenu extends StatelessWidget {
                       SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
-                          sideMenuController.cerrarSesion(context);
+                          sideMenuController.logOut(context);
                         },
                         child: Text(
                           'Cerrar Sesión',

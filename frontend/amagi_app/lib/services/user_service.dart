@@ -10,7 +10,7 @@ class UserService {
   static final _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
   
-  Future<bool> obtenerUsuarioInfo(User usuario) async {
+  Future<bool> getUserInfo(User usuario) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     final userUrl = Uri.parse('$url/getFullSession');
     try {
@@ -60,7 +60,7 @@ class UserService {
     }
   }
 
-  Future<String> obtenerNombreUsuario(int id) async {
+  Future<String> getUserName(int id) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     final userUrl = Uri.parse('$url/User/$id');
     try {

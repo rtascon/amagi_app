@@ -48,7 +48,7 @@ class CreateTicketController {
         throw Exception('Request type "App Amagi" not found');
       }
       
-      final response = await _ticketService.crearTicket(ticketData);
+      final response = await _ticketService.createTicket(ticketData);
   
       if (response['success']) {
         _showSuccessMessage(context, response);

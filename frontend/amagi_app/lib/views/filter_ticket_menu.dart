@@ -48,7 +48,7 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
       _selectedStatus = null;
       _selectedDateRange = null;
     });
-    List<Ticket> tickets = await TicketsController().obtenerListaTickets(context, true);
+    List<Ticket> tickets = await TicketsController().getTicketsList(context, true);
     widget.onFilterChanged({
       'ticketId': null,
       'type': null,
