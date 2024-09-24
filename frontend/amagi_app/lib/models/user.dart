@@ -1,7 +1,15 @@
+/// Clase que representa un usuario en el sistema.
+/// 
+/// Esta clase sigue el patrón Singleton para asegurar que solo exista una instancia de usuario
+/// en toda la aplicación.
 class User {
+  // Instancia única de la clase User.
   static final User _instance = User._internal();
   
+  // Constructor interno privado.
   User._internal();
+
+  /// Constructor de fábrica que retorna la instancia única de la clase User.
   factory User() {
     return _instance;
   }

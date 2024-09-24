@@ -8,6 +8,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart'; 
 import 'dart:async';
 
+/// Controlador para manejar las solicitudes de registro.
 class RegistrationRequestController {
   final TicketService _ticketService = TicketService();
   final AuthService _authService = AuthService();
@@ -15,6 +16,19 @@ class RegistrationRequestController {
   final String _appServiceCredentialPassword = Environment.appServiceCredentialPassword;
   final User _user = User();
 
+  /// Envía una solicitud de registro con los datos proporcionados.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [nombre]: Nombre del solicitante.
+  /// - [apellido]: Apellido del solicitante.
+  /// - [empresa]: Empresa del solicitante.
+  /// - [correo]: Correo electrónico del solicitante.
+  /// - [telefono]: Teléfono del solicitante.
+  /// - [cedula]: Cédula del solicitante.
+  /// 
+  /// Verifica la conectividad antes de enviar la solicitud. Si no hay conexión, muestra un mensaje de error.
+  /// Si hay conexión, intenta enviar la solicitud y maneja las respuestas y errores adecuadamente.
   Future<bool> submitRegistrationRequest(
     BuildContext context,
     String nombre,
@@ -47,7 +61,7 @@ Número de Teléfono: $telefono
 Cédula: $cedula
 ''',
         };
-
+        // Envía la solicitud de registro.
         final response = await _ticketService.createTicket(ticketData);
 
         if (response['success']) {
@@ -77,6 +91,10 @@ Cédula: $cedula
     }
   }
 
+  /// Muestra un mensaje de error cuando ocurre un problema al enviar la solicitud de registro.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   void _showErrorMessage(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -106,6 +124,10 @@ Cédula: $cedula
     );
   }
 
+  /// Muestra un mensaje de éxito cuando la solicitud de registro se envía correctamente.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   Future<void> _showSuccessMessage(BuildContext context) async {
     await showDialog(
       context: context,
