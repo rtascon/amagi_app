@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../config/enviroment.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/// Servicio general para interactuar con la API de GLPI.
 class GlpiGeneralService {
   final String url = Environment.apiUrl;
   static final _storage = FlutterSecureStorage();
@@ -11,6 +12,9 @@ class GlpiGeneralService {
 
   GlpiGeneralService();
 
+  /// Obtiene el tipo de solicitud desde la API.
+  /// 
+  /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
   Future<List<dynamic>> getRequestType() async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -37,6 +41,9 @@ class GlpiGeneralService {
     }
   }
 
+  /// Obtiene las entidades del usuario desde la API.
+  /// 
+  /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
   Future<Map<String, dynamic>> getMyEntities() async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -63,6 +70,9 @@ class GlpiGeneralService {
     }
   }
 
+  /// Cambia la entidad activa del usuario en la API.
+  /// 
+  /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
   Future<void> changeActiveEntity(int entityId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -73,8 +83,8 @@ class GlpiGeneralService {
       'Content-Type': 'application/json',
     };
     final body = json.encode({
-    'entities_id': entityId,
-    "is_recursive": true,
+      'entities_id': entityId,
+      "is_recursive": true,
     });
 
     try {
@@ -91,5 +101,4 @@ class GlpiGeneralService {
       throw Exception("Error al cambiar la entidad activa: $e");
     }
   }
-
 }

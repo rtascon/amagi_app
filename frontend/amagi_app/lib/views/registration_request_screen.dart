@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:slider_captcha/slider_captcha.dart';
 import '../controllers/registration_request_controller.dart'; 
 
+/// Esta vista permite a los usuarios solicitar el registro en la aplicación,
+/// proporcionando información personal y verificando un captcha.
+
 class RegistrationRequestScreen extends StatefulWidget {
   @override
   _RegistrationRequestScreenState createState() => _RegistrationRequestScreenState();

@@ -6,6 +6,9 @@ import '../controllers/main_menu_controller.dart';
 import '../views/side_menu.dart'; 
 import 'package:flutter/cupertino.dart';
 
+/// Esta vista representa el menú principal de la aplicación, desde donde los usuarios
+/// pueden navegar a diferentes secciones, como la creación y consulta de tickets.
+
 class MainMenuScreen extends StatefulWidget {
   @override
   _MainMenuScreenState createState() => _MainMenuScreenState();

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Este archivo contiene funciones para mostrar mensajes emergentes comunes,
+/// como mensajes de error de conexión a Internet y mensajes de tiempo de espera agotado.
+
 void showNoInternetMessage(BuildContext context) {
   Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
   showDialog(

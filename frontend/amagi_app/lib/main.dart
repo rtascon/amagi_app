@@ -9,25 +9,36 @@ import 'views/create_ticket_screen.dart';
 import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/// Punto de entrada principal de la aplicación.
 void main() async {
+  // Asegura que los widgets se inicialicen correctamente antes de ejecutar el código.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Carga las variables de entorno desde el archivo "general.env".
   await dotenv.load(fileName: "general.env");
+
+  // Establece la orientación preferida de la aplicación a solo vertical.
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((_) async {
+    // Obtiene una instancia de SharedPreferences para acceder a los datos almacenados localmente.
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Recupera el token de sesión almacenado, si existe.
     String? sessionToken = prefs.getString('sessionToken');
 
+    // Si hay un token de sesión, lo guarda de forma segura usando FlutterSecureStorage.
     if (sessionToken != null) {
       final _storage = FlutterSecureStorage();
       await _storage.write(key: 'session_token', value: sessionToken);
     }
 
+    // Ejecuta la aplicación.
     runApp(MyApp());
   });
 }
 
+/// Clase principal de la aplicación.
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -63,6 +74,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// Crea un MaterialColor a partir de un Color dado.
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
   Map<int, Color> swatch = {};

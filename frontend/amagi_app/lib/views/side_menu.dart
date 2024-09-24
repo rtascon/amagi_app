@@ -3,6 +3,9 @@ import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
 import 'package:flutter/cupertino.dart';
 
+/// Esta vista representa el menú lateral de la aplicación, que permite a los usuarios
+/// navegar a diferentes secciones de la aplicación, como la creación y consulta de tickets.
+
 class SideMenu extends StatelessWidget {
   final SideMenuController sideMenuController;
   final TicketsController ticketsController;
@@ -176,7 +179,7 @@ class SideMenu extends StatelessWidget {
                       SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
-                          sideMenuController.cerrarSesion(context);
+                          sideMenuController.logOut(context);
                         },
                         child: Text(
                           'Cerrar Sesión',

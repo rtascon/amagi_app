@@ -3,6 +3,9 @@ import 'package:file_picker/file_picker.dart';
 import '../controllers/create_historical_controller.dart';
 import '../models/ticket.dart';
 
+/// Esta vista permite a los usuarios agregar un histórico a un ticket existente,
+/// incluyendo la descripción y la posibilidad de adjuntar archivos.
+
 class CreateHistoricalScreen extends StatefulWidget {
   final int ticketId;
   final Ticket ticket;

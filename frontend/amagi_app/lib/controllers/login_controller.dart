@@ -10,11 +10,23 @@ import '../views/registration_request_screen.dart';
 import '../views/common_pop_ups.dart'; 
 import 'dart:async';
 
+/// Controlador para manejar el inicio de sesión.
 class LoginController {
   final AuthService _authService = AuthService();
   final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
   final _storage = FlutterSecureStorage();
 
+  /// Inicia sesión con el [username] y [password] proporcionados.
+  /// 
+  /// Parámetros:
+  /// - [username]: Nombre de usuario.
+  /// - [password]: Contraseña del usuario.
+  /// - [context]: El contexto de la aplicación.
+  /// 
+  /// Verifica la conectividad antes de intentar iniciar sesión. Si no hay conexión, muestra un mensaje de error.
+  /// Si hay conexión, muestra una pantalla de carga y luego intenta iniciar sesión.
+  /// Si el inicio de sesión es exitoso, guarda el estado de inicio de sesión y navega al menú principal.
+  /// Si ocurre un error, muestra un mensaje de error.
   void login(String username, String password, BuildContext context) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
@@ -27,9 +39,8 @@ class LoginController {
 
     try {
       final formattedUsername = username.toLowerCase().trim();
-      final success = await _authService.iniciarSesion(formattedUsername, password);
+      final success = await _authService.logIn(formattedUsername, password);
  
-
       if (success) {
         // Guardar el estado de inicio de sesión
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -40,6 +51,7 @@ class LoginController {
         
         Map<String, dynamic> myEntities = await _glpiGeneralService.getMyEntities();
 
+        // Cambia a la entidad raíz: GIA
         var myEntitiesList = myEntities['myentities'];
         if (myEntitiesList != null && myEntitiesList is List) {
           var myEntity = myEntitiesList.firstWhere(
@@ -75,6 +87,10 @@ class LoginController {
     }
   }
 
+  /// Redirige a la pantalla de solicitud de registro.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   void redirectToRegistration(BuildContext context) {
     Navigator.push(
       context,
@@ -82,6 +98,10 @@ class LoginController {
     );
   }
 
+  /// Muestra una pantalla de carga.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   void _showLoadingScreen(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialog(
@@ -94,6 +114,10 @@ class LoginController {
     });
   }
 
+  /// Muestra un mensaje de error cuando el inicio de sesión falla.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   void _showErrorMessage(BuildContext context) {
     Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     showDialog(

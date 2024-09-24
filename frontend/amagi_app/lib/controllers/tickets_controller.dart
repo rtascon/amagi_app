@@ -10,11 +10,12 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart' show parse;
 import '../views/loading_screen.dart';
 import '../views/main_menu_screen.dart'; 
-import '../views/satisfaction_popup.dart';
+//import '../views/satisfaction_popup.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart'; 
 import 'dart:async';
 
+/// Controlador para manejar las acciones relacionadas con los tickets.
 class TicketsController {
   final TicketService _ticketService = TicketService();
   final UserService _userService = UserService();
@@ -22,10 +23,19 @@ class TicketsController {
   final usuario = User();
   final HtmlUnescape unescape = HtmlUnescape();
 
+  /// Obtiene el ID del usuario actual.
   int getUserId() {
     return usuario.idUsuario;
   }
 
+  /// Cierra un ticket específico.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [ticket]: El ticket a cerrar.
+  /// 
+  /// Verifica la conectividad antes de intentar cerrar el ticket. Si no hay conexión, muestra un mensaje de error.
+  /// Si hay conexión, intenta cerrar el ticket y maneja las respuestas y errores adecuadamente.
   Future<void> closeTicket(BuildContext context, Ticket ticket) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
@@ -47,7 +57,9 @@ class TicketsController {
       await _ticketService.updateTicket(ticket.id, updateData);
 
       Navigator.of(context).pop();
-/*
+
+      // Este fragmento de código se comentó porque no se implementó la funcionalidad de calificar el ticket
+      /*
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -66,8 +78,8 @@ class TicketsController {
           );
         },
       );
+      */
 
-    */
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Ticket cerrado exitosamente')),
       );
@@ -87,16 +99,22 @@ class TicketsController {
     }
   }
 
-  Future<List<Ticket>> obtenerListaTickets(BuildContext context, bool primeraVez,{Map<String, dynamic>? filters}) async {
+  /// Obtiene la lista de tickets del usuario.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [primeraVez]: Indica si es la primera vez que se obtiene la lista de tickets.
+  /// - [filters]: Filtros opcionales para la búsqueda de tickets.
+  /// 
+  /// Retorna una lista de tickets.
+  Future<List<Ticket>> getTicketsList(BuildContext context, bool primeraVez, {Map<String, dynamic>? filters}) async {
     try {
-     
       final userId = getUserId();
       List<dynamic> ticketsData = [];
-      if(primeraVez){
-        ticketsData = await _ticketService.obtenerTicketsUsuarioFiltroPorDefecto(userId);
-      }
-      else{
-        ticketsData = await _ticketService.obtenerTicketsUsuarioFiltrado(userId,filters ?? {});
+      if (primeraVez) {
+        ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
+      } else {
+        ticketsData = await _ticketService.getUserTicketFiltered(userId, filters ?? {});
       }
 
       // Crear instancias de Ticket usando TicketFactory
@@ -120,7 +138,12 @@ class TicketsController {
     }
   }
 
-  void navigateToTicketsScreen(BuildContext context,{Map<String, dynamic>? filters}) async {
+  /// Navega a la pantalla de tickets.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [filters]: Filtros opcionales para la búsqueda de tickets.
+  void navigateToTicketsScreen(BuildContext context, {Map<String, dynamic>? filters}) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
     if (connectivityResult == ConnectivityResult.none) {
@@ -128,7 +151,6 @@ class TicketsController {
       return;
     }
     try {
-      
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -138,13 +160,11 @@ class TicketsController {
       );
       List<Ticket> tickets = [];
       if (filters != null) {
-        tickets = await obtenerListaTickets(context, false,filters: filters);
-      }
-      else{
-        tickets = await obtenerListaTickets(context, true);
+        tickets = await getTicketsList(context, false, filters: filters);
+      } else {
+        tickets = await getTicketsList(context, true);
       }
 
-      
       Navigator.of(context).pop();
 
       Navigator.push(
@@ -158,12 +178,17 @@ class TicketsController {
       if (e is TimeoutException) {
         showTimeoutMessage(context); 
       } else {
-      print("Error al obtener la lista de tickets: $e");
-      Navigator.of(context).pop();
+        print("Error al obtener la lista de tickets: $e");
+        Navigator.of(context).pop();
       }
     }
   }
 
+  /// Navega a la pantalla de detalles del ticket.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [ticket]: El ticket cuyos detalles se mostrarán.
   Future<void> navigateToTicketDetailScreen(BuildContext context, Ticket ticket) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
@@ -181,22 +206,34 @@ class TicketsController {
         },
       );
 
-      List<dynamic> historicos = await _ticketService.obtenerHistoricosTicket(ticket.id);
+      // Obtiene los históricos del ticket.
+      List<dynamic> historicos = await _ticketService.getTicketFollowup(ticket.id);
+      
+      // Procesa cada histórico y obtiene detalles adicionales.
       ticket.historicos = await Future.wait(historicos.map((historico) async {
-        final nombreUsuario = await _userService.obtenerNombreUsuario(historico['users_id']);
-        final detalleComentario = await _ticketService.obtenerDetalleComentario(historico['id']);
+        // Obtiene el nombre del usuario que hizo el seguimiento.
+        final nombreUsuario = await _userService.getUserName(historico['users_id']);
         
+        // Obtiene los detalles del comentario del seguimiento.
+        final detalleComentario = await _ticketService.getFollowupDetail(historico['id']);
+        
+        // Procesa cada detalle del comentario para obtener los documentos asociados.
         List<Map<String, dynamic>> documentos = await Future.wait(detalleComentario.map((detalle) async {
-          final documento = await _ticketService.obtenerDocumentoHistorico(detalle['documents_id']);
-          final String filePath = await _ticketService.obtenerDocumentoCrudo(detalle['documents_id']);
+          // Obtiene la información del documento.
+          final documento = await _ticketService.getDocFollowup(detalle['documents_id']);
+          
+          // Obtiene la ruta del archivo del documento.
+          final String filePath = await _ticketService.getRawDoc(detalle['documents_id']);
+          
+          // Retorna un mapa con los detalles del documento.
           return {
             'filename': documento['filename'],
             'filepath': filePath,
             'mime': documento['mime'],
-            
           };
         }).toList());
         
+        // Retorna un mapa con los detalles del histórico procesado.
         return {
           'id': historico['id'],
           'users_id': historico['users_id'],
@@ -221,12 +258,16 @@ class TicketsController {
       if (e is TimeoutException) {
         showTimeoutMessage(context); 
       } else {
-      print("Error al obtener históricos del ticket: $e"); 
-      Navigator.of(context).pop();
+        print("Error al obtener históricos del ticket: $e"); 
+        Navigator.of(context).pop();
       }
     }
   }
 
+  /// Navega al menú principal.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   void navigateBackToMainMenu(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -235,7 +276,12 @@ class TicketsController {
     );
   }
 
-
+  /// Elimina las etiquetas HTML de una cadena.
+  /// 
+  /// Parámetros:
+  /// - [htmlString]: La cadena que contiene etiquetas HTML.
+  /// 
+  /// Retorna la cadena sin etiquetas HTML.
   String _stripHtmlTags(String htmlString) {
     final document = parse(htmlString);
     return document.body?.text ?? '';

@@ -4,6 +4,9 @@ import '../controllers/tickets_controller.dart';
 import '../models/ticket.dart'; 
 import '../models/type_conversion.dart';
 
+/// Esta vista proporciona una interfaz para filtrar tickets según diferentes criterios,
+/// como el ID del ticket, el tipo, el estado y el rango de fechas.
+
 class FilterTicketMenu extends StatefulWidget {
   final Function(Map<String, dynamic>) onFilterChanged;
 
@@ -48,7 +51,7 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
       _selectedStatus = null;
       _selectedDateRange = null;
     });
-    List<Ticket> tickets = await TicketsController().obtenerListaTickets(context, true);
+    List<Ticket> tickets = await TicketsController().getTicketsList(context, true);
     widget.onFilterChanged({
       'ticketId': null,
       'type': null,
@@ -149,8 +152,11 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                             lastDate: DateTime.now(),
                           );
                           if (picked != null) {
+                            // Ajustar el rango de fechas
+                            DateTime start = DateTime(picked.start.year, picked.start.month, picked.start.day, 0, 0);
+                            DateTime end = DateTime(picked.end.year, picked.end.month, picked.end.day, 23, 59);
                             setState(() {
-                              _selectedDateRange = picked;
+                              _selectedDateRange = DateTimeRange(start: start, end: end);
                             });
                           }
                         } : null,

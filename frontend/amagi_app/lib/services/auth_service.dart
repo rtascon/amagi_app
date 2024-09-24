@@ -6,15 +6,23 @@ import '../models/user.dart';
 import '../config/enviroment.dart';
 import 'dart:async';
 
+/// Servicio de autenticación para manejar el inicio y cierre de sesión.
 class AuthService {
   final String url = Environment.apiUrl;
   final String internalDbAuthSource = Environment.glpiInternalDbAuthSource;
   static final _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
-  Future<bool> iniciarSesion(String username, String password) async {
+  /// Inicia sesión con el [username] y [password] proporcionados.
+  /// 
+  /// Si la autenticación es exitosa, almacena el token de sesión de forma segura
+  /// y retorna la información del usuario.
+  /// 
+  /// Lanza una excepción si ocurre un error durante el proceso de inicio de sesión.
+  Future<bool> logIn(String username, String password) async {
     final loginUrl = Uri.parse('$url/initSession');
     try {
+      // Realiza la solicitud de inicio de sesión.
       var response = await http.post(
         loginUrl,
         headers: <String, String>{
@@ -27,6 +35,7 @@ class AuthService {
         }),
       ).timeout(Duration(seconds: 15));
 
+      // Si la autenticación falla, intenta nuevamente sin el campo 'auth'.
       if (response.statusCode == 401) {
         response = await http.post(
           loginUrl,
@@ -39,23 +48,25 @@ class AuthService {
           }),
         ).timeout(Duration(seconds: 15));
 
+        // Si la autenticación es exitosa, almacena el token de sesión y se obtiene la información del usuario.
         if (response.statusCode == 200) {
           final responseBody = jsonDecode(response.body);
           await _storage.write(key: _sessionTokenKey, value: responseBody['session_token']);
           UserService userService = UserService();
           User usuario = User();
-          return userService.obtenerUsuarioInfo(usuario);
+          return userService.getUserInfo(usuario);
         } else {
           throw Exception("Error al iniciar sesión: ${response.body}");
         }
       }
 
+      // Si la autenticación es exitosa en el primer intento, almacena el token de sesión y se obtiene la información del usuario.
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
         await _storage.write(key: _sessionTokenKey, value: responseBody['session_token']);
         UserService userService = UserService();
         User usuario = User();
-        return userService.obtenerUsuarioInfo(usuario);
+        return userService.getUserInfo(usuario);
       } else {
         throw Exception("Error al iniciar sesión: ${response.body}");
       }
@@ -66,10 +77,14 @@ class AuthService {
     }
   }
 
-  Future<void> cerrarSesion() async {
+  /// Cierra la sesión del usuario actual.
+  /// 
+  /// Lanza una excepción si ocurre un error durante el proceso de cierre de sesión.
+  Future<void> logOut() async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     final logoutUrl = Uri.parse('$url/killSession');
     try {
+      // Realiza la solicitud de cierre de sesión.
       final response = await http.post(
         logoutUrl,
         headers: <String, String>{
@@ -77,6 +92,7 @@ class AuthService {
         },
       ).timeout(Duration(seconds: 15));
 
+      // Si la solicitud de cierre de sesión falla, lanza una excepción.
       if (response.statusCode != 200) {
         throw Exception("Error al cerrar sesión: ${response.body}");
       }

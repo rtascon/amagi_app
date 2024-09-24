@@ -8,6 +8,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart'; 
 import 'dart:async';
 
+/// Controlador para manejar las solicitudes de registro.
 class RegistrationRequestController {
   final TicketService _ticketService = TicketService();
   final AuthService _authService = AuthService();
@@ -15,6 +16,19 @@ class RegistrationRequestController {
   final String _appServiceCredentialPassword = Environment.appServiceCredentialPassword;
   final User _user = User();
 
+  /// Envía una solicitud de registro con los datos proporcionados.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [nombre]: Nombre del solicitante.
+  /// - [apellido]: Apellido del solicitante.
+  /// - [empresa]: Empresa del solicitante.
+  /// - [correo]: Correo electrónico del solicitante.
+  /// - [telefono]: Teléfono del solicitante.
+  /// - [cedula]: Cédula del solicitante.
+  /// 
+  /// Verifica la conectividad antes de enviar la solicitud. Si no hay conexión, muestra un mensaje de error.
+  /// Si hay conexión, intenta enviar la solicitud y maneja las respuestas y errores adecuadamente.
   Future<bool> submitRegistrationRequest(
     BuildContext context,
     String nombre,
@@ -31,11 +45,12 @@ class RegistrationRequestController {
     }
 
     try {
-      final success = await _authService.iniciarSesion(_appServiceCredentialUsername, _appServiceCredentialPassword);
+      final success = await _authService.logIn(_appServiceCredentialUsername, _appServiceCredentialPassword);
       
       if (success) {
         final Map<String, dynamic> ticketData = {
           "_users_id_requester": _user.getIdUsuario,
+          "entities_id": 0,
           'name': 'Solicitud de registro: $empresa - $nombre $apellido',
           'content': '''
 Nombre: $nombre
@@ -46,8 +61,8 @@ Número de Teléfono: $telefono
 Cédula: $cedula
 ''',
         };
-
-        final response = await _ticketService.crearTicket(ticketData);
+        // Envía la solicitud de registro.
+        final response = await _ticketService.createTicket(ticketData);
 
         if (response['success']) {
           await _showSuccessMessage(context);
@@ -55,7 +70,7 @@ Cédula: $cedula
           throw Exception('Error al crear la solicitud');
         }
 
-        _authService.cerrarSesion();
+        _authService.logOut();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -75,6 +90,7 @@ Cédula: $cedula
       return false;
     }
   }
+
 
   void _showErrorMessage(BuildContext context, String message) {
     showDialog(
@@ -104,7 +120,10 @@ Cédula: $cedula
       },
     );
   }
-
+  /// Muestra un mensaje de éxito cuando la solicitud de registro se envía correctamente.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   Future<void> _showSuccessMessage(BuildContext context) async {
     await showDialog(
       context: context,

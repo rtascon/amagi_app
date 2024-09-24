@@ -4,11 +4,24 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
+/// Controlador para manejar las acciones en la pantalla de detalles del ticket.
 class TicketDetailController {
+  /// Navega hacia atrás en la pila de navegación.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
   void navigateBack(BuildContext context) {
     Navigator.pop(context);
   }
 
+  /// Descarga un archivo desde una URL o una ruta local.
+  /// 
+  /// Parámetros:
+  /// - [pathOrUrl]: La ruta o URL del archivo a descargar.
+  /// - [fileName]: El nombre del archivo a guardar.
+  /// 
+  /// Verifica si la ruta es local o una URL válida. Si es una URL, solicita permisos de almacenamiento,
+  /// descarga el archivo y lo guarda en el almacenamiento del dispositivo.
   Future<void> downloadFile(String pathOrUrl, String fileName) async {
     // Verificar si es una ruta local
     if (File(pathOrUrl).existsSync()) {
@@ -44,6 +57,13 @@ class TicketDetailController {
     }
   }
 
+  /// Guarda un archivo en el almacenamiento del dispositivo.
+  /// 
+  /// Parámetros:
+  /// - [localPath]: La ruta local del archivo a guardar.
+  /// - [fileName]: El nombre del archivo a guardar.
+  /// 
+  /// Solicita permisos de almacenamiento y guarda el archivo en el directorio de almacenamiento externo.
   Future<void> _saveFileToDeviceStorage(String localPath, String fileName) async {
     try {
       var status = await Permission.storage.status;
