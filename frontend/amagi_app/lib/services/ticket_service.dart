@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 
+/// Servicio para manejar operaciones relacionadas con los tickets.
 class TicketService {
   final String url = Environment.apiUrl;
   static final _storage = FlutterSecureStorage();
@@ -31,6 +32,9 @@ class TicketService {
   };
 
 
+  /// Obtiene los tickets del usuario con un filtro predeterminado.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getUserTicketFilterDefault(int userId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -57,7 +61,7 @@ class TicketService {
   
     try {
       final response = await http.get(ticketsUrl.replace(queryParameters: params), headers: headers)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+          .timeout(Duration(seconds: 15)); 
   
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
@@ -71,6 +75,10 @@ class TicketService {
     }
   }
 
+
+  /// Obtiene los tickets del usuario con filtros personalizados.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getUserTicketFiltered(int userId, Map<String, dynamic> filters) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -141,6 +149,10 @@ class TicketService {
     }
   }
 
+
+  /// Actualiza un ticket con los datos proporcionados.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<void> updateTicket(int ticketId, Map<String, dynamic> updateData) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -158,7 +170,7 @@ class TicketService {
   
     try {
       final response = await http.put(ticketUrl, headers: headers, body: body)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+          .timeout(Duration(seconds: 15)); 
   
       if (response.statusCode != 200) {
         throw Exception("Error al actualizar el ticket: ${response.body}");
@@ -205,6 +217,9 @@ class TicketService {
   }
 */
 
+  /// Obtiene los comentarios de seguimiento de un ticket.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getTicketFollowup(int idTicket) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -219,7 +234,7 @@ class TicketService {
   
     try {
       final response = await http.get(comentariosUrl, headers: headers)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+          .timeout(Duration(seconds: 15)); 
   
       if (response.statusCode == 200 || response.statusCode == 206) {
         return jsonDecode(response.body);
@@ -233,6 +248,9 @@ class TicketService {
     }
   }
 
+  /// Obtiene un documento asociado a un seguimiento de ticket.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<Map<String, dynamic>> getDocFollowup(int docId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -261,6 +279,10 @@ class TicketService {
     }
   }
 
+
+  /// Obtiene el contenido bruto de un documento asociado a un seguimiento de ticket.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<String> getRawDoc(int docId, {String? appToken}) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -298,7 +320,9 @@ class TicketService {
   }
 
 
-
+  /// Obtiene el detalle de un comentario de seguimiento de un ticket.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getFollowupDetail(int ticketCommentId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -327,6 +351,10 @@ class TicketService {
     }
   }
 
+
+  /// Crea un nuevo ticket con los datos proporcionados.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<Map<String, dynamic>> createTicket(Map<String, dynamic> ticketData) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -370,6 +398,10 @@ class TicketService {
     }
   }
 
+
+  /// Sube archivos asociados a un seguimiento de ticket.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<void> uploadFiles(List<PlatformFile> selectedFiles, int followupId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
@@ -417,6 +449,9 @@ class TicketService {
     }
   }
 
+  /// Añade un seguimiento a un ticket existente.
+  /// 
+  /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<int> addFollowupToTicket(int ticketId, String descripcion) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
