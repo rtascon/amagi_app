@@ -91,10 +91,7 @@ Cédula: $cedula
     }
   }
 
-  /// Muestra un mensaje de error cuando ocurre un problema al enviar la solicitud de registro.
-  /// 
-  /// Parámetros:
-  /// - [context]: El contexto de la aplicación.
+
   void _showErrorMessage(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -123,7 +120,6 @@ Cédula: $cedula
       },
     );
   }
-
   /// Muestra un mensaje de éxito cuando la solicitud de registro se envía correctamente.
   /// 
   /// Parámetros:
