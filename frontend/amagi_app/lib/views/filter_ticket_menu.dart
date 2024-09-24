@@ -149,8 +149,11 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                             lastDate: DateTime.now(),
                           );
                           if (picked != null) {
+                            // Ajustar el rango de fechas
+                            DateTime start = DateTime(picked.start.year, picked.start.month, picked.start.day, 0, 0);
+                            DateTime end = DateTime(picked.end.year, picked.end.month, picked.end.day, 23, 59);
                             setState(() {
-                              _selectedDateRange = picked;
+                              _selectedDateRange = DateTimeRange(start: start, end: end);
                             });
                           }
                         } : null,

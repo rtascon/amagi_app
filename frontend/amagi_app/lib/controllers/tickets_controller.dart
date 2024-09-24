@@ -47,6 +47,9 @@ class TicketsController {
       await _ticketService.updateTicket(ticket.id, updateData);
 
       Navigator.of(context).pop();
+
+//este fragmento de código se comentó porque no se implementó la funcionalidad de calificar el ticket
+
 /*
       showDialog(
         context: context,

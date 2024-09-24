@@ -36,6 +36,7 @@ class TicketDetailScreen extends StatelessWidget {
       return fechaB.compareTo(fechaA); 
     });
 
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -284,23 +285,24 @@ class TicketDetailScreen extends StatelessWidget {
               },
             ),
           ),
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CreateHistoricalScreen(ticketId: ticket.id,ticket: ticket)),
-                );
-              },
-              backgroundColor: Colors.orange,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+          if (ticket.estado != 5 && ticket.estado != 6)
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreateHistoricalScreen(ticketId: ticket.id,ticket: ticket)),
+                  );
+                },
+                backgroundColor: Colors.orange,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.add, color: Colors.white),
               ),
-              child: Icon(Icons.add, color: Colors.white),
             ),
-          ),
         ],
       ),
     );
