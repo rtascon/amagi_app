@@ -23,11 +23,18 @@ Sigue estos pasos para instalar y ejecutar el proyecto en tu entorno local:
 2. **Instalar dependencias**: Asegúrate de tener Flutter instalado en tu máquina. Luego, ejecuta:
 
     ```flutter pub get
-
+    flutter pub get
 
 3. **Ejecutar la aplicacion**:
 
     ```flutter run
+    flutter run
+
+4. **Generar el .apk**:
+
+   ```apk
+   flutter build apk
+
 
 ## Propiedad
 
