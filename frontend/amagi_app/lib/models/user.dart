@@ -19,7 +19,7 @@ class User {
   late String nombreCompleto;
   late int idEntidadActiva;
   late Map<String, Map<String, dynamic>> perfiles;
-  late int idPerfilActivo;
+  late int idPerfilActivo = 0;
   late String perfilActivo;
   late String tokenSesion;
   late String nombreEntidadActiva;
@@ -42,6 +42,7 @@ class User {
     this.nombreCompleto = nombreCompleto;
     this.idEntidadActiva = idEntidadActiva;
     this.perfiles = perfiles;
+    this.idPerfilActivo = idPerfilActivo;
     this.perfilActivo = perfilActivo;
     this.tokenSesion = tokenSesion;
     this.nombreEntidadActiva = nombreEntidadActiva;
