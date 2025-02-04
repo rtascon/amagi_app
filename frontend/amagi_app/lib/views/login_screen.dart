@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import '../controllers/login_controller.dart'; 
+import 'package:startup_namer/controllers/login_controller.dart';
 
 /// Esta vista permite a los usuarios iniciar sesión en la aplicación, proporcionando su nombre
 /// de usuario y contraseña. También incluye opciones para mostrar u ocultar la contraseña.
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -14,7 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _loginController = LoginController();
-  bool _obscureText = true; // Estado para controlar la visibilidad de la contraseña
+  bool _obscureText =
+      true; // Estado para controlar la visibilidad de la contraseña
 
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
@@ -31,55 +34,64 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Color(0xFF747678) ESTE ES EL GRIS,
-      backgroundColor: Color(0xFF005586),
+      backgroundColor: const Color(0xFF005586),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                SizedBox(height: 20), // Espacio superior
+                const SizedBox(height: 20), // Espacio superior
                 Form(
                   key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                         width: 150, // Ajusta el ancho de la imagen
                         height: 150, // Ajusta la altura de la imagen
-                        child: Image.asset('assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png'), // Asegúrate de que la ruta sea correcta
+                        child: Image.asset(
+                            'assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png'), // Asegúrate de que la ruta sea correcta
                       ),
-                      SizedBox(height: 50), // Reduce el espacio entre la imagen y el cuadro
+                      const SizedBox(
+                          height:
+                              50), // Reduce el espacio entre la imagen y el cuadro
                       Container(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Column(
                           children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.8, // Reduce el ancho
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width *
+                                  0.8, // Reduce el ancho
                               child: TextFormField(
                                 controller: _usernameController,
                                 focusNode: _usernameFocusNode,
-                                style: TextStyle(color: Colors.black), // Color del texto
+                                style: const TextStyle(
+                                    color: Colors.black), // Color del texto
                                 decoration: InputDecoration(
                                   filled: true,
-                                  fillColor: Colors.white, // Color de fondo del campo de texto
+                                  fillColor: Colors
+                                      .white, // Color de fondo del campo de texto
                                   labelText: 'Usuario',
-                                  labelStyle: TextStyle(color: Colors.black), // Color del label
+                                  labelStyle: const TextStyle(
+                                      color: Colors.black), // Color del label
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
                                     child: Icon(
                                       Icons.person,
                                       color: Colors.black,
-                                      size: _usernameFocusNode.hasFocus ? 20 : 24,
+                                      size:
+                                          _usernameFocusNode.hasFocus ? 20 : 24,
                                     ),
                                   ), // Icono de usuario
-                                  contentPadding: EdgeInsets.symmetric(vertical: 15), // Ajusta el padding
-                                  border: UnderlineInputBorder(), // Línea debajo del campo
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 15), // Ajusta el padding
+                                  border:
+                                      const UnderlineInputBorder(), // Línea debajo del campo
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -92,31 +104,40 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                               ),
                             ),
-                            SizedBox(height: 20),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.8, // Reduce el ancho
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width *
+                                  0.8, // Reduce el ancho
                               child: TextFormField(
                                 controller: _passwordController,
                                 focusNode: _passwordFocusNode,
-                                style: TextStyle(color: Colors.black), // Color del texto
+                                style: const TextStyle(
+                                    color: Colors.black), // Color del texto
                                 decoration: InputDecoration(
                                   filled: true,
-                                  fillColor: Colors.white, // Color de fondo del campo de texto
+                                  fillColor: Colors
+                                      .white, // Color de fondo del campo de texto
                                   labelText: 'Contraseña',
-                                  labelStyle: TextStyle(color: Colors.black), // Color del label
+                                  labelStyle: const TextStyle(
+                                      color: Colors.black), // Color del label
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
                                     child: Icon(
                                       Icons.lock,
                                       color: Colors.black,
-                                      size: _passwordFocusNode.hasFocus ? 20 : 24,
+                                      size:
+                                          _passwordFocusNode.hasFocus ? 20 : 24,
                                     ),
                                   ), // Icono de llave
-                                  contentPadding: EdgeInsets.symmetric(vertical: 15), // Ajusta el padding
-                                  border: UnderlineInputBorder(), // Línea debajo del campo
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 15), // Ajusta el padding
+                                  border:
+                                      const UnderlineInputBorder(), // Línea debajo del campo
                                   suffixIcon: IconButton(
                                     icon: Icon(
-                                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                                      _obscureText
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
                                       color: Colors.black,
                                     ),
                                     onPressed: () {
@@ -138,35 +159,44 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState?.validate() ?? false) {
-                                  _loginController.login(
-                                    _usernameController.text,
-                                    _passwordController.text,
-                                    context,
-                                  );
-                                }
+                                          final username =
+                                              _usernameController.text;
+                                          final password =
+                                              _passwordController.text;
+                                          _loginController.login(
+                                              username, password, context);
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFE98300), // Color del botón
-                                foregroundColor: Colors.white, // Color del texto
-                                minimumSize: Size(MediaQuery.of(context).size.width * 0.5, 40), // Ajusta el ancho del botón
+                                backgroundColor:
+                                    const Color(0xFFE98300), // Color del botón
+                                foregroundColor:
+                                    Colors.white, // Color del texto
+                                minimumSize: Size(
+                                    MediaQuery.of(context).size.width * 0.5,
+                                    40), // Ajusta el ancho del botón
                               ),
-                              child: Text('Iniciar sesión'),
+                              child: const Text('Iniciar sesión'),
                             ),
-                            SizedBox(height: 5), // Espacio entre los botones
+                            const SizedBox(
+                                height: 5), // Espacio entre los botones
                             ElevatedButton(
                               onPressed: () {
-                                _loginController.redirectToRegistration(context);
+                                _loginController
+                                    .redirectToRegistration(context);
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF747678), // Color del botón
-                                foregroundColor: Colors.white, // Color del texto
-                                minimumSize: Size(MediaQuery.of(context).size.width * 0.2, 30), // Ajusta el ancho del botón
+                                backgroundColor:
+                                    const Color(0xFF747678), // Color del botón
+                                foregroundColor:
+                                    Colors.white, // Color del texto
+                                minimumSize: Size(
+                                    MediaQuery.of(context).size.width * 0.2,
+                                    30), // Ajusta el ancho del botón
                               ),
-                              child: Text('Registrarse'),
+                              child: const Text('Registrarse'),
                             ),
                           ],
                         ),
@@ -174,18 +204,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20), // Espacio inferior
+                const SizedBox(height: 20), // Espacio inferior
                 Column(
                   children: [
-                    SizedBox(height: 50), // Espacio adicional para empujar los elementos hacia abajo
+                    const SizedBox(
+                        height:
+                            50), // Espacio adicional para empujar los elementos hacia abajo
                     Image.asset(
                       'assets/Amagi logo blanco.png', // Asegúrate de que la ruta sea correcta
                       alignment: Alignment.bottomCenter,
                       width: 100, // Ajusta el ancho de la imagen
                       height: 100, // Ajusta la altura de la imagen
                     ),
-                    SizedBox(height: 10), // Espacio inferior para el texto
-                    Text(
+                    const SizedBox(
+                        height: 10), // Espacio inferior para el texto
+                    const Text(
                       'V 1.0.0',
                       style: TextStyle(color: Colors.white),
                     ),

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:slider_captcha/slider_captcha.dart';
-import '../controllers/registration_request_controller.dart'; 
+import '../controllers/registration_request_controller.dart';
 
 /// Esta vista permite a los usuarios solicitar el registro en la aplicación,
 /// proporcionando información personal y verificando un captcha.
 
 class RegistrationRequestScreen extends StatefulWidget {
+  const RegistrationRequestScreen({super.key});
+
   @override
-  _RegistrationRequestScreenState createState() => _RegistrationRequestScreenState();
+  _RegistrationRequestScreenState createState() =>
+      _RegistrationRequestScreenState();
 }
 
 class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
@@ -18,14 +21,14 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
   final TextEditingController _apellidoController = TextEditingController();
   final TextEditingController _empresaController = TextEditingController();
   final TextEditingController _correoController = TextEditingController();
-  final TextEditingController _confirmCorreoController = TextEditingController();
+  final TextEditingController _confirmCorreoController =
+      TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _cedulaController = TextEditingController();
 
   bool _isCaptchaValid = false;
   final SliderController _sliderController = SliderController();
   bool _isLoading = false;
-
 
   @override
   void dispose() {
@@ -44,25 +47,25 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context); // Regresa a la vista de login
           },
         ),
-        title: Text(
+        title: const Text(
           'Solicitud de Registro',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFF005586),
+        backgroundColor: const Color(0xFF005586),
         elevation: 0,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           color: Colors.white,
           child: Form(
             key: _formKey,
@@ -76,21 +79,27 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                         label: 'Nombre',
                         validator: (value) {
                           value = value?.trim();
-                          if (value == null || value.isEmpty || !RegExp(r'^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$').hasMatch(value)) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              !RegExp(r'^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$')
+                                  .hasMatch(value)) {
                             return 'Por favor ingrese un nombre válido';
                           }
                           return null;
                         },
                       ),
                     ),
-                    SizedBox(width: 16.0),
+                    const SizedBox(width: 16.0),
                     Expanded(
                       child: _buildTextField(
                         controller: _apellidoController,
                         label: 'Apellido',
                         validator: (value) {
                           value = value?.trim();
-                          if (value == null || value.isEmpty || !RegExp(r'^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$').hasMatch(value)) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              !RegExp(r'^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$')
+                                  .hasMatch(value)) {
                             return 'Por favor ingrese un apellido válido';
                           }
                           return null;
@@ -99,43 +108,51 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 _buildTextField(
                   controller: _empresaController,
                   label: 'Empresa',
                   validator: (value) {
                     value = value?.trim();
-                    if (value == null || value.isEmpty || !RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(value)) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        !RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(value)) {
                       return 'Por favor ingrese una empresa válida';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 _buildTextField(
                   controller: _correoController,
                   label: 'Correo Electrónico',
                   validator: (value) {
                     value = value?.trim();
-                    if (value == null || value.isEmpty || !RegExp(r'^[a-zA-Z0-9@.]+$').hasMatch(value) || !value.contains('@') || !value.contains('.')) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        !RegExp(r'^[a-zA-Z0-9@.]+$').hasMatch(value) ||
+                        !value.contains('@') ||
+                        !value.contains('.')) {
                       return 'Por favor ingrese un correo electrónico válido';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 _buildTextField(
                   controller: _confirmCorreoController,
                   label: 'Confirmación de Correo Electrónico',
                   validator: (value) {
                     value = value?.trim();
-                    if (value == null || value.isEmpty || value != _correoController.text.trim()) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        value != _correoController.text.trim()) {
                       return 'El correo electrónico no coincide';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 Row(
                   children: [
                     Expanded(
@@ -144,21 +161,25 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                         label: 'Número de Teléfono',
                         validator: (value) {
                           value = value?.trim();
-                          if (value == null || value.isEmpty || !RegExp(r'^[0-9+]+$').hasMatch(value)) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              !RegExp(r'^[0-9+]+$').hasMatch(value)) {
                             return 'Por favor ingrese un número de teléfono válido';
                           }
                           return null;
                         },
                       ),
                     ),
-                    SizedBox(width: 16.0),
+                    const SizedBox(width: 16.0),
                     Expanded(
                       child: _buildTextField(
                         controller: _cedulaController,
                         label: 'Cédula',
                         validator: (value) {
                           value = value?.trim();
-                          if (value == null || value.isEmpty || !RegExp(r'^[0-9+]+$').hasMatch(value)) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              !RegExp(r'^[0-9+]+$').hasMatch(value)) {
                             return 'Por favor ingrese una cédula válida';
                           }
                           return null;
@@ -167,21 +188,21 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16.0),
-                Divider(color: Colors.black),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
+                const Divider(color: Colors.black),
+                const SizedBox(height: 16.0),
                 SliderCaptcha(
                   controller: _sliderController,
                   title: 'Deslice para confirmar que no es un robot',
-                    image: SizedBox(
-                      width: 300, // Ajusta el ancho según tus necesidades
-                      height: 180, // Ajusta la altura según tus necesidades
-                      child: Image.asset(
-                        'assets/captcha_image.png',
-                        fit: BoxFit.fitWidth,
-                      ),
+                  image: SizedBox(
+                    width: 400, // Ajusta el ancho según tus necesidades
+                    height: 180, // Ajusta la altura según tus necesidades
+                    child: Image.asset(
+                      'assets/captcha_image.png',
+                      fit: BoxFit.fitWidth,
                     ),
-                  colorBar: Colors.grey,
+                  ),
+                  colorBar: Colors.white38,
                   colorCaptChar: Colors.grey,
                   onConfirm: (value) async {
                     await Future.delayed(const Duration(seconds: 1));
@@ -197,7 +218,7 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                     }
                   },
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 Align(
                   alignment: Alignment.center,
                   child: SizedBox(
@@ -210,7 +231,8 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                               _isLoading = true;
                             });
 
-                            await _registrationRequestController.submitRegistrationRequest(
+                            await _registrationRequestController
+                                .submitRegistrationRequest(
                               context,
                               _nombreController.text.trim(),
                               _apellidoController.text.trim(),
@@ -225,20 +247,23 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Por favor, complete el CAPTCHA')),
+                              const SnackBar(
+                                  content:
+                                      Text('Por favor, complete el CAPTCHA')),
                             );
                           }
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF005586), 
-                        foregroundColor: Colors.white, 
+                        backgroundColor: const Color(0xFF005586),
+                        foregroundColor: Colors.white,
                       ),
                       child: _isLoading
-                        ? CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          )
-                        : Text('Enviar'),
+                          ? const CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
+                          : const Text('Enviar'),
                     ),
                   ),
                 ),
@@ -263,15 +288,15 @@ class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
         fillColor: Colors.grey[200] ?? Colors.grey,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.black),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.black),
+          borderSide: const BorderSide(color: Colors.black),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.black),
+          borderSide: const BorderSide(color: Colors.black),
         ),
       ),
       validator: validator,

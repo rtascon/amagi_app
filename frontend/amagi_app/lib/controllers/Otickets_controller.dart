@@ -14,7 +14,6 @@ import '../views/main_menu_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart';
 import 'dart:async';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Controlador para manejar las acciones relacionadas con los tickets.
 class TicketsController {
@@ -23,8 +22,6 @@ class TicketsController {
   final Map<String, String> tickets = {};
   final usuario = User();
   final HtmlUnescape unescape = HtmlUnescape();
-  static const _storage = FlutterSecureStorage();
-  static const _sessionTokenKey = 'session_token';
 
   /// Obtiene el ID del usuario actual.
   int getUserId() {
@@ -142,32 +139,6 @@ class TicketsController {
     }
   }
 
-  /// Obtiene la lista de soluciones de un ticket.
-  /// 
-  /// Parámetros:
-  /// - [ticketId]: El ID del ticket.
-  /// 
-  /// Retorna una lista de soluciones.
-  Future<List<Map<String, dynamic>>> getTicketSolutions(int ticketId) async {
-    final sessionToken = await _storage.read(key: _sessionTokenKey);
-    if (sessionToken == null) {
-      throw Exception("No session token found");
-    }
-
-    final soluciones = await _ticketService.getTicketSolution(ticketId, sessionToken);
-
-    return Future.wait(soluciones.map((solucion) async {
-      final nombreUsuario = await _userService.getUserName(solucion['users_id']);
-      return {
-        'id': solucion['id'],
-        'users_id': solucion['users_id'],
-        'date_creation': solucion['date_creation'] ?? solucion['date'] ?? '',
-        'content': _stripHtmlTags(unescape.convert(solucion['content'])),
-        'nombre_usuario': nombreUsuario,
-      };
-    }).toList());
-  }
-
   /// Navega a la pantalla de tickets.
   ///
   /// Parámetros:
@@ -265,43 +236,20 @@ class TicketsController {
 
           // Retorna un mapa con los detalles del documento.
           return {
-            'filename': documento['filename'] ?? '',
+            'filename': documento['filename'],
             'filepath': filePath,
-            'mime': documento['mime'] ?? '',
+            'mime': documento['mime'],
           };
         }).toList());
 
         // Retorna un mapa con los detalles del histórico procesado.
         return {
-          'id': historico['id'] ?? '',
-          'users_id': historico['users_id'] ?? '',
-          'date': historico['date'] ?? '',
-          'content': _stripHtmlTags(unescape.convert(historico['content'] ?? '')),
-          'nombre_usuario': nombreUsuario ?? '',
+          'id': historico['id'],
+          'users_id': historico['users_id'],
+          'date': historico['date'],
+          'content': _stripHtmlTags(unescape.convert(historico['content'])),
+          'nombre_usuario': nombreUsuario,
           'documentos': documentos.isNotEmpty ? documentos : null,
-        };
-      }).toList());
-
-      // Obtiene las soluciones del ticket.
-      final sessionToken = await _storage.read(key: _sessionTokenKey);
-      if (sessionToken == null) {
-        throw Exception("No session token found");
-      }
-      List<dynamic> soluciones = await _ticketService.getTicketSolution(ticket.id, sessionToken);
-
-      // Procesa cada solución y obtiene detalles adicionales.
-      ticket.soluciones = await Future.wait(soluciones.map((solucion) async {
-        // Obtiene el nombre del usuario que hizo la solución.
-        final nombreUsuario =
-            await _userService.getUserName(solucion['users_id']);
-
-        // Retorna un mapa con los detalles de la solución procesada.
-        return {
-          'id': solucion['id'] ?? '',
-          'users_id': solucion['users_id'] ?? '',
-          'date_creation': solucion['date_creation'] ?? solucion['date'] ?? '',
-          'content': _stripHtmlTags(unescape.convert(solucion['content'] ?? '')),
-          'nombre_usuario': nombreUsuario ?? '',
         };
       }).toList());
 

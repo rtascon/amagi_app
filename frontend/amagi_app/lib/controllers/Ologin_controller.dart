@@ -69,29 +69,6 @@ class LoginController {
         } else {
           throw Exception('Invalid structure for myEntities');
         }
-
-        Map<String, dynamic> myProfiles =
-            await _glpiGeneralService.getMyProfiles();
-
-        // Cambia al perfil "Autogestión_App"
-        var myProfilesList = myProfiles['myprofiles'];
-        if (myProfilesList != null && myProfilesList is List) {
-          var myProfile = myProfilesList.firstWhere(
-            (element) => element['name'] == 'Autogestion_App',
-            orElse: () => null,
-          );
-
-          if (myProfile != null) {
-            int profileId = int.parse(myProfile['id'].toString());
-            await _glpiGeneralService.changeActiveProfile(profileId);
-            await prefs.setInt('active_profile', profileId);
-          } else {
-            throw Exception('Profile "Autogestion_App" not found');
-          }
-        } else {
-          throw Exception('Invalid structure for myProfiles');
-        }
-
         Navigator.of(context).pop();
         Navigator.pushReplacement(
           context,

@@ -12,35 +12,35 @@ import 'package:http_parser/http_parser.dart';
 /// Servicio para manejar operaciones relacionadas con los tickets.
 class TicketService {
   final String url = Environment.apiUrl;
-  static final _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
   static final Map<String, String> criteriaBaseTicketAutogestion = {
-    'criteria[0][field]': '4',  // 5 es el campo para el ID del solicitante (requester)
+    'criteria[0][field]':
+        '4', // 5 es el campo para el ID del solicitante (requester)
     'criteria[0][searchtype]': 'equals',
-    'criteria[0][value]': ''//Id de usuario
+    'criteria[0][value]': '' //Id de usuario
   };
   static const Map<String, String> forceDisplayTicket = {
-      'forcedisplay[0]': '2',  // ID del ticket
-      'forcedisplay[1]': '1',  // Nombre del ticket
-      'forcedisplay[2]': '21',  // Descripción del ticket
-      'forcedisplay[3]': '12',  // Estado del ticket
-      'forcedisplay[4]': '15',  // Fecha de creación
-      'forcedisplay[5]': '19',  // Fecha de actualización
-      'forcedisplay[6]': '80',  // Nombre de entidad asociada
-      'forcedisplay[7]': '3',  // prioridad
-      'forcedisplay[8]': '14',  // tipo
+    'forcedisplay[0]': '2', // ID del ticket
+    'forcedisplay[1]': '1', // Nombre del ticket
+    'forcedisplay[2]': '21', // Descripción del ticket
+    'forcedisplay[3]': '12', // Estado del ticket
+    'forcedisplay[4]': '15', // Fecha de creación
+    'forcedisplay[5]': '19', // Fecha de actualización
+    'forcedisplay[6]': '80', // Nombre de entidad asociada
+    'forcedisplay[7]': '3', // prioridad
+    'forcedisplay[8]': '14', // tipo
   };
 
-
   /// Obtiene los tickets del usuario con un filtro predeterminado.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getUserTicketFilterDefault(int userId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
+
     final ticketsUrl = Uri.parse('$url/search/Ticket');
     final headers = {
       'Session-Token': sessionToken,
@@ -51,18 +51,23 @@ class TicketService {
       'criteria[1][link]': 'AND NOT',
       'criteria[1][field]': '12',
       'criteria[1][searchtype]': 'equals',
-      'criteria[1][value]': '6',  // 6 es el estado de los tickets cerrados
+      'criteria[1][value]': '6', // 6 es el estado de los tickets cerrados
       'criteria[2][link]': 'AND NOT',
       'criteria[2][field]': '12',
       'criteria[2][searchtype]': 'equals',
-      'criteria[2][value]': '5',  // es el estado de los tickets resueltos
+      'criteria[2][value]': '5', // es el estado de los tickets resueltos
     };
-    final params = {...criteriaBaseTicketAutogestion, ...criteriaBodyAutogestion, ...forceDisplayTicket};
-  
+    final params = {
+      ...criteriaBaseTicketAutogestion,
+      ...criteriaBodyAutogestion,
+      ...forceDisplayTicket
+    };
+
     try {
-      final response = await http.get(ticketsUrl.replace(queryParameters: params), headers: headers)
-          .timeout(Duration(seconds: 15)); 
-  
+      final response = await http
+          .get(ticketsUrl.replace(queryParameters: params), headers: headers)
+          .timeout(const Duration(seconds: 15));
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
       } else {
@@ -75,16 +80,16 @@ class TicketService {
     }
   }
 
-
   /// Obtiene los tickets del usuario con filtros personalizados.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<List<dynamic>> getUserTicketFiltered(int userId, Map<String, dynamic> filters) async {
+  Future<List<dynamic>> getUserTicketFiltered(
+      int userId, Map<String, dynamic> filters) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
+
     final ticketsUrl = Uri.parse('$url/search/Ticket');
     final headers = {
       'Session-Token': sessionToken,
@@ -93,21 +98,23 @@ class TicketService {
     criteriaBaseTicketAutogestion['criteria[0][value]'] = userId.toString();
     // Base criteria
     Map<String, String> criteria = criteriaBaseTicketAutogestion;
-  
+
     // Add additional filters
     int criteriaIndex = 1;
     if (filters['ticketId'] != null) {
       criteria['criteria[$criteriaIndex][link]'] = 'AND';
       criteria['criteria[$criteriaIndex][field]'] = '2';
       criteria['criteria[$criteriaIndex][searchtype]'] = 'equals';
-      criteria['criteria[$criteriaIndex][value]'] = filters['ticketId'].toString();
+      criteria['criteria[$criteriaIndex][value]'] =
+          filters['ticketId'].toString();
       criteriaIndex++;
     }
     if (filters['status'] != null) {
       criteria['criteria[$criteriaIndex][link]'] = 'AND';
       criteria['criteria[$criteriaIndex][field]'] = '12';
       criteria['criteria[$criteriaIndex][searchtype]'] = 'equals';
-      criteria['criteria[$criteriaIndex][value]'] = filters['status'].toString();
+      criteria['criteria[$criteriaIndex][value]'] =
+          filters['status'].toString();
       criteriaIndex++;
     }
     if (filters['type'] != null) {
@@ -122,21 +129,25 @@ class TicketService {
       criteria['criteria[$criteriaIndex][link]'] = 'AND';
       criteria['criteria[$criteriaIndex][field]'] = '15';
       criteria['criteria[$criteriaIndex][searchtype]'] = 'morethan';
-      criteria['criteria[$criteriaIndex][value]'] = formatter.format(filters['dateRange'].start);
+      criteria['criteria[$criteriaIndex][value]'] =
+          formatter.format(filters['dateRange'].start);
       criteriaIndex++;
       criteria['criteria[$criteriaIndex][link]'] = 'AND';
       criteria['criteria[$criteriaIndex][field]'] = '15';
       criteria['criteria[$criteriaIndex][searchtype]'] = 'lessthan';
-      criteria['criteria[$criteriaIndex][value]'] = formatter.format(filters['dateRange'].end);
+      criteria['criteria[$criteriaIndex][value]'] =
+          formatter.format(filters['dateRange'].end);
       criteriaIndex++;
     }
-  
+
     final params = {...criteria, ...forceDisplayTicket};
-  
+
     try {
-      final response = await http.get(ticketsUrl.replace(queryParameters: params), headers: headers)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
-  
+      final response = await http
+          .get(ticketsUrl.replace(queryParameters: params), headers: headers)
+          .timeout(const Duration(
+              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
       } else {
@@ -149,16 +160,16 @@ class TicketService {
     }
   }
 
-
   /// Actualiza un ticket con los datos proporcionados.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<void> updateTicket(int ticketId, Map<String, dynamic> updateData) async {
+  Future<void> updateTicket(
+      int ticketId, Map<String, dynamic> updateData) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
+
     final ticketUrl = Uri.parse('$url/Ticket/$ticketId');
     final headers = {
       'Session-Token': sessionToken,
@@ -167,11 +178,12 @@ class TicketService {
     final body = jsonEncode({
       "input": updateData,
     });
-  
+
     try {
-      final response = await http.put(ticketUrl, headers: headers, body: body)
-          .timeout(Duration(seconds: 15)); 
-  
+      final response = await http
+          .put(ticketUrl, headers: headers, body: body)
+          .timeout(const Duration(seconds: 15));
+
       if (response.statusCode != 200) {
         throw Exception("Error al actualizar el ticket: ${response.body}");
       }
@@ -181,7 +193,6 @@ class TicketService {
       throw Exception("Error al actualizar el ticket: $e");
     }
   }
-
 
   //El siguiente fragmento de código es un ejemplo de cómo se puede implementar la función para enviar una calificación a un ticket.
   //Estado: No funciona
@@ -218,28 +229,30 @@ class TicketService {
 */
 
   /// Obtiene los comentarios de seguimiento de un ticket.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getTicketFollowup(int idTicket) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
+
     final comentariosUrl = Uri.parse('$url/Ticket/$idTicket/ITILFollowup');
     final headers = {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
-  
+
     try {
-      final response = await http.get(comentariosUrl, headers: headers)
-          .timeout(Duration(seconds: 15)); 
-  
+      final response = await http
+          .get(comentariosUrl, headers: headers)
+          .timeout(const Duration(seconds: 15));
+
       if (response.statusCode == 200 || response.statusCode == 206) {
         return jsonDecode(response.body);
       } else {
-        throw Exception("Error al obtener comentarios del ticket: ${response.body}");
+        throw Exception(
+            "Error al obtener comentarios del ticket: ${response.body}");
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
@@ -249,28 +262,30 @@ class TicketService {
   }
 
   /// Obtiene un documento asociado a un seguimiento de ticket.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<Map<String, dynamic>> getDocFollowup(int docId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
+
     final documentoUrl = Uri.parse('$url/Document/$docId');
     final headers = {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
-  
+
     try {
-      final response = await http.get(documentoUrl, headers: headers)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
-  
+      final response = await http.get(documentoUrl, headers: headers).timeout(
+          const Duration(
+              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw Exception("Error al obtener documento del ticket: ${response.body}");
+        throw Exception(
+            "Error al obtener documento del ticket: ${response.body}");
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
@@ -279,30 +294,31 @@ class TicketService {
     }
   }
 
-
   /// Obtiene el contenido bruto de un documento asociado a un seguimiento de ticket.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<String> getRawDoc(int docId, {String? appToken}) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
-    final documentoUrl = Uri.parse('$url/Document/$docId').replace(queryParameters: {'alt': 'media'});
+
+    final documentoUrl = Uri.parse('$url/Document/$docId')
+        .replace(queryParameters: {'alt': 'media'});
     final headers = {
       'Session-Token': sessionToken,
       'Accept': 'application/octet-stream',
     };
-  
+
     if (appToken != null) {
       headers['App-Token'] = appToken;
     }
-  
+
     try {
-      final response = await http.get(documentoUrl, headers: headers)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
-  
+      final response = await http.get(documentoUrl, headers: headers).timeout(
+          const Duration(
+              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+
       if (response.statusCode == 200) {
         final directory = await getTemporaryDirectory();
         final filePath = '${directory.path}/document_$docId';
@@ -310,7 +326,8 @@ class TicketService {
         await file.writeAsBytes(response.bodyBytes);
         return filePath;
       } else {
-        throw Exception("Error al obtener documento del ticket: ${response.body}");
+        throw Exception(
+            "Error al obtener documento del ticket: ${response.body}");
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
@@ -319,30 +336,32 @@ class TicketService {
     }
   }
 
-
   /// Obtiene el detalle de un comentario de seguimiento de un ticket.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getFollowupDetail(int ticketCommentId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
-    final comentarioUrl = Uri.parse('$url/ITILFollowup/$ticketCommentId/Document_Item');
+
+    final comentarioUrl =
+        Uri.parse('$url/ITILFollowup/$ticketCommentId/Document_Item');
     final headers = {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
-  
+
     try {
-      final response = await http.get(comentarioUrl, headers: headers)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
-  
+      final response = await http.get(comentarioUrl, headers: headers).timeout(
+          const Duration(
+              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw Exception("Error al obtener detalle del comentario: ${response.body}");
+        throw Exception(
+            "Error al obtener detalle del comentario: ${response.body}");
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
@@ -351,16 +370,11 @@ class TicketService {
     }
   }
 
-
   /// Crea un nuevo ticket con los datos proporcionados.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<Map<String, dynamic>> createTicket(Map<String, dynamic> ticketData) async {
-    final sessionToken = await _storage.read(key: _sessionTokenKey);
-    if (sessionToken == null) {
-      throw Exception("No session token found");
-    }
-  
+  Future<Map<String, dynamic>> createTicket(
+      Map<String, dynamic> ticketData, String sessionToken) async {
     final ticketUrl = Uri.parse('$url/Ticket');
     final headers = {
       'Session-Token': sessionToken,
@@ -377,16 +391,17 @@ class TicketService {
         "entities_id": ticketData['entities_id'],
       }
     });
-  
+
     try {
-      final response = await http.post(ticketUrl, headers: headers, body: body)
-          .timeout(Duration(seconds: 15)); 
-  
+      final response = await http
+          .post(ticketUrl, headers: headers, body: body)
+          .timeout(const Duration(seconds: 15));
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final resp = jsonDecode(response.body);
         return {
           'success': true,
-          'ticketId': resp['id'], 
+          'ticketId': resp['id'],
         };
       } else {
         throw Exception("Error al crear ticket: ${response.body}");
@@ -398,11 +413,11 @@ class TicketService {
     }
   }
 
-
   /// Sube archivos asociados a un seguimiento de ticket.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<void> uploadFiles(List<PlatformFile> selectedFiles, int followupId) async {
+  Future<void> uploadFiles(
+      List<PlatformFile> selectedFiles, int followupId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -431,11 +446,13 @@ class TicketService {
           'file',
           bytes,
           filename: file.name,
-          contentType: MediaType('application', file.extension ?? 'octet-stream'),
+          contentType:
+              MediaType('application', file.extension ?? 'octet-stream'),
         ));
 
       try {
-        final streamedResponse = await request.send().timeout(Duration(seconds: 15));
+        final streamedResponse =
+            await request.send().timeout(const Duration(seconds: 15));
         final response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode != 201) {
@@ -450,7 +467,7 @@ class TicketService {
   }
 
   /// Añade un seguimiento a un ticket existente.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<int> addFollowupToTicket(int ticketId, String descripcion) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
@@ -471,12 +488,14 @@ class TicketService {
         "items_id": ticketId,
         "itemtype": "Ticket",
         "content": descripcion,
+        "is_private": false // Asegura que el comentario sea público
       }
     });
 
     try {
-      final response = await http.post(followupUrl, headers: headers, body: body)
-          .timeout(Duration(seconds: 15));
+      final response = await http
+          .post(followupUrl, headers: headers, body: body)
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
@@ -490,5 +509,32 @@ class TicketService {
     }
   }
 
+  /// Obtiene el comentario de la solución de un ticket.
+  ///
+  /// Lanza una excepción si ocurre un error durante la solicitud.
+    Future<List<dynamic>> getTicketSolution(int idTicket, String sessionToken) async {
+    final solucionUrl = Uri.parse('$url/Ticket/$idTicket/ITILSolution');
+    final headers = {
+      'Session-Token': sessionToken,
+      'Content-Type': 'application/json',
+    };
 
+    try {
+      final response = await http
+          .get(solucionUrl, headers: headers)
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else if (response.statusCode == 404) {
+        return []; // No hay solución para este ticket
+      } else {
+        throw Exception("Error al obtener la solución del ticket: ${response.body}");
+      }
+    } on TimeoutException catch (e) {
+      throw Exception("La solicitud ha excedido el tiempo de espera: $e");
+    } catch (e) {
+      throw Exception("Error al obtener la solución del ticket: $e");
+    }
+  }
 }

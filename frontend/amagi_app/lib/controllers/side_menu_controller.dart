@@ -46,7 +46,7 @@ class SideMenuController {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return LoadingScreen();
+          return const LoadingScreen();
         },
       );
     });

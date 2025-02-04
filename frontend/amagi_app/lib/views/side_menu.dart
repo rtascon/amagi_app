@@ -11,7 +11,8 @@ class SideMenu extends StatelessWidget {
   final TicketsController ticketsController;
   final Future<Map<String, String>>? userNameFuture;
 
-  SideMenu({
+  const SideMenu({
+    super.key,
     required this.sideMenuController,
     required this.ticketsController,
     required this.userNameFuture,
@@ -25,9 +26,10 @@ class SideMenu extends StatelessWidget {
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            SizedBox(height: 50), // Reduce the space above the image and icon
+            const SizedBox(
+                height: 50), // Reduce the space above the image and icon
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Row(
@@ -37,15 +39,18 @@ class SideMenu extends StatelessWidget {
                         width: 50,
                         height: 50,
                       ),
-                      SizedBox(width: 8), // Add some space between the image and the text
+                      const SizedBox(
+                          width:
+                              8), // Add some space between the image and the text
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FutureBuilder<Map<String, String>>(
                             future: userNameFuture,
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
                               } else if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
                               } else {
@@ -54,15 +59,17 @@ class SideMenu extends StatelessWidget {
                                   children: [
                                     Text(
                                       snapshot.data?['glpifriendlyname'] ?? '',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 18, // Make the font size larger
+                                        fontSize:
+                                            18, // Make the font size larger
                                       ),
                                     ),
                                     Text(
                                       snapshot.data?['glpiname'] ?? '',
-                                      style: TextStyle(
-                                        fontSize: 16, // Slightly smaller font size
+                                      style: const TextStyle(
+                                        fontSize:
+                                            16, // Slightly smaller font size
                                       ),
                                     ),
                                   ],
@@ -72,7 +79,7 @@ class SideMenu extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       /*
                       IconButton(
                         icon: Icon(Icons.settings),
@@ -83,8 +90,8 @@ class SideMenu extends StatelessWidget {
                       */
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Divider(
                       thickness: 1,
                       color: Colors.grey,
@@ -92,13 +99,13 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.home, color: Colors.black), // Home icon
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(Icons.home, color: Colors.black), // Home icon
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           sideMenuController.navigateToMainMenuScreen(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Inicio',
                           style: TextStyle(
                             color: Colors.black,
@@ -110,13 +117,14 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(CupertinoIcons.doc_text_search, color: Colors.black), // Ticket icon
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(CupertinoIcons.doc_text_search,
+                          color: Colors.black), // Ticket icon
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           ticketsController.navigateToTicketsScreen(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Consulta de Tickets',
                           style: TextStyle(
                             color: Colors.black,
@@ -128,17 +136,20 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Stack(
+                      const Stack(
                         children: [
-                          Icon(CupertinoIcons.doc_richtext, color: Colors.black, size: 24), 
+                          Icon(CupertinoIcons.doc_append, //doc_richtext,
+                              color: Colors.black,
+                              size: 24),
                         ],
                       ),
-                      SizedBox(width: 8), 
+                      const SizedBox(width: 8),
                       TextButton(
                         onPressed: () {
-                          sideMenuController.navigateToCreateTicketScreen(context);
+                          sideMenuController
+                              .navigateToCreateTicketScreen(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Crear Ticket',
                           style: TextStyle(
                             color: Colors.black,
@@ -150,13 +161,15 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(CupertinoIcons.doc_checkmark, color: Colors.black), // Resolved tickets icon
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(CupertinoIcons.doc_checkmark,
+                          color: Colors.black), // Resolved tickets icon
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
-                          ticketsController.navigateToTicketsScreen(context, filters: {'status': 5});
+                          ticketsController.navigateToTicketsScreen(context,
+                              filters: {'status': 5});
                         },
-                        child: Text(
+                        child: const Text(
                           'Tickets Resueltos',
                           style: TextStyle(
                             color: Colors.black,
@@ -166,8 +179,8 @@ class SideMenu extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Divider(
                       thickness: 1,
                       color: Colors.grey,
@@ -175,13 +188,13 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.logout, color: Colors.black),
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(Icons.logout, color: Colors.black),
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           sideMenuController.logOut(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Cerrar Sesión',
                           style: TextStyle(
                             color: Colors.black,
@@ -194,7 +207,7 @@ class SideMenu extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(), // Pushes the image to the bottom
+            const Spacer(), // Pushes the image to the bottom
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(

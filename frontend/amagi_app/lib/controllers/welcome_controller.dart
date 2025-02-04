@@ -14,12 +14,12 @@ class WelcomeController {
   WelcomeController(this.context);
 
   /// Verifica el estado de inicio de sesión del usuario.
-  /// 
+  ///
   /// Si el usuario está logueado, navega al menú principal después de un retraso de 3 segundos.
   /// Si no está logueado, navega a la pantalla de inicio de sesión.
   Future<void> checkLoginStatus() async {
     bool isLoggedIn = await _checkLoginStatus();
-    await Future.delayed(Duration(seconds: 3)); 
+    await Future.delayed(const Duration(seconds: 3));
     if (isLoggedIn) {
       Navigator.pushReplacementNamed(context, '/mainMenu');
     } else {
@@ -28,10 +28,10 @@ class WelcomeController {
   }
 
   /// Verifica el estado de inicio de sesión almacenado en las preferencias compartidas.
-  /// 
+  ///
   /// Si el usuario está logueado, intenta obtener la información del usuario y cambiar la entidad activa.
   /// Si ocurre un error, limpia las preferencias y muestra un mensaje de error.
-  /// 
+  ///
   /// Retorna `true` si el usuario está logueado, `false` en caso contrario.
   Future<bool> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,12 +43,13 @@ class WelcomeController {
         UserService userService = UserService();
         await userService.getUserInfo(usuario);
         GlpiGeneralService glpiGeneralService = GlpiGeneralService();
-        await glpiGeneralService.changeActiveEntity(prefs.getInt('root_entity') ?? 0);
+        await glpiGeneralService
+            .changeActiveEntity(prefs.getInt('root_entity') ?? 0);
       } catch (e) {
         isLoggedIn = false;
         await prefs.clear();
         if (e is TimeoutException) {
-          showTimeoutMessage(context); 
+          showTimeoutMessage(context);
         } else {
           _showErrorMessage(context);
         }
@@ -59,11 +60,13 @@ class WelcomeController {
   }
 
   /// Muestra un mensaje de error cuando ocurre un problema al verificar el estado de inicio de sesión.
-  /// 
+  ///
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   void _showErrorMessage(BuildContext context) {
-    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
+    Color defaultTextButtonColor =
+        TextButton.styleFrom().foregroundColor?.resolve({}) ??
+            Theme.of(context).primaryColor;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -71,20 +74,21 @@ class WelcomeController {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: Column(
+          title: const Column(
             children: [
               Icon(Icons.error, color: Colors.red, size: 40),
               SizedBox(height: 10),
               Text('Hubo un error al verificar el estado de inicio de sesión'),
             ],
           ),
-          content: Text('Por favor intente de nuevo.'),
+          content: const Text('Por favor intente de nuevo.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Aceptar', style: TextStyle(color: defaultTextButtonColor)),
+              child: Text('Aceptar',
+                  style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );

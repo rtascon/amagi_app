@@ -8,12 +8,12 @@ class SomeController {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return LoadingScreen();
+        return const LoadingScreen();
       },
     );
 
     // Simula una operación de red
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     // Oculta la pantalla de carga
     Navigator.of(context).pop();

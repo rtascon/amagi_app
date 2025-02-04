@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
 import '../controllers/main_menu_controller.dart';
-import '../views/side_menu.dart'; 
+import '../views/side_menu.dart';
 import 'package:flutter/cupertino.dart';
 
 /// Esta vista representa el menú principal de la aplicación, desde donde los usuarios
 /// pueden navegar a diferentes secciones, como la creación y consulta de tickets.
 
 class MainMenuScreen extends StatefulWidget {
+  const MainMenuScreen({super.key});
+
   @override
   _MainMenuScreenState createState() => _MainMenuScreenState();
 }
@@ -30,18 +32,21 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFF005586), // Set the background color for the entire screen
+      color: const Color(
+          0xFF005586), // Set the background color for the entire screen
       child: Scaffold(
         key: _scaffoldKey,
-        backgroundColor: Colors.transparent, // Make the Scaffold background transparent
+        backgroundColor:
+            Colors.transparent, // Make the Scaffold background transparent
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.menu, color: Colors.white), // Set the icon color to white
+            icon: const Icon(Icons.menu,
+                color: Colors.white), // Set the icon color to white
             onPressed: () {
               _scaffoldKey.currentState?.openDrawer();
             },
           ),
-          title: Text(
+          title: const Text(
             'Servicio GIA',
             style: TextStyle(
               color: Colors.white,
@@ -77,10 +82,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                     ),
                     _buildMenuButton(
                       context,
-                      icon: CupertinoIcons.doc_richtext,
+                      icon: CupertinoIcons.doc_append, //doc_richtext,
                       label: 'Crear Ticket',
                       onPressed: () {
-                        _mainMenuController.navigateToCreateTicketScreen(context);
+                        _mainMenuController
+                            .navigateToCreateTicketScreen(context);
                       },
                     ),
                     _buildMenuButton(
@@ -88,7 +94,8 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                       icon: CupertinoIcons.doc_checkmark,
                       label: 'Tickets Resueltos',
                       onPressed: () {
-                        _ticketsController.navigateToTicketsScreen(context, filters: {'status': 5});
+                        _ticketsController.navigateToTicketsScreen(context,
+                            filters: {'status': 5});
                       },
                     ),
                     // Add more buttons here if needed
@@ -109,24 +116,28 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     );
   }
 
-  Widget _buildMenuButton(BuildContext context, {required IconData icon, required String label, required VoidCallback onPressed}) {
+  Widget _buildMenuButton(BuildContext context,
+      {required IconData icon,
+      required String label,
+      required VoidCallback onPressed}) {
     return Column(
       children: [
-        Container(
+        SizedBox(
           width: 112, // Double the default size (56 * 2)
           height: 112, // Double the default size (56 * 2)
           child: FloatingActionButton(
             onPressed: onPressed,
             backgroundColor: Colors.white,
-            child: Icon(icon, color: Colors.black, size: 48), // Icon
+            child: Icon(icon, color: Colors.blueGrey, size: 48), // Icon
           ),
         ),
-        SizedBox(height: 8), // Space between button and text
-        Container(
-          width: 112, // Ensure the text container has the same width as the button
+        const SizedBox(height: 8), // Space between button and text
+        SizedBox(
+          width:
+              112, // Ensure the text container has the same width as the button
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
             ),

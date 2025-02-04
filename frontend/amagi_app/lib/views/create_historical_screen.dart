@@ -10,7 +10,8 @@ class CreateHistoricalScreen extends StatefulWidget {
   final int ticketId;
   final Ticket ticket;
 
-  CreateHistoricalScreen({required this.ticketId, required this.ticket});
+  const CreateHistoricalScreen(
+      {super.key, required this.ticketId, required this.ticket});
 
   @override
   _CreateHistoricalScreenState createState() => _CreateHistoricalScreenState();
@@ -18,7 +19,8 @@ class CreateHistoricalScreen extends StatefulWidget {
 
 class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
   final _formKey = GlobalKey<FormState>();
-  final CreateHistoricalController _createHistoricalController = CreateHistoricalController();
+  final CreateHistoricalController _createHistoricalController =
+      CreateHistoricalController();
   String? _descripcion;
   List<PlatformFile> _selectedFiles = [];
 
@@ -31,13 +33,16 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
 
     if (result != null) {
       setState(() {
-        _selectedFiles = result.files.where((file) => file.size <= 10 * 1024 * 1024).toList();
+        _selectedFiles = result.files
+            .where((file) => file.size <= 10 * 1024 * 1024)
+            .toList();
       });
     }
   }
 
   Future<void> _pickImageFromCamera() async {
-    PlatformFile? image = await _createHistoricalController.pickImageFromCamera();
+    PlatformFile? image =
+        await _createHistoricalController.pickImageFromCamera();
     if (image != null) {
       setState(() {
         _selectedFiles.add(image);
@@ -50,24 +55,24 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: Text(
+        title: const Text(
           'Agregar Histórico',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFF005586),
+        backgroundColor: const Color(0xFF005586),
         elevation: 0,
         centerTitle: true,
       ),
       body: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         color: Colors.white,
         child: Form(
           key: _formKey,
@@ -80,15 +85,15 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: Colors.black),
+                    borderSide: const BorderSide(color: Colors.black),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: Colors.black),
+                    borderSide: const BorderSide(color: Colors.black),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: Colors.black),
+                    borderSide: const BorderSide(color: Colors.black),
                   ),
                 ),
                 maxLines: 5,
@@ -102,7 +107,7 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                   _descripcion = value;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -112,23 +117,25 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                       children: [
                         ElevatedButton.icon(
                           onPressed: _pickFiles,
-                          icon: Icon(Icons.attach_file, color: Colors.white),
-                          label: Text('Seleccionar Archivos'),
+                          icon: const Icon(Icons.attach_file,
+                              color: Colors.white),
+                          label: const Text('Seleccionar Archivos'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF005586),
+                            backgroundColor: const Color(0xFF005586),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         ElevatedButton.icon(
                           onPressed: _pickImageFromCamera,
-                          icon: Icon(Icons.camera_alt, color: Colors.white),
-                          label: Text('Tomar Foto'),
+                          icon:
+                              const Icon(Icons.camera_alt, color: Colors.white),
+                          label: const Text('Tomar Foto'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF005586),
+                            backgroundColor: const Color(0xFF005586),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
@@ -138,18 +145,19 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(width: 16.0),
+                  const SizedBox(width: 16.0),
                   Expanded(
                     flex: 3,
                     child: Container(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFF005586)),
+                        border: Border.all(color: const Color(0xFF005586)),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: _selectedFiles.isEmpty
-                          ? Container(
-                              height: 100, // Ajusta la altura según sea necesario
+                          ? const SizedBox(
+                              height:
+                                  100, // Ajusta la altura según sea necesario
                               child: Center(
                                 child: Text(
                                   'No se han cargado archivos',
@@ -159,13 +167,15 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                             )
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: _selectedFiles.map((file) => Text(file.name)).toList(),
+                              children: _selectedFiles
+                                  .map((file) => Text(file.name))
+                                  .toList(),
                             ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Align(
                 alignment: Alignment.center,
                 child: SizedBox(
@@ -183,11 +193,11 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                         );
                       }
                     },
-                    child: Text('Enviar'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF005586),
+                      backgroundColor: const Color(0xFF005586),
                       foregroundColor: Colors.white,
                     ),
+                    child: const Text('Enviar'),
                   ),
                 ),
               ),

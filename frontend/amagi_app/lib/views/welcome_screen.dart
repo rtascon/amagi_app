@@ -5,6 +5,8 @@ import '../controllers/welcome_controller.dart'; // Importar el controlador
 /// del usuario. Si el usuario está logueado, se redirige al menú principal; de lo contrario, se redirige a la pantalla de inicio de sesión.
 
 class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }

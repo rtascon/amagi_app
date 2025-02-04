@@ -7,6 +7,8 @@ import '../controllers/tickets_controller.dart';
 import '../models/user.dart'; 
 import 'dart:io';
 import 'create_historical_screen.dart';
+import 'dart:math';
+import 'dart:ui' as ui;
 
 /// Esta vista muestra los detalles de un ticket específico, incluyendo su descripción,
 /// históricos y documentos adjuntos. Permite a los usuarios ver y gestionar la información del ticket.
@@ -32,13 +34,13 @@ class TicketDetailScreen extends StatelessWidget {
     };
     ticket.historicos.insert(0, historicoInicial);
 
-    // Ordenar los históricos por fecha en orden ascendente
-    ticket.historicos.sort((a, b) {
-      DateTime fechaA = DateTime.parse(a['date']);
-      DateTime fechaB = DateTime.parse(b['date']);
+    // Combinar históricos y soluciones en una sola lista y ordenar por fecha
+    final combinedList = [...ticket.historicos, ...ticket.soluciones];
+    combinedList.sort((a, b) {
+      DateTime fechaA = DateTime.tryParse(a['date'] ?? a['date_creation'] ?? '') ?? DateTime(1970);
+      DateTime fechaB = DateTime.tryParse(b['date'] ?? b['date_creation'] ?? '') ?? DateTime(1970);
       return fechaB.compareTo(fechaA); 
     });
-
 
     return Scaffold(
       appBar: AppBar(
@@ -64,225 +66,211 @@ class TicketDetailScreen extends StatelessWidget {
           Container(
             color: Colors.white,
             child: ListView.builder(
-              itemCount: ticket.historicos.length,
+              itemCount: combinedList.length,
               itemBuilder: (context, index) {
-                final historico = ticket.historicos[index];
-                final fecha = historico['date'];
-                final usuarioNombre = historico['nombre_usuario'];
-                final documentos = historico['documentos'] ?? [];
+                final item = combinedList[index];
+                final fecha = item['date'] ?? item['date_creation'] ?? '';
+                final usuarioNombre = item['nombre_usuario'] ?? '';
+                final documentos = item['documentos'] ?? [];
                 final esUsuarioLogueado = usuarioNombre == usuario.nombreCompleto;
-                final esHistoricoInicial = historico['isInitial'] == true;
+                final esHistoricoInicial = item['isInitial'] == true;
+                final esSolucion = ticket.soluciones.contains(item);
 
                 // Formatear la fecha para no mostrar milisegundos
-                final formattedFecha = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(fecha));
+                final formattedFecha = DateFormat('dd-MM-yyyy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
 
-                return Align(
-                  alignment: esUsuarioLogueado ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: esHistoricoInicial ? Colors.yellow[100] : (esUsuarioLogueado ? Colors.lightGreen[50] : Colors.lightBlue[50]), // Amarillo claro para el histórico inicial
-                      border: Border.all(color: Colors.black), // Borde negro
-                      borderRadius: esUsuarioLogueado
-                          ? BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
-                              bottomLeft: Radius.circular(15),
-                            )
-                          : BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
+                return MessageBubble(
+                  message: Message(
+                    owner: esUsuarioLogueado ? MessageOwner.myself : MessageOwner.other,
+                    text: item['content'] ?? '',
+                  ),
+                  isSolution: esSolucion,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  esSolucion ? "Solución creada: " : "Creado: ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Icon(Icons.access_time, size: 16, color: Colors.black),
+                                SizedBox(width: 5),
+                                Text(formattedFecha), // Usar la fecha formateada
+                              ],
                             ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10),
+                            SizedBox(height: 5),
+                            Row(
+                              children: [
+                                Text(
+                                  "Por: ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Icon(Icons.person, size: 16, color: Colors.black),
+                                SizedBox(width: 5),
+                                Flexible(
+                                  child: Text(
+                                    usuarioNombre,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (esHistoricoInicial) ...[
+                        SizedBox(height: 10),
+                        Text(
+                          '${ticket.titulo}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Creado: ",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Divider(
+                          color: Colors.black,
+                          thickness: 1,
+                          indent: 10,
+                          endIndent: 10,
+                        ),
+                      ],
+                      SizedBox(height: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: item.entries.where((entry) {
+                          return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date_creation' && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial';
+                        }).map<Widget>((entry) {
+                          return Text('${entry.value}');
+                        }).toList(),
+                      ),
+                      SizedBox(height: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: documentos.map<Widget>((documento) {
+                          final mime = documento['mime'];
+                          final String filePath = documento['filepath'];
+                          final file = File(filePath);
+                          if (mime.startsWith('image/')) {
+                            return GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => Dialog(
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: PhotoView(
+                                            imageProvider: FileImage(file),
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                await _ticketDetailController.downloadFile(filePath, documento['filename']);
+                                              },
+                                              child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Icon(Icons.access_time, size: 16, color: Colors.black),
-                                  SizedBox(width: 5),
-                                  Text(formattedFecha), // Usar la fecha formateada
-                                ],
+                                );
+                              },
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0), // Optional: Add border radius if needed
+                                  child: Image.file(
+                                    file,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
                               ),
-                              SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Por: ",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                            );
+                          } else if (mime == 'application/pdf') {
+                            return GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => Dialog(
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: PDFView(
+                                            filePath: file.path,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                               await _ticketDetailController.downloadFile(filePath, documento['filename']);
+                                              },
+                                              child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Icon(Icons.person, size: 16, color: Colors.black),
-                                  SizedBox(width: 5),
-                                  Flexible(
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
+                                  SizedBox(width: 10),
+                                  Expanded(
                                     child: Text(
-                                      usuarioNombre,
+                                      documento['filename'],
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
-                        if (esHistoricoInicial) ...[
-                          SizedBox(height: 10),
-                          Text(
-                            '${ticket.titulo}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Divider(
-                            color: Colors.black,
-                            thickness: 1,
-                            indent: 10,
-                            endIndent: 10,
-                          ),
-                        ],
-                        SizedBox(height: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: historico.entries.where((entry) {
-                            return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date' && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial';
-                          }).map<Widget>((entry) {
-                            return Text('${entry.value}');
-                          }).toList(),
-                        ),
-                        SizedBox(height: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: documentos.map<Widget>((documento) {
-                            final mime = documento['mime'];
-                            final String filePath = documento['filepath'];
-                            final file = File(filePath);
-                            if (mime.startsWith('image/')) {
-                              return GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => Dialog(
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: PhotoView(
-                                              imageProvider: FileImage(file),
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
-                                              ),
-                                              TextButton(
-                                                onPressed: () async {
-                                                  await _ticketDetailController.downloadFile(filePath, documento['filename']);
-                                                },
-                                                child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(vertical: 5),
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 5,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0), // Optional: Add border radius if needed
-                                    child: Image.file(
-                                      file,
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            } else if (mime == 'application/pdf') {
-                              return GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => Dialog(
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: PDFView(
-                                              filePath: file.path,
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
-                                              ),
-                                              TextButton(
-                                                onPressed: () async {
-                                                 await _ticketDetailController.downloadFile(filePath, documento['filename']);
-                                                },
-                                                child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text(
-                                        documento['filename'],
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            } else {
-                              return Container();
-                            }
-                          }).toList(),
-                        ),
-                      ],
-                    ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }).toList(),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -310,4 +298,136 @@ class TicketDetailScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+@immutable
+class MessageBubble extends StatelessWidget {
+  const MessageBubble({
+    super.key,
+    required this.message,
+    required this.child,
+    this.isSolution = false,
+  });
+
+  final Message message;
+  final Widget child;
+  final bool isSolution;
+
+  @override
+  Widget build(BuildContext context) {
+    final messageAlignment =
+        message.isMine ? Alignment.topRight : Alignment.topLeft;
+
+    return FractionallySizedBox(
+      alignment: messageAlignment,
+      widthFactor: 0.8,
+      child: Align(
+        alignment: messageAlignment,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+            child: BubbleBackground(
+              colors: isSolution
+                  ? [Color(0xFF00FF00), Color(0xFF008000)]
+                  : message.isMine
+                      ? [Color.fromARGB(255, 0, 145, 230), Color(0xFF005586)]
+                      : [Color.fromARGB(255, 120, 164, 189), Color.fromARGB(255, 0, 48, 77)],
+              child: DefaultTextStyle.merge(
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+@immutable
+class BubbleBackground extends StatelessWidget {
+  const BubbleBackground({
+    super.key,
+    required this.colors,
+    this.child,
+  });
+
+  final List<Color> colors;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: BubblePainter(
+        scrollable: Scrollable.of(context),
+        bubbleContext: context,
+        colors: colors,
+      ),
+      child: child,
+    );
+  }
+}
+
+class BubblePainter extends CustomPainter {
+  BubblePainter({
+    required ScrollableState scrollable,
+    required BuildContext bubbleContext,
+    required List<Color> colors,
+  })  : _scrollable = scrollable,
+        _bubbleContext = bubbleContext,
+        _colors = colors,
+        super(repaint: scrollable.position);
+
+  final ScrollableState _scrollable;
+  final BuildContext _bubbleContext;
+  final List<Color> _colors;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scrollableBox = _scrollable.context.findRenderObject() as RenderBox;
+    final scrollableRect = Offset.zero & scrollableBox.size;
+    final bubbleBox = _bubbleContext.findRenderObject() as RenderBox;
+
+    final origin =
+        bubbleBox.localToGlobal(Offset.zero, ancestor: scrollableBox);
+    final paint = Paint()
+      ..shader = ui.Gradient.linear(
+        scrollableRect.topCenter,
+        scrollableRect.bottomCenter,
+        _colors,
+        [0.0, 1.0],
+        TileMode.clamp,
+        Matrix4.translationValues(-origin.dx, -origin.dy, 0.0).storage,
+      );
+    canvas.drawRect(Offset.zero & size, paint);
+  }
+
+  @override
+  bool shouldRepaint(BubblePainter oldDelegate) {
+    return oldDelegate._scrollable != _scrollable ||
+        oldDelegate._bubbleContext != _bubbleContext ||
+        oldDelegate._colors != _colors;
+  }
+}
+
+enum MessageOwner { myself, other }
+
+@immutable
+class Message {
+  const Message({
+    required this.owner,
+    required this.text,
+  });
+
+  final MessageOwner owner;
+  final String text;
+
+  bool get isMine => owner == MessageOwner.myself;
 }

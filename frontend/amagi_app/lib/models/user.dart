@@ -1,11 +1,8 @@
 /// Clase que representa un usuario en el sistema.
-/// 
+///
 /// Esta clase sigue el patrón Singleton para asegurar que solo exista una instancia de usuario
 /// en toda la aplicación.
 class User {
-  // Instancia única de la clase User.
-  static final User _instance = User._internal();
-  
   // Constructor interno privado.
   User._internal();
 
@@ -14,17 +11,20 @@ class User {
     return _instance;
   }
 
-  late int idUsuario;
-  late String nombreUsuario;
-  late String nombreCompleto;
-  late int idEntidadActiva;
-  late Map<String, Map<String, dynamic>> perfiles;
+  static final User _instance = User._internal();
+
+  late int idUsuario = 0;
+  late String nombreUsuario = '';
+  late String nombreCompleto = '';
+  late int idEntidadActiva = 0;
+  late Map<String, Map<String, dynamic>> perfiles = {};
   late int idPerfilActivo = 0;
-  late String perfilActivo;
-  late String tokenSesion;
+  late String perfilActivo = '';
+  late String tokenSesion = '';
   late String nombreEntidadActiva;
   late Map<String, dynamic> otrasEntidadesActivas;
 
+  // Método para inicializar el usuario
   void setUser({
     required int idUsuario,
     required String nombreUsuario,
@@ -59,5 +59,4 @@ class User {
   String get getTokenSesion => tokenSesion;
   String get getNombreEntidadActiva => nombreEntidadActiva;
   Map<String, dynamic> get getOtrasEntidadesActivas => otrasEntidadesActivas;
-
 }

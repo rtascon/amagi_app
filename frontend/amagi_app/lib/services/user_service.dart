@@ -8,11 +8,11 @@ import '../config/enviroment.dart';
 /// Servicio para manejar operaciones relacionadas con el usuario.
 class UserService {
   final String url = Environment.apiUrl;
-  static final _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
   /// Obtiene la información completa del usuario y la almacena en el objeto [usuario].
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<bool> getUserInfo(User usuario) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
@@ -24,16 +24,19 @@ class UserService {
           'Session-Token': sessionToken!,
           'Content-Type': 'application/json',
         },
-      ).timeout(Duration(seconds: 15)); 
+      ).timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200 || response.statusCode == 206) {
         final userInfo = jsonDecode(response.body);
-        var otrasEntidadesActivas;
+        Map otrasEntidadesActivas;
         if (userInfo['session']['glpiactiveentities'] is Map) {
-          otrasEntidadesActivas = Map<String, dynamic>.from(userInfo['session']['glpiactiveentities']);
+          otrasEntidadesActivas = Map<String, dynamic>.from(
+              userInfo['session']['glpiactiveentities']);
         } else if (userInfo['session']['glpiactiveentities'] is List) {
           otrasEntidadesActivas = {
-            for (var i = 0; i < userInfo['session']['glpiactiveentities'].length; i++)
+            for (var i = 0;
+                i < userInfo['session']['glpiactiveentities'].length;
+                i++)
               i.toString(): userInfo['session']['glpiactiveentities'][i]
           };
         } else {
@@ -47,15 +50,18 @@ class UserService {
           nombreCompleto: userInfo['session']['glpifriendlyname'] ?? '',
           idEntidadActiva: userInfo['session']['glpiactive_entity'] ?? 0,
           idPerfilActivo: userInfo['session']['glpiactiveprofile']['id'] ?? 0,
-          perfiles: Map<String, Map<String, dynamic>>.from(userInfo['session']['glpiprofiles'] ?? {}),
+          perfiles: Map<String, Map<String, dynamic>>.from(
+              userInfo['session']['glpiprofiles'] ?? {}),
           perfilActivo: userInfo['session']['glpiactiveprofile']['name'] ?? '',
           tokenSesion: sessionToken,
-          nombreEntidadActiva: userInfo['session']['glpiactive_entity_shortname'] ?? '',
-          otrasEntidadesActivas: otrasEntidadesActivas,
+          nombreEntidadActiva:
+              userInfo['session']['glpiactive_entity_shortname'] ?? '',
+          //otrasEntidadesActivas: otrasEntidadesActivas,
         );
         return true;
       } else {
-        throw Exception("Error al obtener informacion del usuario: ${response.body}");
+        throw Exception(
+            "Error al obtener informacion del usuario: ${response.body}");
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
@@ -65,11 +71,11 @@ class UserService {
   }
 
   /// Obtiene el nombre completo del usuario dado su [id].
-  /// 
+  ///
   /// Realiza una solicitud a la API para obtener la información del usuario.
   /// Si la solicitud es exitosa, retorna el nombre completo del usuario.
   /// Si ocurre un error, lanza una excepción o retorna 'Usuario desconocido'.
-  /// 
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<String> getUserName(int id) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
@@ -81,7 +87,8 @@ class UserService {
           'Session-Token': sessionToken!,
           'Content-Type': 'application/json',
         },
-      ).timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+      ).timeout(const Duration(
+          seconds: 15)); // Configurar el tiempo de espera a 15 segundos
 
       if (response.statusCode == 200 || response.statusCode == 206) {
         final userInfo = jsonDecode(response.body);
