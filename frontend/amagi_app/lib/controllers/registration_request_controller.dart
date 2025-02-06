@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import '../services/ticket_service.dart';
-import '../services/auth_service.dart';
+import '../services/auth_service.dart'; 
 import '../models/user.dart';
 import '../views/login_screen.dart';
 import '../config/enviroment.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import '../views/common_pop_ups.dart';
+import '../views/common_pop_ups.dart'; 
 import 'dart:async';
 
 /// Controlador para manejar las solicitudes de registro.
 class RegistrationRequestController {
   final TicketService _ticketService = TicketService();
   final AuthService _authService = AuthService();
-  final String _appServiceCredentialUsername =
-      Environment.appServiceCredentialUsername;
-  final String _appServiceCredentialPassword =
-      Environment.appServiceCredentialPassword;
+  final String _appServiceCredentialUsername = Environment.appServiceCredentialUsername;
+  final String _appServiceCredentialPassword = Environment.appServiceCredentialPassword;
   final User _user = User();
 
   /// Envía una solicitud de registro con los datos proporcionados.
-  ///
+  /// 
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   /// - [nombre]: Nombre del solicitante.
@@ -28,7 +26,7 @@ class RegistrationRequestController {
   /// - [correo]: Correo electrónico del solicitante.
   /// - [telefono]: Teléfono del solicitante.
   /// - [cedula]: Cédula del solicitante.
-  ///
+  /// 
   /// Verifica la conectividad antes de enviar la solicitud. Si no hay conexión, muestra un mensaje de error.
   /// Si hay conexión, intenta enviar la solicitud y maneja las respuestas y errores adecuadamente.
   Future<bool> submitRegistrationRequest(
@@ -42,14 +40,13 @@ class RegistrationRequestController {
   ) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
-      showNoInternetMessage(context);
+      showNoInternetMessage(context); 
       return false;
     }
 
     try {
-      final success = await _authService.login(
-          _appServiceCredentialUsername, _appServiceCredentialPassword);
-
+      final success = await _authService.login(_appServiceCredentialUsername, _appServiceCredentialPassword);
+      
       if (success) {
         final Map<String, dynamic> ticketData = {
           "_users_id_requester": _user.getIdUsuario,
@@ -63,12 +60,9 @@ Correo Electrónico: $correo
 Número de Teléfono: $telefono
 Cédula: $cedula
 ''',
-"requesttypes_id": 8,
         };
         // Envía la solicitud de registro.
-        //final response = await _ticketService.createTicket(ticketData);
-        final response = await _ticketService.createTicket(
-            ticketData, _user.getIdUsuario.toString());
+        final response = await _ticketService.createTicket(ticketData);
 
         if (response['success']) {
           await _showSuccessMessage(context);
@@ -83,21 +77,20 @@ Cédula: $cedula
         );
         return true;
       } else {
-        _showErrorMessage(context,
-            'No pudimos enviar su solicitud de registro. Por favor, intente más tarde.');
+        _showErrorMessage(context, 'No pudimos enviar su solicitud de registro. Por favor, intente más tarde.');
         return false;
       }
     } catch (e) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); 
       if (e is TimeoutException) {
-        showTimeoutMessage(context);
+        showTimeoutMessage(context); 
       } else {
-        _showErrorMessage(context,
-            'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
+        _showErrorMessage(context,'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
       }
       return false;
     }
   }
+
 
   void _showErrorMessage(BuildContext context, String message) {
     showDialog(
@@ -107,7 +100,7 @@ Cédula: $cedula
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: const Column(
+          title: Column(
             children: [
               Icon(Icons.error, color: Colors.red, size: 40),
               SizedBox(height: 10),
@@ -120,19 +113,15 @@ Cédula: $cedula
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(
-                'Aceptar',
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),
+              child: Text('Aceptar',style: TextStyle(color: Theme.of(context).primaryColor),),
             ),
           ],
         );
       },
     );
   }
-
   /// Muestra un mensaje de éxito cuando la solicitud de registro se envía correctamente.
-  ///
+  /// 
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   Future<void> _showSuccessMessage(BuildContext context) async {
@@ -143,24 +132,21 @@ Cédula: $cedula
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: const Column(
+          title: Column(
             children: [
               Icon(Icons.check_circle, color: Colors.green, size: 40),
               SizedBox(height: 10),
               Text('Registro Exitoso'),
             ],
           ),
-          content: const Text('Su solicitud de registro ha sido enviada.'),
+          content: Text('Su solicitud de registro ha sido enviada.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop(); // Regresa a la vista de login
               },
-              child: Text(
-                'Aceptar',
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),
+              child: Text('Aceptar',style: TextStyle(color: Theme.of(context).primaryColor),),
             ),
           ],
         );

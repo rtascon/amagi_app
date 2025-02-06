@@ -72,37 +72,6 @@ class GlpiGeneralService {
     }
   }
 
-  /// Obtiene el ID de la entidad activa del usuario desde la API.
-  ///
-  /// Agregado
-  Future<int> getActiveEntityId() async {
-    final sessionToken = await _storage.read(key: _sessionTokenKey);
-    if (sessionToken == null) {
-      throw Exception("No session token found");
-    }
-    final headers = {
-      'Session-Token': sessionToken,
-    };
-
-    try {
-      final response = await http
-          .get(Uri.parse('$url/getActiveEntityId'), headers: headers)
-          .timeout(const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data['entities_id'];
-      } else {
-        throw Exception('Error al obtener el ID de la entidad activa');
-      }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha excedido el tiempo de espera: $e");
-    } catch (e) {
-      throw Exception("Error al obtener el ID de la entidad activa: $e");
-    }
-  }// agregado nuevo
-
   /// Cambia la entidad activa del usuario en la API.
   ///
   /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
@@ -137,8 +106,11 @@ class GlpiGeneralService {
     }
   }
 
-  /// Obtiene los perfiles del usuario desde la API.
-  ///
+  //_______________________________________________________________________
+
+
+ /// Obtiene LOS PERFILES del usuario desde la API.
+  /// 
   /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
   Future<Map<String, dynamic>> getMyProfiles() async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
@@ -152,8 +124,7 @@ class GlpiGeneralService {
     try {
       final response = await http
           .get(Uri.parse('$url/getMyProfiles'), headers: headers)
-          .timeout(const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -167,36 +138,31 @@ class GlpiGeneralService {
     }
   }
 
-  /// Cambia el perfil activo del usuario en la API.
-  ///
+  /// Cambia EL PERFIL activO del usuario en la API.
+  /// 
   /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
-  Future<void> changeActiveProfile(int profileId) async {
+  Future<void> changeActiveProfile(int entityId) async {
+    final String changeProfileApiUrl = 'http://172.20.1.55/soportegia/apirest.php/changeActiveProfile';
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-    final headers = {
-      'Session-Token': sessionToken,
-      'Content-Type': 'application/json',
-    };
-    final body = json.encode({
-      'profiles_id': profileId,
-    });
+    
+    final response = await http.put(
+      Uri.parse(changeProfileApiUrl),
+      headers: <String, String>{
+        'Session-Token': sessionToken,
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'profiles_id': 13, // ID fijo de "Autogestion_App"
+      }),
+    );
 
-    try {
-      final response = await http
-          .post(Uri.parse('$url/changeActiveProfile'),
-              headers: headers, body: body)
-          .timeout(const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
-
-      if (response.statusCode != 200) {
-        throw Exception('Error al cambiar el perfil activo');
-      }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha excedido el tiempo de espera: $e");
-    } catch (e) {
-      throw Exception("Error al cambiar el perfil activo: $e");
+    if (response.statusCode != 200) {
+      throw Exception('Error al cambiar el perfil: ${response.body}');
+    } else {
+      print('Resultado del cambio de perfil: ${response.body}');
     }
   }
 }

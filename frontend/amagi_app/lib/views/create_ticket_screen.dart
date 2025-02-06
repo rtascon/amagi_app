@@ -262,7 +262,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                           }
 
                           await createTicketController
-                              .submitCreateTicketController(
+                              .submitCrearticketController(
                             context,
                             _tituloController.text.trim(),
                             _descripcionController.text.trim(),

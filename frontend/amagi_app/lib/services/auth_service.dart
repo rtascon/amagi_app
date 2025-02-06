@@ -32,7 +32,7 @@ class AuthService {
             body: jsonEncode(<String, String>{
               'login': username,
               'password': password,
-              'auth': internalDbAuthSource
+              //'auth': internalDbAuthSource
             }),
           )
           .timeout(const Duration(seconds: 15));

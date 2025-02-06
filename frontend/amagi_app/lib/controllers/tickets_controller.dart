@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/ticket_service.dart';
 import '../models/user.dart';
 import '../views/tickets_screen.dart';
@@ -7,6 +8,7 @@ import '../models/ticket.dart';
 import '../views/ticket_detail_screen.dart';
 import '../services/user_service.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import '../views/loading_screen.dart';
 import '../views/main_menu_screen.dart';
@@ -15,6 +17,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart';
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../services/glpi_general_service.dart';
+import '../config/enviroment.dart'; // Importar el archivo de configuración
 
 /// Controlador para manejar las acciones relacionadas con los tickets.
 class TicketsController {
@@ -25,6 +29,7 @@ class TicketsController {
   final HtmlUnescape unescape = HtmlUnescape();
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
+  final String url = Environment.apiUrl; // Obtener la URL desde el archivo de configuración
 
   /// Obtiene el ID del usuario actual.
   int getUserId() {
@@ -112,7 +117,15 @@ class TicketsController {
   Future<List<Ticket>> getTicketsList(BuildContext context, bool primeraVez,
       {Map<String, dynamic>? filters}) async {
     try {
+      final connectivityResult = await (Connectivity().checkConnectivity());
+
+      if (connectivityResult == ConnectivityResult.none) {
+        showNoInternetMessage(context);
+        return [];
+      }
+
       final userId = getUserId();
+
       List<dynamic> ticketsData = [];
       if (primeraVez) {
         ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
@@ -131,13 +144,14 @@ class TicketsController {
           fechaActualizacion: DateTime.parse(ticketData['19']),
           tipo: ticketData['14'],
           estado: ticketData['12'],
-          entidadAsociada: ticketData['80'], //80
+          entidadAsociada: ticketData['80'],
           prioridad: ticketData['3'],
         );
       }).toList();
 
       return tickets;
     } catch (e) {
+      print("Error al obtener la lista de tickets: $e");
       return [];
     }
   }
@@ -168,6 +182,46 @@ class TicketsController {
     }).toList());
   }
 
+  /// Actualiza la lista de tickets haciendo otra consulta.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// 
+  /// Retorna una lista de tickets actualizada.
+  Future<List<Ticket>> updateTickets(BuildContext context) async {
+    try {
+      final connectivityResult = await (Connectivity().checkConnectivity());
+
+      if (connectivityResult == ConnectivityResult.none) {
+        showNoInternetMessage(context);
+        return [];
+      }
+
+      final userId = getUserId();
+      List<dynamic> ticketsData = await _ticketService.getUserTicketFiltered(userId, {});
+
+      // Crear instancias de Ticket usando TicketFactory
+      List<Ticket> tickets = ticketsData.map((ticketData) {
+        return TicketFactory.createTicket(
+          id: ticketData['2'],
+          titulo: ticketData['1'],
+          descripcion: _stripHtmlTags(unescape.convert(ticketData['21'])),
+          fechaCreacion: DateTime.parse(ticketData['15']),
+          fechaActualizacion: DateTime.parse(ticketData['19']),
+          tipo: ticketData['14'],
+          estado: ticketData['12'],
+          entidadAsociada: ticketData['80'],
+          prioridad: ticketData['3'],
+        );
+      }).toList();
+
+      return tickets;
+    } catch (e) {
+      print("Error al actualizar la lista de tickets: $e");
+      return [];
+    }
+  }
+
   /// Navega a la pantalla de tickets.
   ///
   /// Parámetros:
@@ -189,6 +243,7 @@ class TicketsController {
           return const LoadingScreen();
         },
       );
+
       List<Ticket> tickets = [];
       if (filters != null) {
         tickets = await getTicketsList(context, false, filters: filters);
@@ -347,4 +402,5 @@ class TicketsController {
     final document = parse(htmlString);
     return document.body?.text ?? '';
   }
+
 }

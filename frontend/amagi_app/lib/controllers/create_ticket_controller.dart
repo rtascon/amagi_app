@@ -1,20 +1,20 @@
-import 'package:flutter/material.dart';
+import 'package:startup_namer/models/user.dart';
+import 'package:startup_namer/views/common_pop_ups.dart';
 import 'package:startup_namer/views/main_menu_screen.dart';
-import '../services/ticket_service.dart';
-import '../models/user.dart';
 import '../config/enviroment.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import '../views/common_pop_ups.dart';
 import 'dart:async';
-import 'dart:convert';
-import '../services/glpi_general_service.dart';
+import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:startup_namer/services/ticket_service.dart'; // Add this line to import the ticket_service
 
+/// Servicio para manejar operaciones relacionadas con los tickets.
 class CreateTicketController {
-  final TicketService _ticketService = TicketService();
-  final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
-  final User _user = User();
+  final String url = Environment.apiUrl;
 
-  Future<bool> submitCreateTicketController(
+  final user = User();
+  final TicketService _ticketService = TicketService(); // Add this line to define the _ticketService variable
+
+  Future<bool> submitCrearticketController(
     BuildContext context,
     String titulo,
     String descripcion,
@@ -34,14 +34,10 @@ class CreateTicketController {
         'content': descripcion,
         'type': tipo,
       };
+      ticketData['_users_id_requester'] = await user.getIdUsuario;
+      ticketData['entities_id'] = 0;
 
-      // Asigna el ID del usuario solicitante, la entidad y origente la solicitud.
-      ticketData['_users_id_requester'] = _user.getIdUsuario;
-      ticketData['entities_id'] = 64; //Centro de gestión
-      ticketData['requesttypes_id'] = 8; //Origen de la solicitud GIA_App
-
-      final response = await _ticketService.createTicket(
-          ticketData, _user.getIdUsuario.toString());
+     final response = await _ticketService.createTicket(ticketData);
 
       if (response['success']) {
         if (context.mounted) {
@@ -68,6 +64,8 @@ class CreateTicketController {
               'Hubo un error al enviar su solicitud. Por favor, intente de nuevo.');
         }
       }
+      // Imprime el error en la consola de depuración
+      debugPrint('Error al enviar el ticket: $e');
       return false;
     }
   }

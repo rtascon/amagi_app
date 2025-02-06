@@ -22,7 +22,7 @@ class _TestTicketServiceState extends State<TestTicketService> {
   final _storage = const FlutterSecureStorage();
   String? _sessionToken;
 
-  static const String url = 'http://172.20.1.55/soportegiades/apirest.php';
+  static const String url = 'http://172.20.1.55/soportegia/apirest.php';
 
   Future<void> _login() async {
     if (_loginFormKey.currentState!.validate()) {

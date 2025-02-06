@@ -7,22 +7,22 @@ import '../services/glpi_general_service.dart';
 import '../views/main_menu_screen.dart';
 import '../views/loading_screen.dart';
 import '../views/registration_request_screen.dart';
-import '../views/common_pop_ups.dart';
+import '../views/common_pop_ups.dart'; 
 import 'dart:async';
 
 /// Controlador para manejar el inicio de sesión.
 class LoginController {
   final AuthService _authService = AuthService();
   final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
-  final _storage = const FlutterSecureStorage();
+  final _storage = FlutterSecureStorage();
 
   /// Inicia sesión con el [username] y [password] proporcionados.
-  ///
+  /// 
   /// Parámetros:
   /// - [username]: Nombre de usuario.
   /// - [password]: Contraseña del usuario.
   /// - [context]: El contexto de la aplicación.
-  ///
+  /// 
   /// Verifica la conectividad antes de intentar iniciar sesión. Si no hay conexión, muestra un mensaje de error.
   /// Si hay conexión, muestra una pantalla de carga y luego intenta iniciar sesión.
   /// Si el inicio de sesión es exitoso, guarda el estado de inicio de sesión y navega al menú principal.
@@ -31,25 +31,27 @@ class LoginController {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
     if (connectivityResult == ConnectivityResult.none) {
-      showNoInternetMessage(context);
+      showNoInternetMessage(context); 
       return;
     }
 
-    _showLoadingScreen(context);
+    _showLoadingScreen(context); 
+
     try {
       final formattedUsername = username.toLowerCase().trim();
       final success = await _authService.login(formattedUsername, password);
-
+ 
       if (success) {
         // Guardar el estado de inicio de sesión
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('username', formattedUsername);
-        String? sessionToken = await _storage.read(key: 'session_token');
+        String? sessionToken = await _storage.read(key: 'session_token'); 
         await prefs.setString('sessionToken', sessionToken ?? '');
+        
+        await _glpiGeneralService.changeActiveProfile((prefs.getInt('profiles_id') ?? 13));
 
-        Map<String, dynamic> myEntities =
-            await _glpiGeneralService.getMyEntities();
+        Map<String, dynamic> myEntities = await _glpiGeneralService.getMyEntities();
 
         // Cambia a la entidad raíz: GIA
         var myEntitiesList = myEntities['myentities'];
@@ -69,41 +71,18 @@ class LoginController {
         } else {
           throw Exception('Invalid structure for myEntities');
         }
-
-        Map<String, dynamic> myProfiles =
-            await _glpiGeneralService.getMyProfiles();
-
-        // Cambia al perfil "Autogestión_App"
-        var myProfilesList = myProfiles['myprofiles'];
-        if (myProfilesList != null && myProfilesList is List) {
-          var myProfile = myProfilesList.firstWhere(
-            (element) => element['name'] == 'Autogestion_App',
-            orElse: () => null,
-          );
-
-          if (myProfile != null) {
-            int profileId = int.parse(myProfile['id'].toString());
-            await _glpiGeneralService.changeActiveProfile(profileId);
-            await prefs.setInt('active_profile', profileId);
-          } else {
-            throw Exception('Profile "Autogestion_App" not found');
-          }
-        } else {
-          throw Exception('Invalid structure for myProfiles');
-        }
-
         Navigator.of(context).pop();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+          MaterialPageRoute(builder: (context) => MainMenuScreen()),
         );
       } else {
         _showErrorMessage(context);
       }
     } catch (e) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); 
       if (e is TimeoutException) {
-        showTimeoutMessage(context);
+        showTimeoutMessage(context); 
       } else {
         _showErrorMessage(context);
       }
@@ -111,18 +90,18 @@ class LoginController {
   }
 
   /// Redirige a la pantalla de solicitud de registro.
-  ///
+  /// 
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   void redirectToRegistration(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const RegistrationRequestScreen()),
+      MaterialPageRoute(builder: (context) => RegistrationRequestScreen()),
     );
   }
 
   /// Muestra una pantalla de carga.
-  ///
+  /// 
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   void _showLoadingScreen(BuildContext context) {
@@ -131,20 +110,18 @@ class LoginController {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return const LoadingScreen();
+          return LoadingScreen();
         },
       );
     });
   }
 
   /// Muestra un mensaje de error cuando el inicio de sesión falla.
-  ///
+  /// 
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   void _showErrorMessage(BuildContext context) {
-    Color defaultTextButtonColor =
-        TextButton.styleFrom().foregroundColor?.resolve({}) ??
-            Theme.of(context).primaryColor;
+    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -152,21 +129,20 @@ class LoginController {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: const Column(
+          title: Column(
             children: [
               Icon(Icons.error, color: Colors.red, size: 40),
               SizedBox(height: 10),
               Text('Fallo al iniciar sesión'),
             ],
           ),
-          content: const Text('Por favor intente de nuevo.'),
+          content: Text('Por favor intente de nuevo.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Aceptar',
-                  style: TextStyle(color: defaultTextButtonColor)),
+              child: Text('Aceptar', style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );

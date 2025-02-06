@@ -370,11 +370,15 @@ class TicketService {
     }
   }
 
-  /// Crea un nuevo ticket con los datos proporcionados.
-  ///
+ /// Crea un nuevo ticket con los datos proporcionados.
+  /// 
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<Map<String, dynamic>> createTicket(
-      Map<String, dynamic> ticketData, String sessionToken) async {
+  Future<Map<String, dynamic>> createTicket(Map<String, dynamic> ticketData) async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      throw Exception("No session token found");
+    }
+  
     final ticketUrl = Uri.parse('$url/Ticket');
     final headers = {
       'Session-Token': sessionToken,
@@ -385,23 +389,22 @@ class TicketService {
         "name": ticketData['name'],
         "content": ticketData['content'],
         "_users_id_requester": ticketData['_users_id_requester'],
-        "status": ticketData['status'],
+        //"status": ticketData['status'],
         "type": ticketData['type'],
-        "requesttypes_id": ticketData['requesttypes_id'],
+        //"requesttypes_id": ticketData['requesttypes_id'],
         "entities_id": ticketData['entities_id'],
       }
     });
-
+  
     try {
-      final response = await http
-          .post(ticketUrl, headers: headers, body: body)
-          .timeout(const Duration(seconds: 15));
-
+      final response = await http.post(ticketUrl, headers: headers, body: body)
+          .timeout(Duration(seconds: 15)); 
+  
       if (response.statusCode == 200 || response.statusCode == 201) {
         final resp = jsonDecode(response.body);
         return {
           'success': true,
-          'ticketId': resp['id'],
+          'ticketId': resp['id'], 
         };
       } else {
         throw Exception("Error al crear ticket: ${response.body}");
