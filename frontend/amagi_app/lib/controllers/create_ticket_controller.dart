@@ -1,18 +1,21 @@
+import 'package:startup_namer/config/environment.dart';
 import 'package:startup_namer/models/user.dart';
 import 'package:startup_namer/views/common_pop_ups.dart';
 import 'package:startup_namer/views/main_menu_screen.dart';
-import '../config/enviroment.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:startup_namer/services/ticket_service.dart'; // Add this line to import the ticket_service
+import 'package:startup_namer/services/glpi_general_service.dart'; // Add this line to import the glpi_general_service
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
 class CreateTicketController {
-  final String url = Environment.apiUrl;
+  final String request = Environment.requesttypes;
 
   final user = User();
   final TicketService _ticketService = TicketService(); // Add this line to define the _ticketService variable
+  final GlpiGeneralService _glpiGeneralService = GlpiGeneralService(); // Add this line to define the _glpiGeneralService variable
+  final String entity = Environment.entity;
 
   Future<bool> submitCrearticketController(
     BuildContext context,
@@ -35,13 +38,14 @@ class CreateTicketController {
         'type': tipo,
       };
       ticketData['_users_id_requester'] = await user.getIdUsuario;
-      ticketData['entities_id'] = 0;
+      ticketData['entities_id'] = await _getEntityId();
+      ticketData['requesttypes_id'] = request;
 
-     final response = await _ticketService.createTicket(ticketData);
+      final response = await _ticketService.createTicket(ticketData);
 
       if (response['success']) {
         if (context.mounted) {
-          await _showSuccessMessage(context);
+          await _showSuccessMessage(context, response['ticketId']);
         }
       } else {
         throw Exception('Error al crear la solicitud');
@@ -68,6 +72,22 @@ class CreateTicketController {
       debugPrint('Error al enviar el ticket: $e');
       return false;
     }
+  }
+
+  Future<int> _getEntityId() async {
+    Map<String, dynamic> myEntities = await _glpiGeneralService.getMyEntities();
+    var myEntitiesList = myEntities['myentities'];
+    if (myEntitiesList != null && myEntitiesList is List) {
+      var myEntity = myEntitiesList.firstWhere(
+        (element) => element['name'] == entity,
+        orElse: () => null,
+      );
+
+      if (myEntity != null) {
+        return int.parse(myEntity['id'].toString());
+      }
+    }
+    throw Exception('Entidad no encontrada');
   }
 
   void _showErrorMessage(BuildContext context, String message) {
@@ -102,7 +122,7 @@ class CreateTicketController {
     );
   }
 
-  Future<void> _showSuccessMessage(BuildContext context) async {
+  Future<void> _showSuccessMessage(BuildContext context, int ticketId) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -117,13 +137,12 @@ class CreateTicketController {
               Text('Exitoso'),
             ],
           ),
-          content: const Text('Su solicitud ha sido enviada.'),
+          content: Text('Su solicitud ha sido enviada con el ID: $ticketId'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                      builder: (context) => const MainMenuScreen()),
+                  MaterialPageRoute(builder: (context) => const MainMenuScreen()),
                 );
               },
               child: Text(

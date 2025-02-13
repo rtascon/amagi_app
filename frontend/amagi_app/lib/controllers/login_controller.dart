@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:startup_namer/config/environment.dart';
 import '../services/auth_service.dart';
 import '../services/glpi_general_service.dart';
 import '../views/main_menu_screen.dart';
@@ -15,6 +16,8 @@ class LoginController {
   final AuthService _authService = AuthService();
   final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
   final _storage = FlutterSecureStorage();
+  final String profile = Environment.profile;
+  final String entity = Environment.entity;
 
   /// Inicia sesión con el [username] y [password] proporcionados.
   /// 
@@ -48,8 +51,28 @@ class LoginController {
         await prefs.setString('username', formattedUsername);
         String? sessionToken = await _storage.read(key: 'session_token'); 
         await prefs.setString('sessionToken', sessionToken ?? '');
-        
-        await _glpiGeneralService.changeActiveProfile((prefs.getInt('profiles_id') ?? 13));
+
+//Cambia al perfil: Autogestión_App
+Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
+
+        // Cambia al perfil: Autogestión_App
+        var myProfilesList = myProfiles['myprofiles'];
+        if (myProfilesList != null && myProfilesList is List) {
+          var myProfile = myProfilesList.firstWhere(
+            (element) => element['name'] == profile,
+            orElse: () => null,
+          );
+
+          if (myProfile != null) {
+            int profilesId = int.parse(myProfile['id'].toString());
+            await _glpiGeneralService.changeActiveProfile(profilesId);
+
+          } else {
+            throw Exception('Profile not found');
+          }
+        } else {
+          throw Exception('Invalid structure for myProfiles');
+        }
 
         Map<String, dynamic> myEntities = await _glpiGeneralService.getMyEntities();
 
@@ -57,7 +80,7 @@ class LoginController {
         var myEntitiesList = myEntities['myentities'];
         if (myEntitiesList != null && myEntitiesList is List) {
           var myEntity = myEntitiesList.firstWhere(
-            (element) => element['name'] == 'GIA',
+            (element) => element['name'] == entity,
             orElse: () => null,
           );
 
@@ -66,7 +89,7 @@ class LoginController {
             await _glpiGeneralService.changeActiveEntity(entityId);
             await prefs.setInt('root_entity', entityId);
           } else {
-            throw Exception('Entity "GIA" not found');
+            throw Exception('Entity not found');
           }
         } else {
           throw Exception('Invalid structure for myEntities');

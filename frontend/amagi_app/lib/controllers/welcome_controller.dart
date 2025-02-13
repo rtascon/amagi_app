@@ -43,6 +43,7 @@ class WelcomeController {
         UserService userService = UserService();
         await userService.getUserInfo(usuario);
         GlpiGeneralService glpiGeneralService = GlpiGeneralService();
+        //await _glpiGeneralService.changeActiveProfile((prefs.getInt('profilesId') ?? 13));
         await glpiGeneralService
             .changeActiveEntity(prefs.getInt('root_entity') ?? 0);
       } catch (e) {

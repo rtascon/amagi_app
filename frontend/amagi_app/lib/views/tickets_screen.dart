@@ -126,6 +126,8 @@ class _TicketsScreenState extends State<TicketsScreen> {
           Container(
             color: Colors.white,
             child: RefreshIndicator(
+              color: const Color(0xFF005586), // Cambiar el color del icono
+              backgroundColor: Colors.white, // Cambiar el color del círculo a blanco
               onRefresh: _refreshTickets,
               child: _filteredTickets.isEmpty
                   ? const Center(
@@ -159,7 +161,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                             ? DateTime.parse(ticket.fechaCreacion)
                             : ticket.fechaCreacion;
                         final formattedDate =
-                            DateFormat('yyyy-MM-dd HH:mm').format(fechaCreacion);
+                            DateFormat('dd-MM-yyyy HH:mm').format(fechaCreacion);
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: GestureDetector(
@@ -344,31 +346,18 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                                     Container(
                                                       width: 20,
                                                       height: 20,
-                                                      decoration: BoxDecoration(
-                                                        color: _typeConversion
-                                                                    .getTipo(ticket
-                                                                        .tipo) ==
-                                                                'Requerimiento'
-                                                            ? const Color(
-                                                                0xFF009FDA)
-                                                            : const Color(
-                                                                0xFFE98300),
-                                                        shape: BoxShape.circle,
-                                                      ),
                                                       child: Center(
-                                                        child: Text(
+                                                        child: Icon(
                                                           _typeConversion.getTipo(
                                                                       ticket
                                                                           .tipo) ==
                                                                   'Requerimiento'
-                                                              ? '?'
-                                                              : '!',
-                                                          style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
+                                                              ? Icons.help
+                                                              : Icons.error,
+                                                          color: _typeConversion.getTipo(ticket.tipo) == 'Requerimiento'
+                                                              ? const Color(0xFF009FDA)
+                                                              : const Color(0xFFE98300),
+                                                          size: 20,
                                                         ),
                                                       ),
                                                     ),
@@ -466,8 +455,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                         minimumSize: const Size(60, 30),
                                       ),
                                       onPressed: () {
-                                        _ticketsController.closeTicket(
-                                            context, ticket);
+                                        _ticketsController.navigateToSolucionScreen(context, ticket);
                                       },
                                       child: const Text('Cerrar Ticket'),
                                     ),
@@ -482,10 +470,10 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           final String fechaCreacion =
-                                              DateFormat('yyyy-MM-dd HH:mm')
+                                              DateFormat('dd-MM-yyyy HH:mm')
                                                   .format(ticket.fechaCreacion);
                                           final String fechaModificacion =
-                                              DateFormat('yyyy-MM-dd HH:mm')
+                                              DateFormat('dd-MM-yyyy HH:mm')
                                                   .format(
                                                       ticket.fechaActualizacion);
                                           final String prioridad = _typeConversion
@@ -507,8 +495,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                                     subtitle: Text(fechaCreacion),
                                                   ),
                                                   ListTile(
-                                                    leading:
-                                                        const Icon(Icons.update),
+                                                    leading: const Icon(Icons.update), 
                                                     title: const Text(
                                                         'Fecha de Modificación'),
                                                     subtitle:

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:startup_namer/views/TESTcreate_ticket_screen.dart';
-import 'package:startup_namer/views/TESTsoluciones.dart';
+import 'package:startup_namer/views/TESTencuesta_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
 import 'views/login_screen.dart';
 import 'views/create_ticket_screen.dart';
 import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Punto de entrada principal de la aplicación.
 void main() async {
@@ -47,11 +47,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Amagi App',
+      title: 'GIA App',
       theme: ThemeData(
         primarySwatch: createMaterialColor(const Color(0xFF000000)),
-        primaryColor: const Color(0xFF000000),
-        fontFamily: 'Brandon Grotesque',
+        primaryColor: const Color(0xFF000000), 
+        textTheme: GoogleFonts.notoSansTextTheme(), // Usa la tipografía Noto Sans
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Color(0xFF005586), // Cambia el color del cursor
           selectionColor: Color(0xFF009FDA), // Cambia el color de la selección
@@ -73,6 +73,7 @@ class MyApp extends StatelessWidget {
       home: const WelcomeScreen(),
       //home: MainMenuScreen(),
       //home: TestTicketService(),
+      //home: TestTicketSatis(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/mainMenu': (context) => const MainMenuScreen(),

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import '../config/enviroment.dart';
+import '../config/environment.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Servicio general para interactuar con la API de GLPI.
@@ -141,21 +141,19 @@ class GlpiGeneralService {
   /// Cambia EL PERFIL activO del usuario en la API.
   /// 
   /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
-  Future<void> changeActiveProfile(int entityId) async {
-    final String changeProfileApiUrl = 'http://172.20.1.55/soportegia/apirest.php/changeActiveProfile';
+  Future<void> changeActiveProfile(int profilesId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
     
-    final response = await http.put(
-      Uri.parse(changeProfileApiUrl),
+    final response = await http.put(Uri.parse('$url/changeActiveProfile'),
       headers: <String, String>{
         'Session-Token': sessionToken,
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
-        'profiles_id': 13, // ID fijo de "Autogestion_App"
+        'profiles_id': profilesId,
       }),
     );
 
@@ -165,4 +163,7 @@ class GlpiGeneralService {
       print('Resultado del cambio de perfil: ${response.body}');
     }
   }
+
+//___________________________________________________________________________
+
 }

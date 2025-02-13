@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import '../config/enviroment.dart';
+import '../config/environment.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:file_picker/file_picker.dart';
@@ -391,7 +391,7 @@ class TicketService {
         "_users_id_requester": ticketData['_users_id_requester'],
         //"status": ticketData['status'],
         "type": ticketData['type'],
-        //"requesttypes_id": ticketData['requesttypes_id'],
+        "requesttypes_id": ticketData['requesttypes_id'],
         "entities_id": ticketData['entities_id'],
       }
     });

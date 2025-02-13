@@ -43,6 +43,7 @@ Este proyecto es propiedad de **Amagi Group**
 ## Desarrollador(es)
 
 - Fernando Silva
+- Kelimary Graterol
 - Ricardo Tascon
 
 ##  Futuras ampliaciones

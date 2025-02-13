@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/config/enviroment.dart';
+import 'package:startup_namer/config/environment.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;

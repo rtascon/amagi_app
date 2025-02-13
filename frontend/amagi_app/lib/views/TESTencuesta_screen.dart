@@ -5,20 +5,21 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class TestTicketService extends StatefulWidget {
-  const TestTicketService({super.key});
+class TestTicketSatis extends StatefulWidget {
+  const TestTicketSatis({super.key});
 
   @override
-  _TestTicketServiceState createState() => _TestTicketServiceState();
+  _TestTicketSatisState createState() => _TestTicketSatisState();
 }
 
-class _TestTicketServiceState extends State<TestTicketService> {
+class _TestTicketSatisState extends State<TestTicketSatis> {
   final _loginFormKey = GlobalKey<FormState>();
   final _ticketFormKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _contentController = TextEditingController();
+  final _ticketIdController = TextEditingController();
+  final _commentController = TextEditingController();
+  final _satisfactionController = TextEditingController();
   final _storage = const FlutterSecureStorage();
   String? _sessionToken;
 
@@ -41,7 +42,7 @@ class _TestTicketServiceState extends State<TestTicketService> {
           final responseBody = jsonDecode(response.body);
           _sessionToken = responseBody['session_token'];
           await _storage.write(key: 'session_token', value: _sessionToken);
-          setState(() {}); // Update the UI to show the ticket form
+          setState(() {}); // Update the UI to show the satisfaction form
         } else {
           throw Exception('Failed to login: ${response.body}');
         }
@@ -53,7 +54,7 @@ class _TestTicketServiceState extends State<TestTicketService> {
     }
   }
 
-  Future<void> _createTicket() async {
+  Future<void> _updateSatisfaction() async {
     if (_ticketFormKey.currentState!.validate()) {
       try {
         final sessionToken = await _storage.read(key: 'session_token');
@@ -62,26 +63,33 @@ class _TestTicketServiceState extends State<TestTicketService> {
         }
 
         TicketService ticketService = TicketService();
-        Map<String, dynamic> ticketData = {
-          'name': _nameController.text,
-          'content': _contentController.text,
-          'itilcategories_id': 1, // Valor predeterminado
-          'entities_id': 15, // Valor predeterminado
-          'urgency': 3, // Valor predeterminado
-          'impact': 2, // Valor predeterminado
-          'priority': 4, // Valor predeterminado
-        };
+        int ticketId = int.parse(_ticketIdController.text);
+        String comment = _commentController.text;
+        int satisfaction = int.parse(_satisfactionController.text);
 
-        var ticketResponse =
-            await ticketService.createTicket(ticketData, sessionToken);
+        var satisfactionData = await ticketService.getSatisfactionTicket(
+          sessionToken,
+          Environment.apiUrl,
+          ticketId,
+        );
+
+        var satisfactionResponse = await ticketService.postSatisfactionTicket(
+          sessionToken,
+          Environment.apiUrl,
+          ticketId,
+          satisfactionData['id'],
+          comment,
+          satisfaction,
+        );
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'Ticket created successfully: ${ticketResponse['ticketId']}')),
+                  'Satisfaction updated successfully: ${satisfactionResponse['id']}')),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to create ticket: $e')),
+          SnackBar(content: Text('Failed to update satisfaction: $e')),
         );
       }
     }
@@ -91,11 +99,11 @@ class _TestTicketServiceState extends State<TestTicketService> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Ticket'),
+        title: const Text('Update Satisfaction'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: _sessionToken == null ? _buildLoginForm() : _buildTicketForm(),
+        child: _sessionToken == null ? _buildLoginForm() : _buildSatisfactionForm(),
       ),
     );
   }
@@ -136,35 +144,45 @@ class _TestTicketServiceState extends State<TestTicketService> {
     );
   }
 
-  Widget _buildTicketForm() {
+  Widget _buildSatisfactionForm() {
     return Form(
       key: _ticketFormKey,
       child: ListView(
         children: [
           TextFormField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Title'),
+            controller: _ticketIdController,
+            decoration: const InputDecoration(labelText: 'Ticket ID'),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter the title';
+                return 'Please enter the ticket ID';
               }
               return null;
             },
           ),
           TextFormField(
-            controller: _contentController,
-            decoration: const InputDecoration(labelText: 'Description'),
+            controller: _commentController,
+            decoration: const InputDecoration(labelText: 'Comment'),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter the description';
+                return 'Please enter the comment';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: _satisfactionController,
+            decoration: const InputDecoration(labelText: 'Satisfaction (1-5)'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the satisfaction level';
               }
               return null;
             },
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: _createTicket,
-            child: const Text('Create Ticket'),
+            onPressed: _updateSatisfaction,
+            child: const Text('Update Satisfaction'),
           ),
         ],
       ),
@@ -177,44 +195,41 @@ class TicketService {
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
-  Future<Map<String, dynamic>> createTicket(
-      Map<String, dynamic> ticketData, String sessionToken) async {
-    final ticketUrl = Uri.parse('$url/Ticket');
+  Future<Map<String, dynamic>> getSatisfactionTicket(
+      String sessionToken, String apiUrl, int ticketId) async {
     final headers = {
       'Session-Token': sessionToken,
-      //'Session-Token': 'bl1iu0rfodlu7djfprpln8knl5',
+    };
+    final url = Uri.parse('http://172.20.1.55/soportegia/apirest.php/TicketSatisfaction/$ticketId');
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error al obtener la satisfacción del ticket: ${response.body}");
+    }
+  }
+
+  Future<Map<String, dynamic>> postSatisfactionTicket(
+      String sessionToken, String apiUrl, int ticketId, int satisfactionId, String comment, int satisfaction) async {
+    final headers = {
+      'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
+    final url = Uri.parse('$apiUrl/Ticket/$ticketId/TicketSatisfaction/$satisfactionId');
     final body = jsonEncode({
       "input": {
-        "name": ticketData['name'],
-        "content": ticketData['content'],
-        "_users_id_requester": ticketData['_users_id_requester'],
-        "status": ticketData['status'],
-        "type": ticketData['type'],
-        "requesttypes_id": ticketData['requesttypes_id'],
-        "entities_id": ticketData['entities_id'],
+        "comment": comment,
+        "satisfaction": satisfaction,
       }
     });
 
-    try {
-      final response = await http
-          .post(ticketUrl, headers: headers, body: body)
-          .timeout(const Duration(seconds: 15));
+    final response = await http.put(url, headers: headers, body: body);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final resp = jsonDecode(response.body);
-        return {
-          'success': true,
-          'ticketId': resp['id'],
-        };
-      } else {
-        throw Exception("Error al crear ticket: ${response.body}");
-      }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha excedido el tiempo de espera: $e");
-    } catch (e) {
-      throw Exception("Error al crear ticket: $e");
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error al enviar la satisfacción del ticket: ${response.body}");
     }
   }
 }

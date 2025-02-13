@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:intl/intl.dart'; 
-import '../controllers/ticket_detail_controller.dart';
-import '../controllers/tickets_controller.dart';
+import 'package:intl/intl.dart';
+import 'package:startup_namer/controllers/ticket_detail_controller.dart';
+import 'package:startup_namer/controllers/tickets_controller.dart'; 
 import '../models/user.dart'; 
 import 'dart:io';
 import 'create_historical_screen.dart';
@@ -26,7 +26,7 @@ class TicketDetailScreen extends StatelessWidget {
     Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     // Agregar el histórico creado por el usuario logueado
     final historicoInicial = {
-      'date': ticket.fechaCreacion.toString(),
+      'date': ticket.fechaCreacion.toString(), // Asegurarse de que la fecha de creación esté presente
       'nombre_usuario': usuario.nombreCompleto,
       'content': ticket.descripcion,
       'documentos': [],
@@ -77,7 +77,7 @@ class TicketDetailScreen extends StatelessWidget {
                 final esSolucion = ticket.soluciones.contains(item);
 
                 // Formatear la fecha para no mostrar milisegundos
-                final formattedFecha = DateFormat('dd-MM-yyyy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
+                final formattedFecha = DateFormat('dd-MM-yy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
 
                 return MessageBubble(
                   message: Message(
@@ -89,10 +89,10 @@ class TicketDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(1),
                         decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
+                          color: const Color.fromARGB(0, 224, 224, 224),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,10 +100,10 @@ class TicketDetailScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  esSolucion ? "Solución creada: " : "Creado: ",
+                                  esSolucion ? "Solución: " : "Creado: ",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Icon(Icons.access_time, size: 16, color: Colors.black),
+                                Icon(Icons.access_time, size: 16, color: Colors.white),
                                 SizedBox(width: 5),
                                 Text(formattedFecha), // Usar la fecha formateada
                               ],
@@ -115,7 +115,7 @@ class TicketDetailScreen extends StatelessWidget {
                                   "Por: ",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Icon(Icons.person, size: 16, color: Colors.black),
+                                Icon(Icons.person, size: 20, color: Colors.white),
                                 SizedBox(width: 5),
                                 Flexible(
                                   child: Text(
@@ -123,7 +123,14 @@ class TicketDetailScreen extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+                                
                               ],
+                            ),
+                            Divider(
+                              color: const Color.fromARGB(171, 255, 255, 255),
+                              thickness: 1,
+                              indent: 1,
+                              endIndent: 1,
                             ),
                           ],
                         ),
@@ -137,18 +144,15 @@ class TicketDetailScreen extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        Divider(
-                          color: Colors.black,
-                          thickness: 1,
-                          indent: 10,
-                          endIndent: 10,
-                        ),
+
                       ],
                       SizedBox(height: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: item.entries.where((entry) {
-                          return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date_creation' && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial';
+                          return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date_creation' 
+                          && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial'
+                          && entry.key != 'date'; // Excluir la clave 'date' para no mostrar la fecha adicional
                         }).map<Widget>((entry) {
                           return Text('${entry.value}');
                         }).toList(),
@@ -278,8 +282,8 @@ class TicketDetailScreen extends StatelessWidget {
           ),
           if (ticket.estado != 5 && ticket.estado != 6)
             Positioned(
-              bottom: 16,
-              right: 16,
+              bottom: 18, // Aumentar la altura del FAB
+              right: MediaQuery.of(context).size.width * 0.08, // Ajustar la posición del FAB
               child: FloatingActionButton(
                 onPressed: () {
                   Navigator.push(
@@ -320,27 +324,38 @@ class MessageBubble extends StatelessWidget {
 
     return FractionallySizedBox(
       alignment: messageAlignment,
-      widthFactor: 0.8,
+      widthFactor: 0.9, // Incrementar el ancho de las burbujas de chat
       child: Align(
         alignment: messageAlignment,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0), // Reducir el alto en un punto
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-            child: BubbleBackground(
-              colors: isSolution
-                  ? [Color(0xFF00FF00), Color(0xFF008000)]
-                  : message.isMine
-                      ? [Color.fromARGB(255, 0, 145, 230), Color(0xFF005586)]
-                      : [Color.fromARGB(255, 120, 164, 189), Color.fromARGB(255, 0, 48, 77)],
-              child: DefaultTextStyle.merge(
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: child,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black38,
+                    blurRadius: 6.0,
+                    offset: Offset(3, 3),
+                  ),
+                ],
+              ),
+              child: BubbleBackground(
+                colors: isSolution
+                    ? [Color.fromARGB(255, 0, 134, 100), Color.fromARGB(255, 0, 204, 153)]
+                    : message.isMine
+                        ? [Color.fromARGB(255, 0, 128, 202), Color(0xFF005586)]
+                        : [Color(0xFF005586), Color.fromARGB(255, 0, 40, 92)],
+                child: DefaultTextStyle.merge(
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: child,
+                  ),
                 ),
               ),
             ),

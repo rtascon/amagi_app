@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:startup_namer/views/solucion_screen.dart';
 import '../services/ticket_service.dart';
 import '../models/user.dart';
 import '../views/tickets_screen.dart';
@@ -18,7 +19,7 @@ import '../views/common_pop_ups.dart';
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/glpi_general_service.dart';
-import '../config/enviroment.dart'; // Importar el archivo de configuración
+import '../config/environment.dart'; // Importar el archivo de configuración
 
 /// Controlador para manejar las acciones relacionadas con los tickets.
 class TicketsController {
@@ -198,7 +199,7 @@ class TicketsController {
       }
 
       final userId = getUserId();
-      List<dynamic> ticketsData = await _ticketService.getUserTicketFiltered(userId, {});
+      List<dynamic> ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
 
       // Crear instancias de Ticket usando TicketFactory
       List<Ticket> tickets = ticketsData.map((ticketData) {
@@ -403,4 +404,98 @@ class TicketsController {
     return document.body?.text ?? '';
   }
 
+  /// Navega a la pantalla de solución del ticket.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [ticket]: El ticket cuya solución se mostrará.
+  Future<void> navigateToSolucionScreen(BuildContext context, Ticket ticket) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context);
+      return;
+    }
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const LoadingScreen();
+        },
+      );
+
+      List<Map<String, dynamic>> soluciones = await getTicketSolutions(ticket.id);
+
+      // Obtener la solución más reciente
+      Map<String, dynamic> solucionReciente = soluciones.reduce((a, b) {
+        DateTime fechaA = DateTime.parse(a['date_creation']);
+        DateTime fechaB = DateTime.parse(b['date_creation']);
+        return fechaA.isAfter(fechaB) ? a : b;
+      });
+
+      Navigator.of(context).pop();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SolucionScreen(ticket: ticket, solucion: solucionReciente),
+        ),
+      );
+    } catch (e) {
+      Navigator.of(context).pop();
+      if (e is TimeoutException) {
+        showTimeoutMessage(context);
+      } else {
+        print("Error al obtener la solución del ticket: $e");
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  /// Reabre un ticket específico.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// - [ticket]: El ticket a reabrir.
+  Future<void> reopenTicket(BuildContext context, Ticket ticket) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context);
+      return;
+    }
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const LoadingScreen();
+        },
+      );
+
+      Map<String, dynamic> updateData = {
+        'status': '4', // Estado para reabrir el ticket
+      };
+      await _ticketService.updateTicket(ticket.id, updateData);
+
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ticket reabierto exitosamente')),
+      );
+      navigateToTicketsScreen(context);
+    } catch (e) {
+      Navigator.of(context).pop();
+      if (e is TimeoutException) {
+        showTimeoutMessage(context);
+      } else {
+        print("Error al reabrir el ticket: $e");
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al reabrir el ticket')),
+        );
+      }
+    }
+  }
 }

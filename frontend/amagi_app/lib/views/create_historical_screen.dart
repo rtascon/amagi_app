@@ -23,6 +23,8 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
       CreateHistoricalController();
   String? _descripcion;
   List<PlatformFile> _selectedFiles = [];
+  final TextEditingController _descripcionController = TextEditingController(); // Añadir controlador para el campo de descripción
+  bool _isLoading = false; // Añadir variable de estado para el loading
 
   Future<void> _pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -78,34 +80,49 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Descripción',
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.edit_square, color: Colors.grey[600]), // Ajustar ícono
+                    const SizedBox(width: 4.0),
+                    Text(
+                      'Descripción',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
                 ),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese una descripción';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _descripcion = value;
-                },
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Margen del campo de texto
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: TextFormField(
+                  controller: _descripcionController,
+                  decoration: InputDecoration(
+                    hintText: 'Ingrese una descripción', // Texto de marcador de posición
+                    hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17), // Tamaño de letra igual al de título
+                    filled: true,
+                    fillColor: Colors.grey[200], // Ajustar el fondo del texto
+                    border: InputBorder.none, // Eliminar el borde del campo de texto
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Ajustar el padding vertical
+                  ),
+                  maxLines: 10,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese una descripción';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _descripcion = value;
+                  },
+                ),
               ),
               const SizedBox(height: 16.0),
               Row(
@@ -119,7 +136,7 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                           onPressed: _pickFiles,
                           icon: const Icon(Icons.attach_file,
                               color: Colors.white),
-                          label: const Text('Seleccionar Archivos'),
+                          label: const Text('Adjuntar Archivo'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF005586),
                             foregroundColor: Colors.white,
@@ -149,19 +166,20 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                   Expanded(
                     flex: 3,
                     child: Container(
-                      padding: const EdgeInsets.all(8.0),
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Margen del contenedor
                       decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFF005586)),
-                        borderRadius: BorderRadius.circular(12.0),
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: _selectedFiles.isEmpty
-                          ? const SizedBox(
+                          ? SizedBox(
                               height:
                                   100, // Ajusta la altura según sea necesario
                               child: Center(
                                 child: Text(
-                                  'No se han cargado archivos',
-                                  style: TextStyle(color: Color(0xFF005586)),
+                                  'No se ha cargado archivo',
+                                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
                                 ),
                               ),
                             )
@@ -181,23 +199,37 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                 child: SizedBox(
                   width: 150,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        _createHistoricalController.submitHistorical(
-                          context,
-                          widget.ticketId,
-                          _descripcion!,
-                          _selectedFiles,
-                          widget.ticket,
-                        );
-                      }
-                    },
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _isLoading = true;
+                              });
+
+                              _formKey.currentState!.save();
+                              await _createHistoricalController.submitHistorical(
+                                context,
+                                widget.ticketId,
+                                _descripcion!,
+                                _selectedFiles,
+                                widget.ticket,
+                              );
+
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF005586),
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Enviar'),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : const Text('Enviar'),
                   ),
                 ),
               ),

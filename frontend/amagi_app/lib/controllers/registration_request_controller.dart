@@ -3,7 +3,7 @@ import '../services/ticket_service.dart';
 import '../services/auth_service.dart'; 
 import '../models/user.dart';
 import '../views/login_screen.dart';
-import '../config/enviroment.dart';
+import '../config/environment.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart'; 
 import 'dart:async';

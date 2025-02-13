@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../config/enviroment.dart';
+import '../config/environment.dart';
 import 'dart:async';
 
 /// Servicio para manejar operaciones relacionadas con los comentarios.
