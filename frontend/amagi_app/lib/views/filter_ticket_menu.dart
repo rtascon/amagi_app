@@ -182,14 +182,14 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _applyFilters,
-                        child: Text(
-                          'Filtrar',
-                          style: TextStyle(color: Colors.white), // Color de la fuente
+                        onPressed: _clearFilters,
+                        child: Icon(
+                          Icons.cleaning_services, // Icono de limpiar
+                          color: Colors.white,
                         ),
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 16.0),
-                          backgroundColor: Color(0xFF005586), // Color del botón
+                          backgroundColor: Colors.red, // Color del botón
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
@@ -201,14 +201,14 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     SizedBox(width: 8), // Espacio entre los botones
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: _clearFilters,
-                        child: Icon(
-                          Icons.cleaning_services, // Icono de limpiar
-                          color: Colors.white,
+                        onPressed: _applyFilters,
+                        child: Text(
+                          'Filtrar',
+                          style: TextStyle(color: Colors.white), // Color de la fuente
                         ),
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 16.0),
-                          backgroundColor: Colors.red, // Color del botón
+                          backgroundColor: Color(0xFF005586), // Color del botón
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),

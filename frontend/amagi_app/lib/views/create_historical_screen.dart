@@ -203,6 +203,15 @@ class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                         ? null
                         : () async {
                             if (_formKey.currentState!.validate()) {
+                              // Verificar si algún archivo es mayor de 15MB
+                              bool hasLargeFile = _selectedFiles.any((file) => file.size > 15 * 1024 * 1024);
+                              if (hasLargeFile) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('El archivo supera el tamaño máximo de 15MB')),
+                                );
+                                return;
+                              }
+
                               setState(() {
                                 _isLoading = true;
                               });

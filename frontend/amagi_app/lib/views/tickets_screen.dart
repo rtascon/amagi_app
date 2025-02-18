@@ -330,7 +330,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                               Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        horizontal: 8.0,
+                                                        horizontal: 10.0,
                                                         vertical: 4.0),
                                                 decoration: BoxDecoration(
                                                   color: _typeConversion.getTipo(
@@ -373,7 +373,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                                             ? const Color(
                                                                 0xFF009FDA)
                                                             : const Color(
-                                                                0xFFE98300),
+                                                                0xFFE98300), fontSize: 12,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -385,7 +385,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                               Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        horizontal: 8.0,
+                                                        horizontal: 10.0,
                                                         vertical: 4.0),
                                                 decoration: BoxDecoration(
                                                   color: Colors.grey[300],
@@ -406,7 +406,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                                     Text(
                                                       ticket.id.toString(),
                                                       style: const TextStyle(
-                                                        color: Colors.black,
+                                                        color: Colors.black, fontSize: 10,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -464,7 +464,9 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                   bottom: 30,
                                   right: 8,
                                   child: IconButton(
-                                    icon: const Icon(Icons.info_outline),
+                                    icon: Icon(Icons.info_outline,
+                                                          color: Colors.grey[500],
+                                                          size: 25,),
                                     onPressed: () {
                                       showDialog(
                                         context: context,

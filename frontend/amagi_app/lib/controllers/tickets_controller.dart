@@ -364,7 +364,7 @@ class TicketsController {
       // Ocultar la pantalla de carga
       Navigator.of(context).pop();
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => TicketDetailScreen(ticket: ticket),

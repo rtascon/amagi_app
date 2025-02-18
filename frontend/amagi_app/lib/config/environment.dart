@@ -1,7 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Environment {
-  static String get apiUrl => dotenv.env['API_URL_1'] ?? 'http://default.url';
+  static String get apiUrl => dotenv.env['API_URL'] ?? 'http://default.url';
   static String get appServiceCredentialUsername =>
       dotenv.env['APP_SERVICE_CREDENTIAL_USERNAME'] ?? 'default_username';
   static String get appServiceCredentialPassword =>

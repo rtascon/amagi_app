@@ -24,15 +24,20 @@ class TicketDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
-    // Agregar el histórico creado por el usuario logueado
-    final historicoInicial = {
-      'date': ticket.fechaCreacion.toString(), // Asegurarse de que la fecha de creación esté presente
-      'nombre_usuario': usuario.nombreCompleto,
-      'content': ticket.descripcion,
-      'documentos': [],
-      'isInitial': true, // Marcar este histórico como inicial
-    };
-    ticket.historicos.insert(0, historicoInicial);
+    // Verificar si el histórico inicial ya está presente
+    bool historicoInicialPresente = ticket.historicos.any((historico) => historico['isInitial'] == true);
+
+    if (!historicoInicialPresente) {
+      // Agregar el histórico creado por el usuario logueado
+      final historicoInicial = {
+        'date': ticket.fechaCreacion.toString(), // Asegurarse de que la fecha de creación esté presente
+        'nombre_usuario': usuario.nombreCompleto,
+        'content': ticket.descripcion,
+        'documentos': [],
+        'isInitial': true, // Marcar este histórico como inicial
+      };
+      ticket.historicos.insert(0, historicoInicial);
+    }
 
     // Combinar históricos y soluciones en una sola lista y ordenar por fecha
     final combinedList = [...ticket.historicos, ...ticket.soluciones];
