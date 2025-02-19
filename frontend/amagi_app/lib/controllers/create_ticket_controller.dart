@@ -1,12 +1,14 @@
 import 'package:startup_namer/config/environment.dart';
 import 'package:startup_namer/models/user.dart';
 import 'package:startup_namer/views/common_pop_ups.dart';
+import 'package:startup_namer/views/loading_screen.dart';
 import 'package:startup_namer/views/main_menu_screen.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:startup_namer/services/ticket_service.dart'; // Add this line to import the ticket_service
-import 'package:startup_namer/services/glpi_general_service.dart'; // Add this line to import the glpi_general_service
+import 'package:startup_namer/services/glpi_general_service.dart';
+
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
 class CreateTicketController {
@@ -32,6 +34,16 @@ class CreateTicketController {
     }
 
     try {
+
+      // Mostrar la pantalla de carga
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const LoadingScreen();
+        },
+      );
+
       final Map<String, dynamic> ticketData = {
         'name': titulo,
         'content': descripcion,
@@ -52,10 +64,15 @@ class CreateTicketController {
       }
 
       if (context.mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-        );
+      Navigator.of(context).pop();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainMenuScreen(),
+        ),
+      );
+
       }
       return true;
     } catch (e) {

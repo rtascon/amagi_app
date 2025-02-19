@@ -370,6 +370,7 @@ class TicketsController {
           builder: (context) => TicketDetailScreen(ticket: ticket),
         ),
       );
+
     } catch (e) {
       Navigator.of(context).pop();
       if (e is TimeoutException) {
@@ -386,11 +387,11 @@ class TicketsController {
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   void navigateBackToMainMenu(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-      (Route<dynamic> route) => false,
     );
+
   }
 
   /// Elimina las etiquetas HTML de una cadena.

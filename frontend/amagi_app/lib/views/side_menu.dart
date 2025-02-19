@@ -107,7 +107,7 @@ class SideMenu extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      snapshot.data?['glpiactiveprofile'] ?? '',
+                                      snapshot.data?['glpiactiveprofile']?.replaceAll('_', ' ') ?? '',
                                       style: TextStyle(
                                         fontSize: 14, // Slightly smaller font size
                                         color: const Color.fromARGB(255, 0, 0, 0), // Different color for profile name

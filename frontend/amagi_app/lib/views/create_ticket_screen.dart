@@ -242,6 +242,10 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                                       if (mounted) {
                                         setState(() {
                                           _isLoading = false;
+                                          _tituloController.clear();
+                                          _descripcionController.clear();
+                                          _tipoController.clear();
+                                          selectedTipo = null;
                                         });
                                       }
                                     }
