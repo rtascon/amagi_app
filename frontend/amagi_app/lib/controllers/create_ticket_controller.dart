@@ -36,20 +36,22 @@ class CreateTicketController {
     try {
 
       // Mostrar la pantalla de carga
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const LoadingScreen();
-        },
-      );
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const LoadingScreen();
+          },
+        );
+      }
 
       final Map<String, dynamic> ticketData = {
         'name': titulo,
         'content': descripcion,
         'type': tipo,
       };
-      ticketData['_users_id_requester'] = await user.getIdUsuario;
+      ticketData['_users_id_requester'] = user.getIdUsuario;
       ticketData['entities_id'] = await _getEntityId();
       ticketData['requesttypes_id'] = request;
 

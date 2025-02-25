@@ -20,11 +20,8 @@ class WelcomeController {
   Future<void> checkLoginStatus() async {
     bool isLoggedIn = await _checkLoginStatus();
     await Future.delayed(const Duration(seconds: 3));
-    if (isLoggedIn) {
-      Navigator.pushReplacementNamed(context, '/mainMenu');
-    } else {
-      Navigator.pushReplacementNamed(context, '/login');
-    }
+    if (!context.mounted) return;
+    Navigator.pushReplacementNamed(context, isLoggedIn ? '/mainMenu' : '/login');
   }
 
   /// Verifica el estado de inicio de sesión almacenado en las preferencias compartidas.
@@ -43,9 +40,7 @@ class WelcomeController {
         UserService userService = UserService();
         await userService.getUserInfo(usuario);
         GlpiGeneralService glpiGeneralService = GlpiGeneralService();
-        //await _glpiGeneralService.changeActiveProfile((prefs.getInt('profilesId') ?? 13));
-        await glpiGeneralService
-            .changeActiveEntity(prefs.getInt('root_entity') ?? 0);
+        await glpiGeneralService.changeActiveEntity(prefs.getInt('root_entity') ?? 0);
       } catch (e) {
         isLoggedIn = false;
         await prefs.clear();
@@ -65,9 +60,7 @@ class WelcomeController {
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   void _showErrorMessage(BuildContext context) {
-    Color defaultTextButtonColor =
-        TextButton.styleFrom().foregroundColor?.resolve({}) ??
-            Theme.of(context).primaryColor;
+    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -88,8 +81,7 @@ class WelcomeController {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Aceptar',
-                  style: TextStyle(color: defaultTextButtonColor)),
+              child: Text('Aceptar', style: TextStyle(color: defaultTextButtonColor)),
             ),
           ],
         );

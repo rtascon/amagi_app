@@ -26,6 +26,7 @@ class CreateHistoricalController {
       String descripcion,
       List<PlatformFile> selectedFiles,
       Ticket ticket) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     try {
       // Añade un seguimiento al ticket.
       int followupId =
@@ -34,16 +35,22 @@ class CreateHistoricalController {
       await _ticketService.uploadFiles(selectedFiles, followupId);
 
       // Muestra un mensaje de éxito.
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         const SnackBar(content: Text('Histórico enviado con éxito')),
       );
 
       // Navega a la pantalla de detalles del ticket actualizada.
       final TicketsController ticketsController = TicketsController();
-      await ticketsController.navigateToTicketDetailScreen(context, ticket);
+      if (context.mounted) {
+        await ticketsController.navigateEnviadoToTicketDetailScreen(context, ticket);
+      }
+
+
+
+
     } catch (e) {
       // Muestra un mensaje de error.
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error al enviar el histórico: $e')),
       );
     }

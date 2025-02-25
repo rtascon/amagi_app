@@ -14,10 +14,10 @@ class CreateHistoricalScreen extends StatefulWidget {
       {super.key, required this.ticketId, required this.ticket});
 
   @override
-  _CreateHistoricalScreenState createState() => _CreateHistoricalScreenState();
+  CreateHistoricalScreenState createState() => CreateHistoricalScreenState();
 }
 
-class _CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
+class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
   final _formKey = GlobalKey<FormState>();
   final CreateHistoricalController _createHistoricalController =
       CreateHistoricalController();

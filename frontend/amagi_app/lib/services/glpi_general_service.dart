@@ -124,7 +124,7 @@ class GlpiGeneralService {
     try {
       final response = await http
           .get(Uri.parse('$url/getMyProfiles'), headers: headers)
-          .timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+          .timeout(const Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -159,8 +159,6 @@ class GlpiGeneralService {
 
     if (response.statusCode != 200) {
       throw Exception('Error al cambiar el perfil: ${response.body}');
-    } else {
-      print('Resultado del cambio de perfil: ${response.body}');
     }
   }
 

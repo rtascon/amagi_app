@@ -15,7 +15,7 @@ import 'dart:async';
 class LoginController {
   final AuthService _authService = AuthService();
   final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
-  final _storage = FlutterSecureStorage();
+  final _storage = const FlutterSecureStorage();
   final String profile = Environment.profile;
   final String entity = Environment.entity;
 
@@ -34,10 +34,12 @@ class LoginController {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
     if (connectivityResult == ConnectivityResult.none) {
+      if (!context.mounted) return;
       showNoInternetMessage(context); 
       return;
     }
 
+    if (!context.mounted) return;
     _showLoadingScreen(context); 
 
     try {
@@ -94,12 +96,15 @@ Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
         } else {
           throw Exception('Invalid structure for myEntities');
         }
+        if (!context.mounted) return;
         Navigator.of(context).pop();
+        if (!context.mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainMenuScreen()),
+          MaterialPageRoute(builder: (context) => const MainMenuScreen()),
         );
       } else {
+        if (!context.mounted) return;
         _showErrorMessage(context);
       }
     } catch (e) {
@@ -119,7 +124,7 @@ Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
   void redirectToRegistration(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RegistrationRequestScreen()),
+      MaterialPageRoute(builder: (context) => const RegistrationRequestScreen()),
     );
   }
 
@@ -133,7 +138,7 @@ Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return LoadingScreen();
+          return const LoadingScreen();
         },
       );
     });
@@ -152,14 +157,14 @@ Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: Column(
+          title: const Column(
             children: [
               Icon(Icons.error, color: Colors.red, size: 40),
               SizedBox(height: 10),
               Text('Fallo al iniciar sesión'),
             ],
           ),
-          content: Text('Por favor intente de nuevo.'),
+          content: const Text('Por favor intente de nuevo.'),
           actions: [
             TextButton(
               onPressed: () {

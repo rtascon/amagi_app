@@ -8,7 +8,7 @@ import '../config/environment.dart';
 /// Servicio para manejar operaciones relacionadas con el usuario.
 class UserService {
   final String url = Environment.apiUrl;
-  static final _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
   /// Obtiene la información completa del usuario y la almacena en el objeto [usuario].
@@ -24,11 +24,11 @@ class UserService {
           'Session-Token': sessionToken!,
           'Content-Type': 'application/json',
         },
-      ).timeout(Duration(seconds: 15)); 
+      ).timeout(const Duration(seconds: 15)); 
 
       if (response.statusCode == 200 || response.statusCode == 206) {
         final userInfo = jsonDecode(response.body);
-        var otrasEntidadesActivas;
+        Map otrasEntidadesActivas;
         if (userInfo['session']['glpiactiveentities'] is Map) {
           otrasEntidadesActivas = Map<String, dynamic>.from(userInfo['session']['glpiactiveentities']);
         } else if (userInfo['session']['glpiactiveentities'] is List) {
@@ -51,7 +51,7 @@ class UserService {
           perfilActivo: userInfo['session']['glpiactiveprofile']['name'] ?? '',
           tokenSesion: sessionToken,
           nombreEntidadActiva: userInfo['session']['glpiactive_entity_shortname'] ?? '',
-          otrasEntidadesActivas: otrasEntidadesActivas,
+          otrasEntidadesActivas: otrasEntidadesActivas.cast<String, dynamic>(),
         );
         return true;
       } else {
@@ -81,7 +81,7 @@ class UserService {
           'Session-Token': sessionToken!,
           'Content-Type': 'application/json',
         },
-      ).timeout(Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+      ).timeout(const Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
 
       if (response.statusCode == 200 || response.statusCode == 206) {
         final userInfo = jsonDecode(response.body);

@@ -6,14 +6,17 @@ import '../views/login_screen.dart';
 import '../config/environment.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart'; 
+import 'package:startup_namer/services/glpi_general_service.dart';
 import 'dart:async';
 
 /// Controlador para manejar las solicitudes de registro.
 class RegistrationRequestController {
   final TicketService _ticketService = TicketService();
   final AuthService _authService = AuthService();
+  final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
   final String _appServiceCredentialUsername = Environment.appServiceCredentialUsername;
   final String _appServiceCredentialPassword = Environment.appServiceCredentialPassword;
+  final String entity = Environment.entity;
   final User _user = User();
 
   /// Envía una solicitud de registro con los datos proporcionados.
@@ -40,6 +43,7 @@ class RegistrationRequestController {
   ) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
+      if (!context.mounted) return false;
       showNoInternetMessage(context); 
       return false;
     }
@@ -50,7 +54,7 @@ class RegistrationRequestController {
       if (success) {
         final Map<String, dynamic> ticketData = {
           "_users_id_requester": _user.getIdUsuario,
-          "entities_id": 0,
+          //"entities_id": 0,
           'name': 'Solicitud de registro: $empresa - $nombre $apellido',
           'content': '''
 Nombre: $nombre
@@ -61,36 +65,60 @@ Número de Teléfono: $telefono
 Cédula: $cedula
 ''',
         };
+        ticketData['entities_id'] = await _getEntityId();
         // Envía la solicitud de registro.
         final response = await _ticketService.createTicket(ticketData);
 
         if (response['success']) {
-          await _showSuccessMessage(context);
+          if (context.mounted) {
+            await _showSuccessMessage(context);
+          }
         } else {
           throw Exception('Error al crear la solicitud');
         }
 
         _authService.logOut();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        }
         return true;
       } else {
-        _showErrorMessage(context, 'No pudimos enviar su solicitud de registro. Por favor, intente más tarde.');
+        if (context.mounted) {
+          _showErrorMessage(context, 'No pudimos enviar su solicitud de registro. Por favor, intente más tarde.');
+        }
         return false;
       }
     } catch (e) {
-      Navigator.of(context).pop(); 
-      if (e is TimeoutException) {
-        showTimeoutMessage(context); 
-      } else {
-        _showErrorMessage(context,'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
+      if (context.mounted) {
+        Navigator.of(context).pop(); 
+        if (e is TimeoutException) {
+          showTimeoutMessage(context); 
+        } else {
+          _showErrorMessage(context,'Hubo un error al enviar su solicitud de registro. Por favor, intente de nuevo.');
+        }
       }
       return false;
     }
   }
 
+  Future<int> _getEntityId() async {
+    Map<String, dynamic> myEntities = await _glpiGeneralService.getMyEntities();
+    var myEntitiesList = myEntities['myentities'];
+    if (myEntitiesList != null && myEntitiesList is List) {
+      var myEntity = myEntitiesList.firstWhere(
+        (element) => element['name'] == entity,
+        orElse: () => null,
+      );
+
+      if (myEntity != null) {
+        return int.parse(myEntity['id'].toString());
+      }
+    }
+    throw Exception('Entidad no encontrada');
+  }
 
   void _showErrorMessage(BuildContext context, String message) {
     showDialog(
@@ -100,7 +128,7 @@ Cédula: $cedula
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: Column(
+          title: const Column(
             children: [
               Icon(Icons.error, color: Colors.red, size: 40),
               SizedBox(height: 10),
@@ -132,14 +160,14 @@ Cédula: $cedula
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: Column(
+          title: const Column(
             children: [
               Icon(Icons.check_circle, color: Colors.green, size: 40),
               SizedBox(height: 10),
               Text('Registro Exitoso'),
             ],
           ),
-          content: Text('Su solicitud de registro ha sido enviada.'),
+          content: const Text('Su solicitud de registro ha sido enviada.'),
           actions: [
             TextButton(
               onPressed: () {

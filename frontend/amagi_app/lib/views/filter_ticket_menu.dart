@@ -10,13 +10,13 @@ import '../models/type_conversion.dart';
 class FilterTicketMenu extends StatefulWidget {
   final Function(Map<String, dynamic>) onFilterChanged;
 
-  FilterTicketMenu({required this.onFilterChanged});
+  const FilterTicketMenu({super.key, required this.onFilterChanged});
 
   @override
-  _FilterTicketMenuState createState() => _FilterTicketMenuState();
+  FilterTicketMenuState createState() => FilterTicketMenuState();
 }
 
-class _FilterTicketMenuState extends State<FilterTicketMenu> {
+class FilterTicketMenuState extends State<FilterTicketMenu> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _ticketIdController = TextEditingController();
   String? _selectedType;
@@ -52,14 +52,16 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
       _selectedDateRange = null;
     });
     List<Ticket> tickets = await TicketsController().getTicketsList(context, true);
-    widget.onFilterChanged({
-      'ticketId': null,
-      'type': null,
-      'status': null,
-      'dateRange': null,
-      'tickets': tickets,
-    });
-    Navigator.of(context).pop();
+    if (mounted) {
+      widget.onFilterChanged({
+        'ticketId': null,
+        'type': null,
+        'status': null,
+        'dateRange': null,
+        'tickets': tickets,
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   void _toggleFilters() {
@@ -80,15 +82,15 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 32), // Mover contenido hacia abajo
-                Text(
+                const SizedBox(height: 32), // Mover contenido hacia abajo
+                const Text(
                   'Filtrar Tickets',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _ticketIdController,
-                  decoration: InputDecoration(labelText: 'ID del Ticket'),
+                  decoration: const InputDecoration(labelText: 'ID del Ticket'),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     _toggleFilters();
@@ -100,9 +102,9 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  decoration: InputDecoration(labelText: 'Tipo'),
+                  decoration: const InputDecoration(labelText: 'Tipo'),
                   dropdownColor: Colors.grey[200], // Color de fondo del menú desplegable
                   iconSize: 15, // Tamaño del icono más pequeño
                   items: ['Requerimiento', 'Incidente'].map((String type) {
@@ -117,11 +119,11 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     });
                   } : null,
                   value: _selectedType,
-                  disabledHint: Text('Deshabilitado'),
+                  disabledHint: const Text('Deshabilitado'),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  decoration: InputDecoration(labelText: 'Estado'),
+                  decoration: const InputDecoration(labelText: 'Estado'),
                   dropdownColor: Colors.grey[200], // Color de fondo del menú desplegable
                   iconSize: 15, // Tamaño del icono más pequeño
                   items: ['Nuevo', 'En curso (asignado)', 'En curso (Planificado)', 'En espera','Resuelto','Cerrado'].map((String status) {
@@ -136,14 +138,14 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     });
                   } : null,
                   value: _selectedStatus,
-                  disabledHint: Text('Deshabilitado'),
+                  disabledHint: const Text('Deshabilitado'),
                 ),
-                SizedBox(height: 32),
-                Text(
+                const SizedBox(height: 32),
+                const Text(
                   'Fecha',
                   style: TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 16), 
+                const SizedBox(height: 16), 
                 Row(
                   children: [
                     Expanded(
@@ -164,31 +166,27 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                           }
                         } : null,
                         
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[200], // Color del botón
+                        ),
                         child: Text(
                           _selectedDateRange == null
                               ? 'Seleccionar'
                               : '${DateFormat('yyyy-MM-dd').format(_selectedDateRange!.start)} - ${DateFormat('yyyy-MM-dd').format(_selectedDateRange!.end)}',
                           style: TextStyle(color: Theme.of(context).primaryColor), // Color de la fuente
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[200], // Color del botón
-                        ),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _clearFilters,
-                        child: Icon(
-                          Icons.cleaning_services, // Icono de limpiar
-                          color: Colors.white,
-                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
                           backgroundColor: Colors.red, // Color del botón
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
@@ -196,24 +194,28 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                           elevation: 5,
                           shadowColor: Colors.black.withOpacity(0.2),
                         ),
+                        child: const Icon(
+                          Icons.cleaning_services, // Icono de limpiar
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    SizedBox(width: 8), // Espacio entre los botones
+                    const SizedBox(width: 8), // Espacio entre los botones
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _applyFilters,
-                        child: Text(
-                          'Filtrar',
-                          style: TextStyle(color: Colors.white), // Color de la fuente
-                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 16.0),
-                          backgroundColor: Color(0xFF005586), // Color del botón
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          backgroundColor: const Color(0xFF005586), // Color del botón
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 5,
                           shadowColor: Colors.black.withOpacity(0.2),
+                        ),
+                        child: const Text(
+                          'Filtrar',
+                          style: TextStyle(color: Colors.white), // Color de la fuente
                         ),
                       ),
                     ),

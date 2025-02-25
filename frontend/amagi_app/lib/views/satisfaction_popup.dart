@@ -8,10 +8,10 @@ class SatisfactionPopup extends StatefulWidget {
       {super.key, required this.onSubmit, required this.onCancel});
 
   @override
-  _SatisfaccionPopupState createState() => _SatisfaccionPopupState();
+  SatisfaccionPopupState createState() => SatisfaccionPopupState();
 }
 
-class _SatisfaccionPopupState extends State<SatisfactionPopup> {
+class SatisfaccionPopupState extends State<SatisfactionPopup> {
   int _rating = 0;
   final TextEditingController _comentariosController = TextEditingController();
 

@@ -25,14 +25,12 @@ class TicketDetailController {
   Future<void> downloadFile(String pathOrUrl, String fileName) async {
     // Verificar si es una ruta local
     if (File(pathOrUrl).existsSync()) {
-      print("File already exists at: $pathOrUrl");
       await _saveFileToDeviceStorage(pathOrUrl, fileName);
       return;
     }
 
     // Verificar si la URL es válida
     if (!Uri.parse(pathOrUrl).isAbsolute) {
-      print("Invalid URL: $pathOrUrl");
       return;
     }
 
@@ -40,7 +38,6 @@ class TicketDetailController {
     if (!status.isGranted) {
       status = await Permission.storage.request();
       if (!status.isGranted) {
-        print("Storage permission denied");
         return;
       }
     }
@@ -50,10 +47,9 @@ class TicketDetailController {
       var dir = await getApplicationDocumentsDirectory();
       String savePath = "${dir.path}/$fileName";
       await dio.download(pathOrUrl, savePath);
-      print("File downloaded to $savePath");
       await _saveFileToDeviceStorage(savePath, fileName);
     } catch (e) {
-      print("Error downloading file: $e");
+      //print("Error downloading file: $e");
     }
   }
 
@@ -70,7 +66,6 @@ class TicketDetailController {
       if (!status.isGranted) {
         status = await Permission.storage.request();
         if (!status.isGranted) {
-          print("Storage permission denied");
           return;
         }
       }
@@ -80,12 +75,10 @@ class TicketDetailController {
         String newPath = "${externalDir.path}/$fileName";
         File localFile = File(localPath);
         await localFile.copy(newPath);
-        print("File saved to device storage at: $newPath");
       } else {
-        print("Unable to access external storage directory");
       }
     } catch (e) {
-      print("Error saving file to device storage: $e");
+      //print("Error saving file to device storage: $e");
     }
   }
 }

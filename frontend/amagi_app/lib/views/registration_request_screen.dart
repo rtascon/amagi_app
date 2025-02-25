@@ -9,11 +9,11 @@ class RegistrationRequestScreen extends StatefulWidget {
   const RegistrationRequestScreen({super.key});
 
   @override
-  _RegistrationRequestScreenState createState() =>
-      _RegistrationRequestScreenState();
+  RegistrationRequestScreenState createState() =>
+      RegistrationRequestScreenState();
 }
 
-class _RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
+class RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   final _registrationRequestController = RegistrationRequestController();
 

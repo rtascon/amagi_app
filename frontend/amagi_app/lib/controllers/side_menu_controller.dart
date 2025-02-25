@@ -26,9 +26,11 @@ class SideMenuController {
       await prefs.remove('isLoggedIn');
       await prefs.remove('username');
       await prefs.remove('sessionToken');
+      if (!context.mounted) return;
       Navigator.of(context).pop(); 
       Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de inicio de sesión
     } catch (e) {
+      if (!context.mounted) return;
       Navigator.of(context).pop(); 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al cerrar sesión: $e')),

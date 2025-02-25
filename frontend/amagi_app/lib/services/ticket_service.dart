@@ -398,7 +398,7 @@ class TicketService {
   
     try {
       final response = await http.post(ticketUrl, headers: headers, body: body)
-          .timeout(Duration(seconds: 15)); 
+          .timeout(const Duration(seconds: 15)); 
   
       if (response.statusCode == 200 || response.statusCode == 201) {
         final resp = jsonDecode(response.body);

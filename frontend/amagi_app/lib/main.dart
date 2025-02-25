@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:startup_namer/views/TESTencuesta_screen.dart';
 import 'views/main_menu_screen.dart';
 import 'views/welcome_screen.dart';
 import 'views/login_screen.dart';
@@ -71,9 +70,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const WelcomeScreen(),
-      //home: MainMenuScreen(),
-      //home: TestTicketService(),
-      //home: TestTicketSatis(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/mainMenu': (context) => const MainMenuScreen(),

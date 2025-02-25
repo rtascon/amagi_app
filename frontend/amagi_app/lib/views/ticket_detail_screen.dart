@@ -7,7 +7,6 @@ import 'package:startup_namer/controllers/tickets_controller.dart';
 import '../models/user.dart'; 
 import 'dart:io';
 import 'create_historical_screen.dart';
-import 'dart:math';
 import 'dart:ui' as ui;
 
 /// Esta vista muestra los detalles de un ticket específico, incluyendo su descripción,
@@ -16,10 +15,9 @@ import 'dart:ui' as ui;
 class TicketDetailScreen extends StatelessWidget {
   final dynamic ticket;
   final TicketDetailController _ticketDetailController = TicketDetailController();
-  final TicketsController _ticketsController = TicketsController();
   final User usuario = User(); 
 
-  TicketDetailScreen({required this.ticket});
+  TicketDetailScreen({super.key, required this.ticket});
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +48,19 @@ class TicketDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            _ticketsController.navigateToTicketsScreen(context);
+            Navigator.pop(context);
           },
         ),
         title: Text(
           'Ticket ${ticket.id}',
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xFF005586),
+        backgroundColor: const Color(0xFF005586),
         elevation: 0,
         centerTitle: true,
       ),
@@ -94,7 +92,7 @@ class TicketDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: EdgeInsets.all(1),
+                        padding: const EdgeInsets.all(1),
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(0, 224, 224, 224),
                           borderRadius: BorderRadius.circular(5),
@@ -106,22 +104,22 @@ class TicketDetailScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   esSolucion ? "Solución: " : "Creado: ",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Icon(Icons.access_time, size: 16, color: Colors.white),
-                                SizedBox(width: 5),
+                                const Icon(Icons.access_time, size: 16, color: Colors.white),
+                                const SizedBox(width: 5),
                                 Text(formattedFecha), // Usar la fecha formateada
                               ],
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   "Por: ",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Icon(Icons.person, size: 20, color: Colors.white),
-                                SizedBox(width: 5),
+                                const Icon(Icons.person, size: 20, color: Colors.white),
+                                const SizedBox(width: 5),
                                 Flexible(
                                   child: Text(
                                     usuarioNombre,
@@ -131,8 +129,8 @@ class TicketDetailScreen extends StatelessWidget {
                                 
                               ],
                             ),
-                            Divider(
-                              color: const Color.fromARGB(171, 255, 255, 255),
+                            const Divider(
+                              color: Color.fromARGB(171, 255, 255, 255),
                               thickness: 1,
                               indent: 1,
                               endIndent: 1,
@@ -141,17 +139,17 @@ class TicketDetailScreen extends StatelessWidget {
                         ),
                       ),
                       if (esHistoricoInicial) ...[
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           '${ticket.titulo}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
 
                       ],
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: item.entries.where((entry) {
@@ -159,10 +157,13 @@ class TicketDetailScreen extends StatelessWidget {
                           && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial'
                           && entry.key != 'date'; // Excluir la clave 'date' para no mostrar la fecha adicional
                         }).map<Widget>((entry) {
-                          return Text('${entry.value}');
+                          return Text(
+                            '${entry.value}',
+                            overflow: TextOverflow.visible, // Permitir que el texto continúe en la siguiente línea
+                          );
                         }).toList(),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: documentos.map<Widget>((documento) {
@@ -205,8 +206,8 @@ class TicketDetailScreen extends StatelessWidget {
                                 );
                               },
                               child: Container(
-                                margin: EdgeInsets.symmetric(vertical: 5),
-                                decoration: BoxDecoration(
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                decoration: const BoxDecoration(
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.black12,
@@ -263,8 +264,8 @@ class TicketDetailScreen extends StatelessWidget {
                               },
                               child: Row(
                                 children: [
-                                  Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
-                                  SizedBox(width: 10),
+                                  const Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
+                                  const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
                                       documento['filename'],
@@ -300,7 +301,7 @@ class TicketDetailScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(Icons.add, color: Colors.white),
+                child: const Icon(Icons.add, color: Colors.white),
               ),
             ),
         ],
@@ -337,7 +338,7 @@ class MessageBubble extends StatelessWidget {
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black38,
@@ -348,10 +349,10 @@ class MessageBubble extends StatelessWidget {
               ),
               child: BubbleBackground(
                 colors: isSolution
-                    ? [Color.fromARGB(255, 0, 134, 100), Color.fromARGB(255, 0, 204, 153)]
+                    ? [const Color.fromARGB(255, 0, 134, 100), const Color.fromARGB(255, 0, 204, 153)]
                     : message.isMine
-                        ? [Color.fromARGB(255, 0, 128, 202), Color(0xFF005586)]
-                        : [Color(0xFF005586), Color.fromARGB(255, 0, 40, 92)],
+                        ? [const Color.fromARGB(255, 0, 128, 202), const Color(0xFF005586)]
+                        : [const Color(0xFF005586), const Color.fromARGB(255, 0, 40, 92)],
                 child: DefaultTextStyle.merge(
                   style: const TextStyle(
                     fontSize: 18.0,

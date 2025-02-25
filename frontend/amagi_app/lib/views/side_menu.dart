@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -18,10 +17,10 @@ class SideMenu extends StatelessWidget {
   final Future<Map<String, String>>? userNameFuture;
 
     final String url = Environment.apiUrl;
-  static final _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
-  SideMenu({
+  SideMenu({super.key, 
     required this.sideMenuController,
     required this.ticketsController,
     required this.userNameFuture,
@@ -66,9 +65,9 @@ class SideMenu extends StatelessWidget {
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            SizedBox(height: 50), // Reduce the space above the image and icon
+            const SizedBox(height: 50), // Reduce the space above the image and icon
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Row(
@@ -78,7 +77,7 @@ class SideMenu extends StatelessWidget {
                         width: 50,
                         height: 50,
                       ),
-                      SizedBox(width: 8), // Add some space between the image and the text
+                      const SizedBox(width: 8), // Add some space between the image and the text
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -86,7 +85,7 @@ class SideMenu extends StatelessWidget {
                             future: getUserProfile(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return const CircularProgressIndicator();
                               } else if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
                               } else {
@@ -95,29 +94,29 @@ class SideMenu extends StatelessWidget {
                                   children: [
                                     Text(
                                       snapshot.data?['glpifriendlyname'] ?? '',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18, // Make the font size larger
                                       ),
                                     ),
                                     Text(
                                       snapshot.data?['glpiname'] ?? '',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 16, // Slightly smaller font size
                                       ),
                                     ),
                                     Text(
                                       snapshot.data?['glpiactiveprofile']?.replaceAll('_', ' ') ?? '',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 14, // Slightly smaller font size
-                                        color: const Color.fromARGB(255, 0, 0, 0), // Different color for profile name
+                                        color: Color.fromARGB(255, 0, 0, 0), // Different color for profile name
                                       ),
                                     ),
                                     Text(
                                       snapshot.data?['glpiactive_entity_name']?.substring(0, 3) ?? '',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 14, // Slightly smaller font size
-                                        color: const Color.fromARGB(255, 0, 0, 0), // Different color for entity name
+                                        color: Color.fromARGB(255, 0, 0, 0), // Different color for entity name
                                       ),
                                     ),
 
@@ -128,7 +127,7 @@ class SideMenu extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Spacer(),
+                      const Spacer(),
                       /*
                       IconButton(
                         icon: Icon(Icons.settings),
@@ -139,8 +138,8 @@ class SideMenu extends StatelessWidget {
                       */
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Divider(
                       thickness: 1,
                       color: Colors.grey,
@@ -148,13 +147,13 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.home, color: Colors.black), // Home icon
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(Icons.home, color: Colors.black), // Home icon
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           sideMenuController.navigateToMainMenuScreen(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Inicio',
                           style: TextStyle(
                             color: Colors.black,
@@ -166,13 +165,13 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(CupertinoIcons.doc_text_search, color: Colors.black), // Ticket icon
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(CupertinoIcons.doc_text_search, color: Colors.black), // Ticket icon
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           ticketsController.navigateToTicketsScreen(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Consulta de Tickets',
                           style: TextStyle(
                             color: Colors.black,
@@ -184,17 +183,17 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Stack(
+                      const Stack(
                         children: [
                           Icon(CupertinoIcons.doc_richtext, color: Colors.black, size: 24), 
                         ],
                       ),
-                      SizedBox(width: 8), 
+                      const SizedBox(width: 8), 
                       TextButton(
                         onPressed: () {
                           sideMenuController.navigateToCreateTicketScreen(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Crear Ticket',
                           style: TextStyle(
                             color: Colors.black,
@@ -206,13 +205,13 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(CupertinoIcons.doc_checkmark, color: Colors.black), // Resolved tickets icon
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(CupertinoIcons.doc_checkmark, color: Colors.black), // Resolved tickets icon
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           ticketsController.navigateToTicketsScreen(context, filters: {'status': 5});
                         },
-                        child: Text(
+                        child: const Text(
                           'Tickets Resueltos',
                           style: TextStyle(
                             color: Colors.black,
@@ -222,8 +221,8 @@ class SideMenu extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Divider(
                       thickness: 1,
                       color: Colors.grey,
@@ -231,13 +230,13 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.logout, color: Colors.black),
-                      SizedBox(width: 8), // Space between icon and text
+                      const Icon(Icons.logout, color: Colors.black),
+                      const SizedBox(width: 8), // Space between icon and text
                       TextButton(
                         onPressed: () {
                           sideMenuController.logOut(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Cerrar Sesión',
                           style: TextStyle(
                             color: Colors.black,
@@ -250,7 +249,7 @@ class SideMenu extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(), // Pushes the image to the bottom
+            const Spacer(), // Pushes the image to the bottom
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(

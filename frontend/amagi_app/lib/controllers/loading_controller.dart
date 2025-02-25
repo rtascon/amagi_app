@@ -16,6 +16,8 @@ class SomeController {
     await Future.delayed(const Duration(seconds: 2));
 
     // Oculta la pantalla de carga
-    Navigator.of(context).pop();
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }
