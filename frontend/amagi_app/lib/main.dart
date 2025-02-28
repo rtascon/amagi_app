@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'GIA App',
+      debugShowCheckedModeBanner: false, // Quitar la cinta de debug
       theme: ThemeData(
         primarySwatch: createMaterialColor(const Color(0xFF000000)),
         primaryColor: const Color(0xFF000000), 

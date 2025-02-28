@@ -466,64 +466,72 @@ class TicketsScreenState extends State<TicketsScreen> {
                                   ),
                                 Positioned(
                                   //top: 40,
-                                  bottom: 32,
+                                  bottom: 35,
                                   //left: 0,
                                   right: 1,
                                   child: Center(
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.info_outline,
-                                        color: Colors.grey[500],
-                                        size: 25,
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                        shape: BoxShape.rectangle,
                                       ),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            final String fechaCreacion = DateFormat('dd-MM-yyyy HH:mm').format(ticket.fechaCreacion);
-                                            final String fechaModificacion = DateFormat('dd-MM-yyyy HH:mm').format(ticket.fechaActualizacion);
-                                            final String prioridad = _typeConversion.getPrioridad(ticket.prioridad);
-                                            return AlertDialog(
-                                              title: const Text(
-                                                'Más detalles',
-                                                style: TextStyle(fontWeight: FontWeight.bold),
-                                              ),
-                                              content: SingleChildScrollView(
-                                                child: ListBody(
-                                                  children: <Widget>[
-                                                    ListTile(
-                                                      leading: const Icon(Icons.date_range),
-                                                      title: const Text('Fecha de Creación'),
-                                                      subtitle: Text(fechaCreacion),
-                                                    ),
-                                                    ListTile(
-                                                      leading: const Icon(Icons.update),
-                                                      title: const Text('Fecha de Modificación'),
-                                                      subtitle: Text(fechaModificacion),
-                                                    ),
-                                                    ListTile(
-                                                      leading: const Icon(Icons.priority_high),
-                                                      title: const Text('Prioridad'),
-                                                      subtitle: Text(prioridad),
-                                                    ),
-                                                  ],
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.info_outline,
+                                          color: Colors.grey[500],
+                                          size: 25,
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              final String fechaCreacion = DateFormat('dd-MM-yyyy HH:mm').format(ticket.fechaCreacion);
+                                              final String fechaModificacion = DateFormat('dd-MM-yyyy HH:mm').format(ticket.fechaActualizacion);
+                                              final String prioridad = _typeConversion.getPrioridad(ticket.prioridad);
+                                              return AlertDialog(
+                                                title: const Text(
+                                                  'Más detalles',
+                                                  style: TextStyle(fontWeight: FontWeight.bold),
                                                 ),
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text(
-                                                    'Cerrar',
-                                                    style: TextStyle(color: defaultTextButtonColor),
+                                                content: SingleChildScrollView(
+                                                  child: ListBody(
+                                                    children: <Widget>[
+                                                      ListTile(
+                                                        leading: const Icon(Icons.date_range),
+                                                        title: const Text('Fecha de Creación'),
+                                                        subtitle: Text(fechaCreacion),
+                                                      ),
+                                                      ListTile(
+                                                        leading: const Icon(Icons.update),
+                                                        title: const Text('Fecha de Modificación'),
+                                                        subtitle: Text(fechaModificacion),
+                                                      ),
+                                                      ListTile(
+                                                        leading: const Icon(Icons.priority_high),
+                                                        title: const Text('Prioridad'),
+                                                        subtitle: Text(prioridad),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
                                                 ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: Text(
+                                                      'Cerrar',
+                                                      style: TextStyle(color: defaultTextButtonColor),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),

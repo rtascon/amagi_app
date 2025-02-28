@@ -68,6 +68,9 @@ class CreateTicketController {
       if (context.mounted) {
       Navigator.of(context).pop();
 
+      // Eliminar la pantalla anterior
+      Navigator.of(context).pop();
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

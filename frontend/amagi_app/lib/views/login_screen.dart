@@ -221,7 +221,7 @@ class LoginScreenState extends State<LoginScreen> {
                       const SizedBox(
                           height: 10), // Espacio inferior para el texto
                       const Text(
-                        'V 1.0.0',
+                        'V 2.0.0',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],

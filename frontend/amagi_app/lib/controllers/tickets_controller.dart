@@ -475,6 +475,10 @@ class TicketsController {
       // Ocultar la pantalla de carga
       Navigator.of(context).pop();
 
+      // Eliminar la pantalla anterior (TicketDetailScreen)
+      Navigator.of(context).pop();
+
+      // Navegar a la nueva pantalla (historicalscreen) y luego a TicketDetailScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -639,6 +643,9 @@ class TicketsController {
         tickets = await getTicketsList(context, true);
       }
 
+      Navigator.of(context).pop();
+
+      // Eliminar la pantalla anterior
       Navigator.of(context).pop();
 
       Navigator.pushReplacement(
