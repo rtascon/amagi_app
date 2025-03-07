@@ -72,6 +72,9 @@ class UserService {
   /// 
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<String> getUserName(int id) async {
+    if (id == 0) {
+      return 'Usuario Desconocido';
+    }
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     final userUrl = Uri.parse('$url/User/$id');
     try {

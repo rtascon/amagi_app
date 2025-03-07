@@ -26,6 +26,44 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
 
   String? selectedTipo;
 
+  bool _hasChanges() {
+    return _tituloController.text.isNotEmpty || _descripcionController.text.isNotEmpty || selectedTipo != null;
+  }
+
+  Future<bool> _onWillPop() async {
+    if (!_hasChanges()) {
+      return true;
+    }
+    return (await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Center(
+          child: Icon(
+            Icons.warning,
+            color: Colors.orange,
+            size: 50,
+          ),
+        ),
+        content: const Text('Si abandona el formulario, perderá los cambios realizados. ¿Desea continuar?'),
+        actions: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancelar', style: TextStyle(color: Colors.black)),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Aceptar', style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    )) ?? false;
+  }
+
   @override
   void dispose() {
     _tituloController.dispose();
@@ -37,22 +75,18 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-        );
-        return false;
-      },
+      onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-              );
+            onPressed: () async {
+              if (await _onWillPop()) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+                );
+              }
             },
           ),
           title: const Text(

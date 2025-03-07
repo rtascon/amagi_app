@@ -613,7 +613,7 @@ class TicketsController {
   }
 
 
-  /// Navega a la pantalla de detalles del ticket una vez rechazada o aprobada la solución.
+  /// Navega a la pantalla de consulta de ticket una vez rechazada o aprobada la solución.
   ///
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.

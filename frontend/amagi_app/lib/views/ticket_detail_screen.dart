@@ -12,33 +12,71 @@ import 'dart:ui' as ui;
 /// Esta vista muestra los detalles de un ticket específico, incluyendo su descripción,
 /// históricos y documentos adjuntos. Permite a los usuarios ver y gestionar la información del ticket.
 
-class TicketDetailScreen extends StatelessWidget {
+class TicketDetailScreen extends StatefulWidget {
   final dynamic ticket;
-  final TicketDetailController _ticketDetailController = TicketDetailController();
-  final User usuario = User(); 
 
   TicketDetailScreen({super.key, required this.ticket});
+
+  @override
+  _TicketDetailScreenState createState() => _TicketDetailScreenState();
+}
+
+class _TicketDetailScreenState extends State<TicketDetailScreen> {
+  final TicketDetailController _ticketDetailController = TicketDetailController();
+  final User usuario = User(); 
+  final ScrollController _controller = ScrollController();
+  bool _showScrollButton = false;
+  Map<int, bool> _expandedMessages = {};
+  bool _showFullText = false;
+  Map<int, bool> _showFullTextMap = {}; // Mapa para controlar el estado de cada burbuja de chat
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_controller.position.maxScrollExtent > _controller.position.pixels + 100) {
+      setState(() {
+        _showScrollButton = true;
+      });
+    } else {
+      setState(() {
+        _showScrollButton = false;
+      });
+    }
+  }
+
+  // Método para desplazarse hacia abajo
+  void _scrollDown() {
+    _controller.animateTo(
+      _controller.position.maxScrollExtent,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
     // Verificar si el histórico inicial ya está presente
-    bool historicoInicialPresente = ticket.historicos.any((historico) => historico['isInitial'] == true);
+    bool historicoInicialPresente = widget.ticket.historicos.any((historico) => historico['isInitial'] == true);
 
     if (!historicoInicialPresente) {
       // Agregar el histórico creado por el usuario logueado
       final historicoInicial = {
-        'date': ticket.fechaCreacion.toString(), // Asegurarse de que la fecha de creación esté presente
+        'date': widget.ticket.fechaCreacion.toString(), // Asegurarse de que la fecha de creación esté presente
         'nombre_usuario': usuario.nombreCompleto,
-        'content': ticket.descripcion,
+        'content': widget.ticket.descripcion,
         'documentos': [],
         'isInitial': true, // Marcar este histórico como inicial
       };
-      ticket.historicos.insert(0, historicoInicial);
+      widget.ticket.historicos.insert(0, historicoInicial);
     }
 
     // Combinar históricos y soluciones en una sola lista y ordenar por fecha
-    final combinedList = [...ticket.historicos, ...ticket.soluciones];
+    final combinedList = [...widget.ticket.historicos, ...widget.ticket.soluciones];
     combinedList.sort((a, b) {
       DateTime fechaA = DateTime.tryParse(a['date'] ?? a['date_creation'] ?? '') ?? DateTime(1970);
       DateTime fechaB = DateTime.tryParse(b['date'] ?? b['date_creation'] ?? '') ?? DateTime(1970);
@@ -54,7 +92,7 @@ class TicketDetailScreen extends StatelessWidget {
           },
         ),
         title: Text(
-          'Ticket ${ticket.id}',
+          'Ticket ${widget.ticket.id}',
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -69,15 +107,16 @@ class TicketDetailScreen extends StatelessWidget {
           Container(
             color: Colors.white,
             child: ListView.builder(
+              controller: _controller, // Asignar el controlador al ListView
               itemCount: combinedList.length,
               itemBuilder: (context, index) {
                 final item = combinedList[index];
                 final fecha = item['date'] ?? item['date_creation'] ?? '';
-                final usuarioNombre = item['nombre_usuario'] ?? '';
+                final usuarioNombre = item['nombre_usuario'] ?? 'Desconocido'; 
                 final documentos = item['documentos'] ?? [];
                 final esUsuarioLogueado = usuarioNombre == usuario.nombreCompleto;
                 final esHistoricoInicial = item['isInitial'] == true;
-                final esSolucion = ticket.soluciones.contains(item);
+                final esSolucion = widget.ticket.soluciones.contains(item);
 
                 // Formatear la fecha para no mostrar milisegundos
                 final formattedFecha = DateFormat('dd-MM-yy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
@@ -141,7 +180,7 @@ class TicketDetailScreen extends StatelessWidget {
                       if (esHistoricoInicial) ...[
                         const SizedBox(height: 10),
                         Text(
-                          '${ticket.titulo}',
+                          '${widget.ticket.titulo}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -152,16 +191,43 @@ class TicketDetailScreen extends StatelessWidget {
                       const SizedBox(height: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: item.entries.where((entry) {
-                          return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date_creation' 
-                          && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial'
-                          && entry.key != 'date'; // Excluir la clave 'date' para no mostrar la fecha adicional
-                        }).map<Widget>((entry) {
-                          return Text(
-                            '${entry.value}',
-                            overflow: TextOverflow.visible, // Permitir que el texto continúe en la siguiente línea
-                          );
-                        }).toList(),
+                        children: [
+                          ...item.entries.where((entry) {
+                            return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date_creation' 
+                            && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial'
+                            && entry.key != 'date' && entry.key != 'content';
+                          }).map<Widget>((entry) {
+                            return Text(
+                              '${entry.value}',
+                              overflow: TextOverflow.visible,
+                            );
+                          }).toList(),
+                          Text(
+                            _showFullTextMap[index] == true ? item['content'] : 
+                            
+                            (item['content'].length > 300 
+                            
+                            ? '${item['content'].substring(0, 300)}...' 
+                            : item['content']),
+                          ), // Mostrar el texto truncado o completo
+                          
+                          if (item['content'].length > 300 && _showFullTextMap[index] != true)
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _showFullTextMap[index] = true;
+                                });
+                              },
+                              child: const Text(
+                                'Leer más', 
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       Column(
@@ -286,7 +352,7 @@ class TicketDetailScreen extends StatelessWidget {
               },
             ),
           ),
-          if (ticket.estado != 5 && ticket.estado != 6)
+          if (widget.ticket.estado != 5 && widget.ticket.estado != 6)
             Positioned(
               bottom: 18, // Aumentar la altura del FAB
               right: MediaQuery.of(context).size.width * 0.08, // Ajustar la posición del FAB
@@ -294,7 +360,7 @@ class TicketDetailScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CreateHistoricalScreen(ticketId: ticket.id,ticket: ticket)),
+                    MaterialPageRoute(builder: (context) => CreateHistoricalScreen(ticketId: widget.ticket.id,ticket: widget.ticket)),
                   );
                 },
                 backgroundColor: Colors.orange,
@@ -302,6 +368,20 @@ class TicketDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(Icons.add, color: Colors.white),
+              ),
+            ),
+          // Mostrar el FloatingActionButton solo cuando existan elementos ocultos
+          if (_showScrollButton)
+            Positioned(
+              bottom: widget.ticket.estado == 5 || widget.ticket.estado == 6 ? 18 : 80,
+              right: MediaQuery.of(context).size.width * 0.08,
+              child: FloatingActionButton.small(
+                onPressed: _scrollDown,
+                backgroundColor: const Color(0xFF005586),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.arrow_downward, color: Colors.white),
               ),
             ),
         ],

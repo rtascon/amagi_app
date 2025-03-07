@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart'; // Importar el paquete de conectividad
+import 'package:startup_namer/views/common_pop_ups.dart';
 import '../services/ticket_service.dart';
 import 'tickets_controller.dart';
 import '../models/ticket.dart';
@@ -28,6 +30,15 @@ class CreateHistoricalController {
       Ticket ticket) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     try {
+      // Verificar la conectividad a Internet.
+      final connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        if (context.mounted) {
+          showNoInternetMessage(context);
+        }
+        return;
+      }
+
       // Añade un seguimiento al ticket.
       int followupId =
           await _ticketService.addFollowupToTicket(ticketId, descripcion);
