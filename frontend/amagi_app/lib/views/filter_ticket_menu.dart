@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
+import '../widgets/table_calendar.dart';
 import '../controllers/tickets_controller.dart';
 import '../models/ticket.dart'; 
 import '../models/type_conversion.dart';
@@ -10,19 +12,24 @@ import '../models/type_conversion.dart';
 class FilterTicketMenu extends StatefulWidget {
   final Function(Map<String, dynamic>) onFilterChanged;
 
-  const FilterTicketMenu({super.key, required this.onFilterChanged});
+  FilterTicketMenu({required this.onFilterChanged});
 
   @override
-  FilterTicketMenuState createState() => FilterTicketMenuState();
+  _FilterTicketMenuState createState() => _FilterTicketMenuState();
 }
 
-class FilterTicketMenuState extends State<FilterTicketMenu> {
+class _FilterTicketMenuState extends State<FilterTicketMenu> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _ticketIdController = TextEditingController();
   String? _selectedType;
   String? _selectedStatus;
   DateTimeRange? _selectedDateRange;
   final TypeConversion _typeConversion = TypeConversion();
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
 
   @override
   void initState() {
@@ -52,20 +59,48 @@ class FilterTicketMenuState extends State<FilterTicketMenu> {
       _selectedDateRange = null;
     });
     List<Ticket> tickets = await TicketsController().getTicketsList(context, true);
-    if (mounted) {
-      widget.onFilterChanged({
-        'ticketId': null,
-        'type': null,
-        'status': null,
-        'dateRange': null,
-        'tickets': tickets,
-      });
-      Navigator.of(context).pop();
-    }
+    widget.onFilterChanged({
+      'ticketId': null,
+      'type': null,
+      'status': null,
+      'dateRange': null,
+      'tickets': tickets,
+    });
+    Navigator.of(context).pop();
   }
 
   void _toggleFilters() {
     setState(() {});
+  }
+
+  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
+    setState(() {
+      _rangeStart = start;
+      _rangeEnd = end ?? start; // Asignar start a _rangeEnd si end es null
+      _focusedDay = focusedDay;
+      _selectedDateRange = start != null ? DateTimeRange(start: start, end: _rangeEnd!) : null;
+    });
+  }
+
+  void _showDateRangePicker() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CalendarDialog(
+          focusedDay: _focusedDay,
+          rangeStart: _rangeStart,
+          rangeEnd: _rangeEnd,
+          calendarFormat: _calendarFormat,
+          rangeSelectionMode: _rangeSelectionMode,
+          onRangeSelected: (start, end, focusedDay) {
+            _onRangeSelected(start, end, focusedDay);
+            setState(() {
+              _selectedDateRange = start != null ? DateTimeRange(start: start, end: end ?? start) : null;
+            });
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -85,12 +120,15 @@ class FilterTicketMenuState extends State<FilterTicketMenu> {
                 const SizedBox(height: 32), // Mover contenido hacia abajo
                 const Text(
                   'Filtrar Tickets',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _ticketIdController,
-                  decoration: const InputDecoration(labelText: 'ID del Ticket'),
+                  decoration: const InputDecoration(
+                    labelText: 'ID de Ticket',
+                    labelStyle: TextStyle(fontSize: 12), // Tamaño del texto
+                  ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     _toggleFilters();
@@ -104,13 +142,15 @@ class FilterTicketMenuState extends State<FilterTicketMenu> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'Tipo'),
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo',
+                    labelStyle: TextStyle(fontSize: 12), // Tamaño del texto
+                  ),
                   dropdownColor: Colors.grey[200], // Color de fondo del menú desplegable
-                  iconSize: 15, // Tamaño del icono más pequeño
                   items: ['Requerimiento', 'Incidente'].map((String type) {
                     return DropdownMenuItem<String>(
                       value: type,
-                      child: Text(type),
+                      child: Text(type, style: const TextStyle(fontSize: 12)), // Tamaño del texto
                     );
                   }).toList(),
                   onChanged: _ticketIdController.text.isEmpty ? (value) {
@@ -119,17 +159,20 @@ class FilterTicketMenuState extends State<FilterTicketMenu> {
                     });
                   } : null,
                   value: _selectedType,
+                  icon: null, // Eliminar el icono de la lista desplegable
                   disabledHint: const Text('Deshabilitado'),
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'Estado'),
+                  decoration: const InputDecoration(
+                    labelText: 'Estado',
+                    labelStyle: TextStyle(fontSize: 12), // Tamaño del texto
+                  ),
                   dropdownColor: Colors.grey[200], // Color de fondo del menú desplegable
-                  iconSize: 15, // Tamaño del icono más pequeño
                   items: ['Nuevo', 'En curso (asignado)', 'En curso (Planificado)', 'En espera','Resuelto','Cerrado'].map((String status) {
                     return DropdownMenuItem<String>(
                       value: status,
-                      child: Text(status),
+                      child: Text(status, style: const TextStyle(fontSize: 12)), // Tamaño del texto
                     );
                   }).toList(),
                   onChanged: _ticketIdController.text.isEmpty ? (value) {
@@ -138,69 +181,84 @@ class FilterTicketMenuState extends State<FilterTicketMenu> {
                     });
                   } : null,
                   value: _selectedStatus,
+                  icon: null, // Eliminar el icono de la lista desplegable
                   disabledHint: const Text('Deshabilitado'),
                 ),
-                const SizedBox(height: 32),
-                const Text(
-                  'Fecha',
-                  style: TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 16), 
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: _ticketIdController.text.isEmpty ? () async {
-                          DateTimeRange? picked = await showDateRangePicker(
-                            context: context,
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime.now(),
-                          );
-                          if (picked != null) {
-                            // Ajustar el rango de fechas
-                            DateTime start = DateTime(picked.start.year, picked.start.month, picked.start.day, 0, 0);
-                            DateTime end = DateTime(picked.end.year, picked.end.month, picked.end.day, 23, 59);
-                            setState(() {
-                              _selectedDateRange = DateTimeRange(start: start, end: end);
-                            });
-                          }
-                        } : null,
-                        
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[200], // Color del botón
-                        ),
-                        child: Text(
-                          _selectedDateRange == null
-                              ? 'Seleccionar'
-                              : '${DateFormat('yyyy-MM-dd').format(_selectedDateRange!.start)} - ${DateFormat('yyyy-MM-dd').format(_selectedDateRange!.end)}',
-                          style: TextStyle(color: Theme.of(context).primaryColor), // Color de la fuente
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 16),
+                
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center, // Centrar el botón
                   children: [
-                    Expanded(
+                    SizedBox(
+                      width: 200, // Ajusta este valor para cambiar el ancho del botón
                       child: ElevatedButton(
-                        onPressed: _clearFilters,
+                        onPressed: _ticketIdController.text.isEmpty ? _showDateRangePicker : null,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          backgroundColor: Colors.red, // Color del botón
+                          backgroundColor: Colors.red,  // Color del botón
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 5,
                           shadowColor: Colors.black.withOpacity(0.2),
                         ),
-                        child: const Icon(
-                          Icons.cleaning_services, // Icono de limpiar
-                          color: Colors.white,
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              ' Fecha de apertura ',
+                              style: TextStyle(fontSize: 12, color: Colors.white), 
+                            ),
+                            Icon(Icons.edit_calendar_rounded, color: Colors.white),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8), // Espacio entre los botones
+                  ],
+                ),
+                if (_selectedDateRange != null) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Text('Inicio:', style: TextStyle(fontSize: 12)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildDateCube(DateFormat('dd').format(_selectedDateRange!.start)),
+                            const Text('/'),
+                            _buildDateCube(DateFormat('MM').format(_selectedDateRange!.start)),
+                            const Text('/'),
+                            _buildDateCube(DateFormat('yyyy').format(_selectedDateRange!.start)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Text('Fin:', style: TextStyle(fontSize: 12)),
+                      const SizedBox(width: 25),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildDateCube(DateFormat('dd').format(_selectedDateRange!.end)),
+                            const Text('/'),
+                            _buildDateCube(DateFormat('MM').format(_selectedDateRange!.end)),
+                            const Text('/'),
+                            _buildDateCube(DateFormat('yyyy').format(_selectedDateRange!.end)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: 16),
+                Row(
+                  children: [
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _applyFilters,
@@ -219,12 +277,46 @@ class FilterTicketMenuState extends State<FilterTicketMenu> {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 8), // Espacio entre los botones
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _clearFilters,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          backgroundColor: Colors.red, // Color del botón
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          elevation: 5,
+                          shadowColor: Colors.black.withOpacity(0.2),
+                        ),
+                        child: const Icon(
+                          Icons.cleaning_services, // Icono de limpiar
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildDateCube(String text) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 14),
       ),
     );
   }

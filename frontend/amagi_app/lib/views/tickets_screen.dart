@@ -343,7 +343,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                 ),
                                                 child: Row(
                                                   children: [
-                                                    Container(
+                                                    SizedBox(
                                                       width: 20,
                                                       height: 20,
                                                       child: Center(
@@ -424,13 +424,11 @@ class TicketsScreenState extends State<TicketsScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
-                                            child: Container(
-                                              child: Text(
-                                                ticket.titulo,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                            child: Text(
+                                              ticket.titulo,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                           ),
@@ -473,7 +471,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                     child: Container(
                                       width: 40,
                                       height: 40,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         color: Colors.transparent,
                                         shape: BoxShape.rectangle,
                                       ),

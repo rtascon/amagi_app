@@ -118,7 +118,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.edit_square, color: Colors.grey[600]), // Ajustar ícono
+                              Icon(Icons.edit_note, color: Colors.grey[600]), // Ajustar ícono
                               const SizedBox(width: 4.0),
                               Text(
                                 'Título',
@@ -159,7 +159,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.edit_square, color: Colors.grey[600]), // Ajustar ícono
+                              Icon(Icons.playlist_add_check , color: Colors.grey[600]), // Ajustar ícono
                               const SizedBox(width: 4.0),
                               Text(
                                 'Tipo',
@@ -225,7 +225,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.edit_square, color: Colors.grey[600]), // Ajustar ícono
+                              Icon(Icons.edit_note, color: Colors.grey[600]), // Ajustar ícono
                               const SizedBox(width: 4.0),
                               Text(
                                 'Descripción',
