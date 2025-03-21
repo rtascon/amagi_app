@@ -49,6 +49,7 @@ class CreateHistoricalController {
       scaffoldMessenger.showSnackBar(
         const SnackBar(content: Text('Histórico enviado con éxito')),
       );
+      
 
       // Navega a la pantalla de detalles del ticket actualizada.
       final TicketsController ticketsController = TicketsController();

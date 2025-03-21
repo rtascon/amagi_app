@@ -129,7 +129,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                         ),
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Margen del campo de texto
+                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0), // Margen del campo de texto
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(15.0),
@@ -144,6 +144,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                               border: InputBorder.none, // Eliminar el borde del campo de texto
                               contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Reducir altura
                             ),
+                            maxLength: 50, // Límite de 50 caracteres
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor ingrese un título';
@@ -170,7 +171,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                         ),
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Margen del campo de texto
+                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0), // Margen del campo de texto
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(15.0),
@@ -236,31 +237,37 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                         ),
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0), // Margen del campo de texto
+                          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(15.0),
                           ),
-                          child: TextFormField(
-                            controller: _descripcionController,
-                            decoration: InputDecoration(
-                              hintText: 'Ingrese una descripción', // Texto de marcador de posición
-                              hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17), // Tamaño de letra igual al de título
-                              filled: true,
-                              fillColor: Colors.grey[200], // Ajustar el fondo del texto
-                              border: InputBorder.none, // Eliminar el borde del campo de texto
-                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Ajustar el padding vertical
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight: MediaQuery.of(context).size.height * 0.3,
                             ),
-                            maxLines: 10,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor ingrese una descripción';
-                              }
-                              return null;
-                            },
+                            child: TextFormField(
+                              controller: _descripcionController,
+                              decoration: InputDecoration(
+                                hintText: 'Ingrese una descripción', // Texto de marcador de posición
+                                hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17), // Tamaño de letra igual al de título
+                                filled: true,
+                                fillColor: Colors.grey[200], // Ajustar el fondo del texto
+                                border: InputBorder.none, // Eliminar el borde del campo de texto
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Ajustar el padding vertical
+                              ),
+                              maxLines: 5,
+                              maxLength: 1000, // Límite de 1000 caracteres
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor ingrese una descripción';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 15.0),
+                        const SizedBox(height: 10.0),
                         Align(
                           alignment: Alignment.center,
                           child: SizedBox(

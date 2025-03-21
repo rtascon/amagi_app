@@ -125,7 +125,7 @@ class LoginScreenState extends State<LoginScreen> {
                                     prefixIcon: Padding(
                                       padding: const EdgeInsets.only(right: 8.0),
                                       child: Icon(
-                                        Icons.lock,
+                                        Icons.vpn_key,
                                         color: Colors.black,
                                         size:
                                             _passwordFocusNode.hasFocus ? 20 : 24,

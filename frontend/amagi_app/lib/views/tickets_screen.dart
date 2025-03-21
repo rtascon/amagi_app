@@ -344,7 +344,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                 child: Row(
                                                   children: [
                                                     SizedBox(
-                                                      width: 20,
+                                                      width: 15,
                                                       height: 20,
                                                       child: Center(
                                                         child: Icon(
@@ -373,7 +373,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                             ? const Color(
                                                                 0xFF009FDA)
                                                             : const Color(
-                                                                0xFFE98300), fontSize: 12,
+                                                                0xFFE98300), fontSize: 10,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -432,6 +432,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                               ),
                                             ),
                                           ),
+                                          const SizedBox(width: 14.0), 
                                         ],
                                       ),
                                       const SizedBox(height: 4.0),

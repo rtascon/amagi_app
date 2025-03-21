@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-// Importar intl para la localización
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -31,8 +30,6 @@ class _CalendarDialogState extends State<CalendarDialog> {
   DateTime? _rangeEnd;
   late CalendarFormat _calendarFormat;
   late RangeSelectionMode _rangeSelectionMode;
-  late TextEditingController _startDateController;
-  late TextEditingController _endDateController;
   late TextEditingController _startDayController;
   late TextEditingController _startMonthController;
   late TextEditingController _startYearController;
@@ -51,8 +48,6 @@ class _CalendarDialogState extends State<CalendarDialog> {
     _rangeEnd = widget.rangeEnd;
     _calendarFormat = CalendarFormat.month; // Establecer formato a mes
     _rangeSelectionMode = widget.rangeSelectionMode;
-    _startDateController = TextEditingController();
-    _endDateController = TextEditingController();
     _startDayController = TextEditingController();
     _startMonthController = TextEditingController();
     _startYearController = TextEditingController();
@@ -78,7 +73,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
         _endYearController.text = _rangeEnd!.year.toString();
       }
     });
-    widget.onRangeSelected(start, end, focusedDay);
+    widget.onRangeSelected(start, end?.add(const Duration(days: 1)).subtract(const Duration(seconds: 1)), focusedDay);
   }
 
   bool _isValidDay(String value) {
@@ -104,81 +99,119 @@ class _CalendarDialogState extends State<CalendarDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.white, 
-      content: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: MediaQuery.of(context).size.width * 0.6, 
-        height: MediaQuery.of(context).size.height * 0.55,
-        child: Column(
-          children: [
-            TableCalendar(
-              firstDay: DateTime(2020),
-              lastDay: DateTime.now(),
-              focusedDay: _focusedDay,
-              calendarFormat: _calendarFormat,
-              rangeStartDay: _rangeStart,
-              rangeEndDay: _rangeEnd,
-              onRangeSelected: _onRangeSelected,
-              // Deshabilitar cambio de formato
-              availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-              rangeSelectionMode: _rangeSelectionMode,
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true, // Centrar el mes y el año
-                titleTextFormatter: (date, locale) => DateFormat.yMMMM(locale).format(date).replaceFirst(' de ', ' ').replaceFirstMapped(RegExp(r'^\w'), (match) => match.group(0)!.toUpperCase()),
-              ),
-              locale: 'es_ES', // Configurar localización a español
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _focusedDay = focusedDay;
-                  if (_rangeStart != null && _rangeStart == selectedDay) {
-                    _rangeEnd = selectedDay; 
-                    _rangeSelectionMode = RangeSelectionMode.toggledOff;
-                    _endDayController.text = selectedDay.day.toString();
-                    _endMonthController.text = selectedDay.month.toString();
-                    _endYearController.text = selectedDay.year.toString();
-                  } else if (_rangeStart != null && _rangeEnd == null && _rangeStart != selectedDay) {
-                    _rangeEnd = selectedDay;
-                    _rangeSelectionMode = RangeSelectionMode.toggledOff;
-                    _endDayController.text = selectedDay.day.toString();
-                    _endMonthController.text = selectedDay.month.toString();
-                    _endYearController.text = selectedDay.year.toString();
-                  } else{
-                    _rangeStart = selectedDay;
-                    _rangeEnd = null; // Asignar la misma fecha a _rangeEnd
-                    _rangeSelectionMode = RangeSelectionMode.toggledOn;
-                    _startDayController.text = selectedDay.day.toString();
-                    _startMonthController.text = selectedDay.month.toString();
-                    _startYearController.text = selectedDay.year.toString();
-                    _endDayController.text = selectedDay.day.toString(); // Actualizar _endDayController
-                    _endMonthController.text = selectedDay.month.toString(); // Actualizar _endMonthController
-                    _endYearController.text = selectedDay.year.toString(); // Actualizar _endYearController
-                  }
-                });
-              },
-            ),
-            // Botones para abrir la ventana emergente de selección de fechas y cerrar el diálogo
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinear a los extremos
+    return Builder(
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: 500,
+            height: 450,
+            margin: const EdgeInsets.all(10), // Incluir margen de 1 píxel
+            child: Column(
               children: [
-                Text(
-                  _formatDateRange(_rangeStart, _rangeEnd),
-                  style: TextStyle(
-                    color: (_rangeStart == null || _rangeEnd == null) ? Colors.grey : Colors.black,
+                TableCalendar(
+                  firstDay: DateTime(2020),
+                  lastDay: DateTime.now(),
+                  focusedDay: _focusedDay,
+                  calendarFormat: _calendarFormat,
+                  rangeStartDay: _rangeStart,
+                  rangeEndDay: _rangeEnd,
+                  onRangeSelected: _onRangeSelected,
+                  availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+                  rangeSelectionMode: _rangeSelectionMode,
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: true, // Centrar el mes y el año
+                    titleTextFormatter: (date, locale) => DateFormat.yMMMM(locale).format(date).replaceFirst(' de ', ' ').replaceFirstMapped(RegExp(r'^\w'), (match) => match.group(0)!.toUpperCase()),
+                  ),
+                  locale: 'es_ES', // Configurar localización a español
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _focusedDay = focusedDay;
+                      if (_rangeStart != null && _rangeStart == selectedDay) {
+                        _rangeEnd = selectedDay; 
+                        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                        _endDayController.text = selectedDay.day.toString();
+                        _endMonthController.text = selectedDay.month.toString();
+                        _endYearController.text = selectedDay.year.toString();
+                      } else if (_rangeStart != null && _rangeEnd == null && _rangeStart != selectedDay) {
+                        _rangeEnd = selectedDay;
+                        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                        _endDayController.text = selectedDay.day.toString();
+                        _endMonthController.text = selectedDay.month.toString();
+                        _endYearController.text = selectedDay.year.toString();
+                      } else{
+                        _rangeStart = selectedDay;
+                        _rangeEnd = null; // Asignar la misma fecha a _rangeEnd
+                        _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                        _startDayController.text = selectedDay.day.toString();
+                        _startMonthController.text = selectedDay.month.toString();
+                        _startYearController.text = selectedDay.year.toString();
+                        _endDayController.text = selectedDay.day.toString(); // Actualizar _endDayController
+                        _endMonthController.text = selectedDay.month.toString(); // Actualizar _endMonthController
+                        _endYearController.text = selectedDay.year.toString(); // Actualizar _endYearController
+                      }
+                    });
+                  },
+                  calendarStyle: const CalendarStyle(
+                    todayDecoration: BoxDecoration(
+                    color: Color(0xFFE98300),
+                    shape: BoxShape.circle,
+                    ),
+                    selectedDecoration: BoxDecoration(
+                      color: Color(0xFF005586),
+                      shape: BoxShape.circle,
+                    ),
+                    weekendTextStyle: TextStyle(
+                      color: Color(0xFFE98300),
+                    ),
+                    defaultTextStyle: TextStyle(
+                      color: Colors.black,
+                      ),
+                    rangeStartDecoration: BoxDecoration(
+                      color: Color(0xFF005586),
+                      shape: BoxShape.circle,
+                    ),
+                    rangeEndDecoration: BoxDecoration(
+                      color: Color(0xFF005586),
+                      shape: BoxShape.circle,
+                    ),
+                    withinRangeTextStyle: TextStyle(color: Colors.white),
+                    rangeHighlightColor: Color.fromARGB(255, 0, 105, 167),
+                    cellMargin: const EdgeInsets.all(1.0), // Agregar margen de 1 píxel
+                  ),
+                  daysOfWeekStyle: const DaysOfWeekStyle(
+                    weekdayStyle: TextStyle(fontSize: 12.0), // Ajustar el tamaño de los días de la semana
+                    weekendStyle: TextStyle(fontSize: 12.0, color: Color(0xFFE98300)), // Ajustar el tamaño de los fines de semana
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Listo', style: TextStyle(color: Colors.black)),
+                Container(
+                  margin: const EdgeInsets.only(top: 10), // Margen superior
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinear a los extremos
+                    children: [
+                      Text(
+                        _formatDateRange(_rangeStart, _rangeEnd),
+                        style: TextStyle(
+                          color: (_rangeStart == null || _rangeEnd == null) ? Colors.grey : Colors.black,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Listo', style: TextStyle(color: Colors.black)),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -139,31 +139,37 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
               ),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                child: TextFormField(
-                  controller: _descripcionController,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese una descripción',
-                    hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.3,
                   ),
-                  maxLines: 10,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingrese una descripción';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _descripcion = value;
-                  },
+                  child: TextFormField(
+                    controller: _descripcionController,
+                    decoration: InputDecoration(
+                      hintText: 'Ingrese una descripción',
+                      hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
+                    ),
+                    maxLines: 5,
+                    maxLength: 1000, // Límite de 1000 caracteres
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese una descripción';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _descripcion = value;
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -205,7 +211,7 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
               const SizedBox(height: 16.0),
               Container(
                 width: double.infinity,
-                height: 200,
+                height: MediaQuery.of(context).size.height * 0.2,
                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -219,11 +225,18 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                         children: [
                           _selectedFiles.isEmpty
                               ? SizedBox(
-                                  height: 100,
+                                  height: 60,
                                   child: Center(
-                                    child: Text(
-                                      'No se ha cargado archivo',
-                                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.attach_file, size: 24, color: Colors.grey[600]),
+                                        const SizedBox(width: 4.0),
+                                        Text(
+                                          'No se ha cargado ningún archivo',
+                                          style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 )
@@ -273,38 +286,44 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 8.0,
-                      left: 16.0,
-                      child: Text(
-                        _selectedFiles.fold<int>(0, (sum, file) => sum + file.size) > 15 * 1024 * 1024
-                            ? 'Límite de 15 MB, por favor edite su selección'
-                            : 'Tamaño total: ${(_selectedFiles.fold<int>(0, (sum, file) => sum + file.size) / (1024 * 1024)).toStringAsFixed(2)} MB',
-                        style: TextStyle(
-                          color: _selectedFiles.fold<int>(0, (sum, file) => sum + file.size) > 15 * 1024 * 1024
-                              ? Colors.red
-                              : Colors.grey[600],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 8.0), //
+              
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    _selectedFiles.fold<int>(0, (sum, file) => sum + file.size) > 10 * 1024 * 1024
+                        ? 'Límite de 10 MB, por favor edite su selección'
+                        : 'Tamaño total: ${(_selectedFiles.fold<int>(0, (sum, file) => sum + file.size) / (1024 * 1024)).toStringAsFixed(2)} MB',
+                    style: TextStyle(
+                      color: _selectedFiles.fold<int>(0, (sum, file) => sum + file.size) > 10 * 1024 * 1024
+                          ? Colors.red
+                          : Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5.0),
               Align(
                 alignment: Alignment.center,
                 child: SizedBox(
                   width: 150,
                   child: ElevatedButton(
-                    onPressed: _isLoading || _selectedFiles.fold<int>(0, (sum, file) => sum + file.size) > 15 * 1024 * 1024
+                    onPressed: _isLoading || _selectedFiles.fold<int>(0, (sum, file) => sum + file.size) > 10 * 1024 * 1024
                         ? null
                         : () async {
                             if (_formKey.currentState!.validate()) {
-                              bool hasLargeFile = _selectedFiles.any((file) => file.size > 15 * 1024 * 1024);
+                              bool hasLargeFile = _selectedFiles.any((file) => file.size > 10 * 1024 * 1024);
                               if (hasLargeFile) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('El archivo supera el tamaño máximo de 15MB')),
+                                  const SnackBar(content: Text('El archivo supera el tamaño máximo de 10MB')),
                                 );
                                 return;
                               }

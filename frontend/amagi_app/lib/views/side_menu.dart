@@ -74,8 +74,8 @@ class SideMenu extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/Solo la a (1).png', // Replace with your image path
-                        width: 50,
-                        height: 50,
+                        width: 80,
+                        height: 80,
                       ),
                       const SizedBox(width: 8), // Add some space between the image and the text
                       Column(
@@ -99,27 +99,45 @@ class SideMenu extends StatelessWidget {
                                         fontSize: 18, // Make the font size larger
                                       ),
                                     ),
-                                    Text(
-                                      snapshot.data?['glpiname'] ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 16, // Slightly smaller font size
-                                      ),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.person_outline, color: Color(0xFF005586), size: 20,), // Person icon
+                                        const SizedBox(width: 2), // Space between icon and text
+                                        Text(
+                                          snapshot.data?['glpiname'] ?? '',
+                                          style: const TextStyle(
+                                            fontSize: 16, // Slightly smaller font size
+                                            color: Color(0xFF005586), // Color for glpiname
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      snapshot.data?['glpiactiveprofile']?.replaceAll('_', ' ') ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 14, // Slightly smaller font size
-                                        color: Color.fromARGB(255, 0, 0, 0), // Different color for profile name
-                                      ),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.badge_outlined, color: Color(0xFF005586), size: 20,), // Badge icon
+                                        const SizedBox(width: 2), // Space between icon and text
+                                        Text(
+                                          snapshot.data?['glpiactiveprofile']?.replaceAll('_', ' ') ?? '',
+                                          style: const TextStyle(
+                                            fontSize: 14, // Slightly smaller font size
+                                            color: Color(0xFF005586), // Different color for profile name
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      snapshot.data?['glpiactive_entity_name']?.substring(0, 3) ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 14, // Slightly smaller font size
-                                        color: Color.fromARGB(255, 0, 0, 0), // Different color for entity name
-                                      ),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.work_outline, color: Color(0xFF005586), size: 20,), // Apartment icon
+                                        const SizedBox(width: 2), // Space between icon and text
+                                        Text(
+                                          snapshot.data?['glpiactive_entity_name']?.substring(0, 3) ?? '',
+                                          style: const TextStyle(
+                                            fontSize: 14, // Slightly smaller font size
+                                            color: Color(0xFF005586), // Different color for entity name
+                                          ),
+                                        ),
+                                      ],
                                     ),
-
                                   ],
                                 );
                               }
@@ -147,8 +165,8 @@ class SideMenu extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      const Icon(Icons.home, color: Colors.black), // Home icon
-                      const SizedBox(width: 8), // Space between icon and text
+                      const Icon(Icons.home_outlined, color: Colors.black), 
+                      const SizedBox(width: 8), 
                       TextButton(
                         onPressed: () {
                           sideMenuController.navigateToMainMenuScreen(context);

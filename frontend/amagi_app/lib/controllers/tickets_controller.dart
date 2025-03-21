@@ -567,11 +567,11 @@ class TicketsController {
     }
   }
 
-  /// Reabre un ticket específico.
+  /// Pone en espera un ticket específico.
   /// 
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
-  /// - [ticket]: El ticket a reabrir.
+  /// - [ticket]: El ticket en espera.
   Future<void> reopenTicket(BuildContext context, Ticket ticket) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
@@ -589,14 +589,14 @@ class TicketsController {
       );
 
       Map<String, dynamic> updateData = {
-        'status': '4', // Estado para reabrir el ticket
+        'status': '4', // 
       };
       await _ticketService.updateTicket(ticket.id, updateData);
 
       Navigator.of(context).pop();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ticket reabierto exitosamente')),
+        const SnackBar(content: Text('Solución rechazada con éxito')),
       );
       navigateRechazarAprobarToTicketsScreen(context);
     } catch (e) {
@@ -606,7 +606,7 @@ class TicketsController {
       } else {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al reabrir el ticket')),
+          const SnackBar(content: Text('Error al rechazar la solución')),
         );
       }
     }
