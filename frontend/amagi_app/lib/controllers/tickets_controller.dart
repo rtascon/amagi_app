@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/views/solucion_screen.dart';
+import '../views/solution_screen.dart';
+import '../views/tickets_resolved_screen.dart';
 import '../services/ticket_service.dart';
 import '../models/user.dart';
 import '../views/tickets_screen.dart';
@@ -16,8 +17,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart';
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../config/environment.dart'; // Importar el archivo de configuración
-
+import '../config/environment.dart';
+import '../controllers/filter_ticket_menu_controller.dart'; 
 /// Controlador para manejar las acciones relacionadas con los tickets.
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -96,7 +97,7 @@ class TicketsController {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Solución aprobada exitosamente')),
       );
-      navigateRechazarAprobarToTicketsScreen(context);
+      navigateNextToTicketsScreen(context);
     } catch (e) {
       Navigator.of(context).pop();
       if (e is TimeoutException) {
@@ -121,6 +122,7 @@ class TicketsController {
   Future<List<Ticket>> getTicketsList(BuildContext context, bool primeraVez,
       {Map<String, dynamic>? filters}) async {
     try {
+
       final connectivityResult = await (Connectivity().checkConnectivity());
 
       if (connectivityResult == ConnectivityResult.none) {
@@ -133,6 +135,7 @@ class TicketsController {
       List<dynamic> ticketsData = [];
       if (primeraVez) {
         ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
+
       } else {
         ticketsData =
             await _ticketService.getUserTicketFiltered(userId, filters ?? {});
@@ -154,6 +157,7 @@ class TicketsController {
       }).toList();
 
       return tickets;
+      
     } catch (e) {
       return [];
     }
@@ -193,8 +197,10 @@ class TicketsController {
   /// Retorna una lista de tickets actualizada.
   Future<List<Ticket>> updateTickets(BuildContext context) async {
     try {
-      final connectivityResult = await (Connectivity().checkConnectivity());
+      final FilterTicketMenuController filterController = FilterTicketMenuController();
+      await filterController.clearFilters(context, TextEditingController(), () {});
 
+      final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
         showNoInternetMessage(context);
         return [];
@@ -238,6 +244,10 @@ class TicketsController {
       return;
     }
     try {
+      
+      final FilterTicketMenuController filterController = FilterTicketMenuController();
+      await filterController.clearFilters(context, TextEditingController(), () {});
+
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -268,6 +278,97 @@ class TicketsController {
       } else {
         Navigator.of(context).pop();
       }
+    }
+  }
+
+  /// Navega a la pantalla de tickets resueltos.
+  ///
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  void navigateToTicketsResolvedScreen(BuildContext context,
+      {Map<String, dynamic>? filters}) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      showNoInternetMessage(context);
+      return;
+    }
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const LoadingScreen();
+        },
+      );
+
+      List<Ticket> tickets = [];
+      if (filters != null) {
+        tickets = await getTicketsList(context, false, filters: filters);
+      } else {
+        tickets = await getTicketsList(context, true);
+      }
+
+      Navigator.of(context).pop();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TicketsResolvedScreen(tickets: tickets),
+        ),
+      );
+    } catch (e) {
+      Navigator.of(context).pop();
+      if (e is TimeoutException) {
+        showTimeoutMessage(context);
+      } else {
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  /// Actualiza la lista de tickets resueltos haciendo otra consulta.
+  /// 
+  /// Parámetros:
+  /// - [context]: El contexto de la aplicación.
+  /// 
+  /// Retorna una lista de tickets resueltos actualizada.
+   void updateTicketsResolved(BuildContext context,
+      {Map<String, dynamic>? filters}) async {
+    try {
+      
+      final connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        showNoInternetMessage(context);
+        return;
+      }
+
+      final userId = getUserId();
+      List<dynamic> ticketsData = await _ticketService.getUserTicketFiltered(
+        userId,
+        {'status': '5'}, // Filtro para tickets con estado "Resuelto"
+      );
+
+      // Crear instancias de Ticket usando TicketFactory
+      List<Ticket> tickets = ticketsData.map((ticketData) {
+        return TicketFactory.createTicket(
+          id: ticketData['2'],
+          titulo: ticketData['1'],
+          descripcion: _stripHtmlTags(unescape.convert(ticketData['21'])),
+          fechaCreacion: DateTime.parse(ticketData['15']),
+          fechaActualizacion: DateTime.parse(ticketData['19']),
+          tipo: ticketData['14'],
+          estado: ticketData['12'],
+          entidadAsociada: ticketData['80'],
+          prioridad: ticketData['3'],
+        );
+      }).toList();
+
+      // Aquí puedes manejar los tickets resueltos según sea necesario
+      // Por ejemplo, actualizar la UI o almacenarlos en una variable
+    } catch (e) {
+      // Manejo de errores
+      return;
     }
   }
 
@@ -567,12 +668,12 @@ class TicketsController {
     }
   }
 
-  /// Pone en espera un ticket específico.
+  /// Pone el ticket Rechazado en Estado En curso (asignado) un ticket específico.
   /// 
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   /// - [ticket]: El ticket en espera.
-  Future<void> reopenTicket(BuildContext context, Ticket ticket) async {
+  Future<void> deniedTicket(BuildContext context, Ticket ticket) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
     if (connectivityResult == ConnectivityResult.none) {
@@ -589,7 +690,7 @@ class TicketsController {
       );
 
       Map<String, dynamic> updateData = {
-        'status': '4', // 
+        'status': '2', // 
       };
       await _ticketService.updateTicket(ticket.id, updateData);
 
@@ -598,7 +699,7 @@ class TicketsController {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Solución rechazada con éxito')),
       );
-      navigateRechazarAprobarToTicketsScreen(context);
+      navigateNextToTicketsScreen(context);
     } catch (e) {
       Navigator.of(context).pop();
       if (e is TimeoutException) {
@@ -619,7 +720,7 @@ class TicketsController {
   /// - [context]: El contexto de la aplicación.
   /// - [ticket]: El ticket cuyos detalles se mostrarán.
 
-  void navigateRechazarAprobarToTicketsScreen(BuildContext context,
+  void navigateNextToTicketsScreen(BuildContext context,
       {Map<String, dynamic>? filters}) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 

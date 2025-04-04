@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart'; // Importar el paquete de conectividad
-import 'package:startup_namer/views/common_pop_ups.dart';
+import '../views/common_pop_ups.dart';
 import '../services/ticket_service.dart';
 import 'tickets_controller.dart';
 import '../models/ticket.dart';

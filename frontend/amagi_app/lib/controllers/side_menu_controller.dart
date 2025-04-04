@@ -3,11 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../views/loading_screen.dart';
 import '../models/user.dart'; 
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import '../config/environment.dart';
 
 /// Controlador para manejar las acciones del menú lateral.
 class SideMenuController {
   final AuthService _authService = AuthService();
   final User _usuario = User();
+  static const _storage = FlutterSecureStorage();
+  static const _sessionTokenKey = 'session_token';
+  final String url = Environment.apiUrl;
 
   /// Cierra la sesión del usuario.
   /// 
@@ -23,9 +31,11 @@ class SideMenuController {
     try {
       await _authService.logOut();
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.remove('isLoggedIn');
+      /*await prefs.remove('isLoggedIn');
       await prefs.remove('username');
-      await prefs.remove('sessionToken');
+      await prefs.remove('sessionToken');*/ // Elimina las preferencias de sesión
+      await _storage.delete(key: _sessionTokenKey); // Elimina el token de sesión
+      await prefs.clear(); // Elimina todas las preferencias guardadas
       if (!context.mounted) return;
       Navigator.of(context).pop(); 
       Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de inicio de sesión
@@ -78,5 +88,39 @@ class SideMenuController {
   /// - [context]: El contexto de la aplicación.
   void navigateToMainMenuScreen(BuildContext context) {
     Navigator.of(context).pushReplacementNamed('/mainMenu');
+  }
+
+  /// Obtiene el perfil del usuario.
+  /// 
+  /// Retorna un mapa con la información del perfil del usuario.
+  Future<Map<String, dynamic>> getUserProfile() async {
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    final userUrl = Uri.parse('$url/getFullSession');
+    try {
+      final response = await http.get(
+        userUrl,
+        headers: <String, String>{
+          'Session-Token': sessionToken!,
+          'Content-Type': 'application/json',
+        },
+      ).timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200 || response.statusCode == 206) {
+        final userInfo = jsonDecode(response.body);
+        return {
+          'glpifriendlyname': userInfo['session']['glpifriendlyname'] ?? '',
+          'glpiname': userInfo['session']['glpiname'] ?? '',
+          'glpiactiveprofile': userInfo['session']['glpiactiveprofile']['name'] ?? '',
+          'glpiactive_entity_name': userInfo['session']['glpiactive_entity_name'] ?? '',
+          'glpiactive_entity': userInfo['session']['glpiactive_entity'] ?? 0,
+        };
+      } else {
+        throw Exception("Error al obtener el perfil del usuario: ${response.body}");
+      }
+    } on TimeoutException catch (e) {
+      throw Exception("La solicitud ha excedido el tiempo de espera: $e");
+    } catch (e) {
+      throw Exception("Error al obtener el perfil del usuario: $e");
+    }
   }
 }

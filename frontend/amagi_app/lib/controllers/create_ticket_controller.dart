@@ -1,13 +1,13 @@
-import 'package:startup_namer/config/environment.dart';
-import 'package:startup_namer/models/user.dart';
-import 'package:startup_namer/views/common_pop_ups.dart';
-import 'package:startup_namer/views/loading_screen.dart';
-import 'package:startup_namer/views/main_menu_screen.dart';
+import '../config/environment.dart';
+import '../models/user.dart';
+import '../views/common_pop_ups.dart';
+import '../views/loading_screen.dart';
+import '../views/main_menu_screen.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:startup_namer/services/ticket_service.dart'; // Add this line to import the ticket_service
-import 'package:startup_namer/services/glpi_general_service.dart';
+import '../services/ticket_service.dart'; // Add this line to import the ticket_service
+import '../services/glpi_general_service.dart';
 
 
 /// Servicio para manejar operaciones relacionadas con los tickets.

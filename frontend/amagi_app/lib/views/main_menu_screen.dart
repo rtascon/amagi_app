@@ -7,6 +7,7 @@ import '../controllers/main_menu_controller.dart';
 import '../views/side_menu.dart';
 import 'package:flutter/cupertino.dart';
 import '../services/auth_service.dart'; // Importar AuthService
+import 'package:shared_preferences/shared_preferences.dart'; // Importar SharedPreferences
 
 /// Esta vista representa el menú principal de la aplicación, desde donde los usuarios
 /// pueden navegar a diferentes secciones, como la creación y consulta de tickets.
@@ -26,6 +27,11 @@ class MainMenuScreenState extends State<MainMenuScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final AuthService _authService = AuthService(); // Instanciar AuthService
   DateTime? _lastPressedAt;
+
+  Future<void> _saveSelectedOption(String option) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedOption', option);
+  }
 
   @override
   void initState() {
@@ -60,7 +66,8 @@ class MainMenuScreenState extends State<MainMenuScreen> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.menu, color: Colors.white), // Set the icon color to white
-              onPressed: () {
+              onPressed: () async {
+                await _saveSelectedOption('Inicio');
                 _scaffoldKey.currentState?.openDrawer();
               },
             ),
@@ -98,7 +105,8 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                           context,
                           icon: CupertinoIcons.doc_text_search,
                           label: 'Consulta de Tickets',
-                          onPressed: () {
+                          onPressed: () async {
+                            await _saveSelectedOption('Consulta de Tickets');
                             _ticketsController.navigateToTicketsScreen(context);
                           },
                         ),
@@ -111,7 +119,8 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                           context,
                           icon: CupertinoIcons.doc_append,
                           label: 'Crear Ticket',
-                          onPressed: () {
+                          onPressed: () async {
+                            await _saveSelectedOption('Crear Ticket');
                             _mainMenuController.navigateToCreateTicketScreen(context);
                           },
                         ),
@@ -124,8 +133,9 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                           context,
                           icon: CupertinoIcons.doc_checkmark,
                           label: 'Tickets Resueltos',
-                          onPressed: () {
-                            _ticketsController.navigateToTicketsScreen(context, filters: {'status': 5});
+                          onPressed: () async {
+                            await _saveSelectedOption('Tickets Resueltos');
+                            _ticketsController.navigateToTicketsResolvedScreen(context, filters: {'status': 5});
                           },
                         ),
                       ),

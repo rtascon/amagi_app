@@ -51,11 +51,11 @@ class TicketService {
       'criteria[1][link]': 'AND NOT',
       'criteria[1][field]': '12',
       'criteria[1][searchtype]': 'equals',
-      'criteria[1][value]': '6', // 6 es el estado de los tickets cerrados
+      'criteria[1][value]': '6', // criterio excluye los tickets con estado 6 cerrados
       'criteria[2][link]': 'AND NOT',
       'criteria[2][field]': '12',
       'criteria[2][searchtype]': 'equals',
-      'criteria[2][value]': '5', // es el estado de los tickets resueltos
+      'criteria[2][value]': '5', //criterio excluye los tickets con estado 5 resueltos
     };
     final params = {
       ...criteriaBaseTicketAutogestion,

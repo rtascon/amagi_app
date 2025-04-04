@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/controllers/create_ticket_controller.dart';
-import 'package:startup_namer/views/main_menu_screen.dart'; // Importar MainMenuScreen
+import '../controllers/create_ticket_controller.dart';
+import '../views/main_menu_screen.dart'; // Importar MainMenuScreen
 
 class CreateTicketScreen extends StatefulWidget {
   const CreateTicketScreen({super.key});
@@ -34,6 +34,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
     if (!_hasChanges()) {
       return true;
     }
+
     return (await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -75,16 +76,26 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () async {
+        if (await _onWillPop()) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+            (route) => false, // Elimina todas las pantallas anteriores.
+          );
+        }
+        return false; // Bloquea el comportamiento predeterminado del botón de retroceso.
+      },
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () async {
               if (await _onWillPop()) {
-                Navigator.pushReplacement(
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+                  (route) => false, // Elimina todas las pantallas anteriores.
                 );
               }
             },
@@ -257,7 +268,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Ajustar el padding vertical
                               ),
                               maxLines: 5,
-                              maxLength: 1000, // Límite de 1000 caracteres
+                              maxLength: 2000, // Límite de 2000 caracteres
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Por favor ingrese una descripción';

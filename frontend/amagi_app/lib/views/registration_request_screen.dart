@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:slider_captcha/slider_captcha.dart';
-import 'package:startup_namer/views/login_screen.dart';
 import '../controllers/registration_request_controller.dart';
 
 /// Esta vista permite a los usuarios solicitar el registro en la aplicación,

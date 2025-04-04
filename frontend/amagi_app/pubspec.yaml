@@ -1,5 +1,5 @@
-name: startup_namer
-description: "A new Flutter project."
+name: gia_app
+description: "Aplicación móvil para la autogestión de clientes del servicio GIA de Amagi Group, diseñada para brindar una respuesta inmediata a solicitudes de requerimientos e incidentes."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -58,6 +58,8 @@ dependencies:
   double_tap_to_exit: ^1.0.2
   flutter_markdown: ^0.7.6+2
   flutter_html: ^3.0.0-beta.2
+  flutter_downloader: ^1.11.8
+  android_intent_plus: ^5.3.0
 
 dev_dependencies:
   flutter_test:

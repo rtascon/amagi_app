@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:startup_namer/config/environment.dart';
+import '../config/environment.dart';
 import '../services/auth_service.dart';
 import '../services/glpi_general_service.dart';
 import '../views/main_menu_screen.dart';

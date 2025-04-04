@@ -123,7 +123,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                           setState(() {
                             _isLoadingRechazar = true;
                           });
-                          await widget.ticketsController.reopenTicket(context, widget.ticket);
+                          await widget.ticketsController.deniedTicket(context, widget.ticket);
                           setState(() {
                             _isLoadingRechazar = false;
                           });

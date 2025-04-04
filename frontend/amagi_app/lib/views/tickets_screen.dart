@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../views/main_menu_screen.dart';
 import '../controllers/tickets_controller.dart';
 import '../controllers/side_menu_controller.dart';
 import '../views/side_menu.dart';
 import '../views/filter_ticket_menu.dart';
 import '../models/ticket.dart';
 import '../models/type_conversion.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Esta vista muestra una lista de tickets del usuario, permitiendo filtrar y ordenar
 /// los tickets según diferentes criterios. También proporciona acceso a los detalles de cada ticket.
@@ -85,15 +87,17 @@ class TicketsScreenState extends State<TicketsScreen> {
     Color defaultTextButtonColor =
         TextButton.styleFrom().foregroundColor?.resolve({}) ??
             Theme.of(context).primaryColor;
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
-          onPressed: () {
-            _scaffoldKey.currentState?.openDrawer();
-          },
-        ),
+return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () {
+              _scaffoldKey.currentState?.openDrawer();
+            },
+          ),
         title: const Text(
           'Servicio GIA',
           style: TextStyle(
@@ -543,8 +547,18 @@ class TicketsScreenState extends State<TicketsScreen> {
             ),
           ),
         ],
-      ),
+      ),),
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+      (route) => false,
+       // Elimina todas las pantallas anteriores.
+    );
+    return false; // Bloquea el comportamiento predeterminado del botón de retroceso.
   }
 
   Future<void> _refreshTickets() async {

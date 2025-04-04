@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:startup_namer/controllers/login_controller.dart';
+import '../controllers/login_controller.dart';
 
 /// Esta vista permite a los usuarios iniciar sesión en la aplicación, proporcionando su nombre
 /// de usuario y contraseña. También incluye opciones para mostrar u ocultar la contraseña.

@@ -6,7 +6,7 @@ import '../views/login_screen.dart';
 import '../config/environment.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart'; 
-import 'package:startup_namer/services/glpi_general_service.dart';
+import '../services/glpi_general_service.dart';
 import 'dart:async';
 
 /// Controlador para manejar las solicitudes de registro.
