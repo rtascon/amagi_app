@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 import '../controllers/ticket_detail_controller.dart';
 import '../models/user.dart'; 
 import 'dart:io';
@@ -255,13 +256,13 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
+                                              child: const Text('Cerrar', style: TextStyle(color: Colors.black)),
                                             ),
-                                            TextButton(
+                                            IconButton(
                                               onPressed: () async {
-                                                await _ticketDetailController.downloadFile(filePath, documento['filename']);
+                                                await _ticketDetailController.downloadFile(context, filePath, documento['filename']);
                                               },
-                                              child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
+                                              icon: const Icon(Icons.download, color: Colors.black),
                                             ),
                                           ],
                                         ),
@@ -316,7 +317,8 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                             ),
                                             TextButton(
                                               onPressed: () async {
-                                               await _ticketDetailController.downloadFile(filePath, documento['filename']);
+                                                await _ticketDetailController.downloadFile(context, filePath, documento['filename']);
+                                                OpenFile.open(filePath); // Abrir el archivo después de descargarlo
                                               },
                                               child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
                                             ),

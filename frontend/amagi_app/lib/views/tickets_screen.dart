@@ -4,7 +4,7 @@ import '../views/main_menu_screen.dart';
 import '../controllers/tickets_controller.dart';
 import '../controllers/side_menu_controller.dart';
 import '../views/side_menu.dart';
-import '../views/filter_ticket_menu.dart';
+import 'filter_ticket_menu_screen.dart';
 import '../models/ticket.dart';
 import '../models/type_conversion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -130,28 +130,36 @@ return WillPopScope(
           Container(
             color: Colors.white,
             child: RefreshIndicator(
-              color: const Color(0xFF005586), // Cambiar el color del icono
-              backgroundColor: Colors.white, // Cambiar el color del círculo a blanco
+              color: const Color(0xFF005586),
+              backgroundColor: Colors.white, 
               onRefresh: _refreshTickets,
               child: _filteredTickets.isEmpty
-                  ? const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.inbox,
-                            size: 80,
-                            color: Colors.grey,
+                  ? SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height - kToolbarHeight,
+                        child: const Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.inbox,
+                                size: 80,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Ups... parece que no hay nada que mostrar',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 16),
-                          Text(
-                            'Ups... parece que no hay nada que mostrar',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     )
                   : ListView.builder(

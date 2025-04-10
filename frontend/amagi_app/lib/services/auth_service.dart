@@ -1,10 +1,12 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'user_service.dart';
 import '../models/user.dart';
 import '../config/environment.dart';
 import 'dart:async';
+import '../controllers/side_menu_controller.dart';
 
 /// Servicio de autenticación para manejar el inicio y cierre de sesión.
 class AuthService {
@@ -59,7 +61,17 @@ class AuthService {
               key: _sessionTokenKey, value: responseBody['session_token']);
           UserService userService = UserService();
           User usuario = User();
-          return userService.getUserInfo(usuario);
+          final success = await userService.getUserInfo(usuario);
+
+          // Usa getUserProfile desde SideMenuController
+          final sideMenuController = SideMenuController();
+          final userProfile = await sideMenuController.getUserProfile();
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          userProfile.forEach((key, value) {
+            prefs.setString(key, value.toString());
+          });
+
+          return success;
         } else {
           throw Exception("Error al iniciar sesión: ${response.body}");
         }
@@ -72,7 +84,17 @@ class AuthService {
             key: _sessionTokenKey, value: responseBody['session_token']);
         UserService userService = UserService();
         User usuario = User();
-        return userService.getUserInfo(usuario);
+        final success = await userService.getUserInfo(usuario);
+
+        // Usa getUserProfile desde SideMenuController
+        final sideMenuController = SideMenuController();
+        final userProfile = await sideMenuController.getUserProfile();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        userProfile.forEach((key, value) {
+          prefs.setString(key, value.toString());
+        });
+
+        return success;
       } else {
         throw Exception("Error al iniciar sesión: ${response.body}");
       }

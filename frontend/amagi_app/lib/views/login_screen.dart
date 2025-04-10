@@ -211,17 +211,17 @@ class LoginScreenState extends State<LoginScreen> {
                     children: [
                       const SizedBox(
                           height:
-                              50), // Espacio adicional para empujar los elementos hacia abajo
+                              30), 
                       Image.asset(
-                        'assets/Amagi logo blanco.png', // Asegúrate de que la ruta sea correcta
+                        'assets/Amagi logo blanco.png',
                         alignment: Alignment.bottomCenter,
-                        width: 100, // Ajusta el ancho de la imagen
-                        height: 100, // Ajusta la altura de la imagen
+                        width: 100,
+                        height: 100,
                       ),
                       const SizedBox(
                           height: 10), // Espacio inferior para el texto
                       const Text(
-                        'V 2.0.0',
+                        'V 1.0.0',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],

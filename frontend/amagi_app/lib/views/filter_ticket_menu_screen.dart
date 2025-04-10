@@ -94,7 +94,17 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
       _selectedDateRange = start != null ? DateTimeRange(start: start, end: end ?? start) : null;
+      if (_selectedDateRange != null) {
+        final formattedRange = _formatDateRange(_selectedDateRange!.start, _selectedDateRange!.end);
+        print('Rango formateado: $formattedRange'); // Opcional: para depuración
+      }
     });
+  }
+
+  String _formatDateRange(DateTime? start, DateTime? end) {
+    final startDate = start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';
+    final endDate = end != null ? DateFormat('d MMM', 'es').format(end) : 'Fin';
+    return '$startDate - $endDate';
   }
 
   void _showDateRangePicker() {
@@ -146,6 +156,13 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
+                    setState(() {
+                      if (value.isNotEmpty) {
+                        _selectedType = null;
+                        _selectedStatus = null;
+                        _selectedDateRange = null;
+                      }
+                    });
                     _toggleFilters();
                   },
                   validator: (value) {

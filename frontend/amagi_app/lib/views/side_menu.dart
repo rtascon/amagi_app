@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gia_app/views/about.dart';
 import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,14 +25,36 @@ class SideMenu extends StatefulWidget {
   _SideMenuState createState() => _SideMenuState();
 }
 
-class _SideMenuState extends State<SideMenu> {
+class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin {
   late ValueNotifier<String> selectedOptionMenu;
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+  bool _showAnimatedImage = false;
 
   @override
   void initState() {
     super.initState();
     selectedOptionMenu = ValueNotifier<String>('');
     _loadSelectedOptionMenu();
+
+    _controller = AnimationController(
+      duration: const Duration(seconds: 5),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.0),
+      end: const Offset(1.5, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOutSine,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> _loadSelectedOptionMenu() async {
@@ -42,6 +65,31 @@ class _SideMenuState extends State<SideMenu> {
   Future<void> _saveSelectedOptionMenu(String option) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('selectedOption', option);
+  }
+
+  Future<Map<String, dynamic>> _getUserProfileFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'glpifriendlyname': prefs.getString('glpifriendlyname') ?? '',
+      'glpiname': prefs.getString('glpiname') ?? '',
+      'glpiactiveprofile': prefs.getString('glpiactiveprofile') ?? '',
+      'glpiactive_entity_name': prefs.getString('glpiactive_entity_name') ?? '',
+    };
+  }
+
+  void _onLogoTapped() {
+    setState(() {
+      _showAnimatedImage = true;
+    });
+
+    _controller.forward();
+
+    Timer(_controller.duration!, () {
+      setState(() {
+        _showAnimatedImage = false;
+      });
+      _controller.reset();
+    });
   }
 
   @override
@@ -71,11 +119,9 @@ class _SideMenuState extends State<SideMenu> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             FutureBuilder<Map<String, dynamic>>(
-                              future: widget.sideMenuController.getUserProfile(),
+                              future: _getUserProfileFromPrefs(),
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
+                                if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 } else {
                                   return Column(
@@ -90,7 +136,7 @@ class _SideMenuState extends State<SideMenu> {
                                       ),
                                       Row(
                                         children: [
-                                          const Icon(Icons.person_outline, color: Color(0xFF005586), size: 20,), // Person icon
+                                          const Icon(Icons.person_outline, color: Color(0xFF005586), size: 20), // Person icon
                                           const SizedBox(width: 2), // Space between icon and text
                                           Text(
                                             snapshot.data?['glpiname'] ?? '',
@@ -103,7 +149,7 @@ class _SideMenuState extends State<SideMenu> {
                                       ),
                                       Row(
                                         children: [
-                                          const Icon(Icons.badge_outlined, color: Color(0xFF005586), size: 20,), // Badge icon
+                                          const Icon(Icons.badge_outlined, color: Color(0xFF005586), size: 20), // Badge icon
                                           const SizedBox(width: 2), // Space between icon and text
                                           Text(
                                             snapshot.data?['glpiactiveprofile']?.replaceAll('_', ' ') ?? '',
@@ -116,7 +162,7 @@ class _SideMenuState extends State<SideMenu> {
                                       ),
                                       Row(
                                         children: [
-                                          const Icon(Icons.work_outline, color: Color(0xFF005586), size: 20,), // Apartment icon
+                                          const Icon(Icons.work_outline, color: Color(0xFF005586), size: 20), // Apartment icon
                                           const SizedBox(width: 2), // Space between icon and text
                                           Text(
                                             snapshot.data?['glpiactive_entity_name']?.substring(0, 3) ?? '',
@@ -265,6 +311,27 @@ class _SideMenuState extends State<SideMenu> {
                     ),
                     Row(
                       children: [
+                        const Icon(Icons.info_outline, color: Colors.black), // About icon
+                        const SizedBox(width: 8), // Space between icon and text
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AboutScreen()),
+                            ); // Navegar a la pantalla AboutScreen
+                          },
+                          child: const Text(
+                            'Acerca de',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
                         const Icon(Icons.logout, color: Colors.black),
                         const SizedBox(width: 8), // Space between icon and text
                         TextButton(
@@ -287,12 +354,35 @@ class _SideMenuState extends State<SideMenu> {
               const Spacer(), // Pushes the image to the bottom
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Image.asset(
-                    'assets/Amagi logo azul_Pequeño.png', // Replace with your image path
-                    width: 100, // Set the desired width
-                    height: 100, // Set the desired height
+                child: GestureDetector(
+                  onTap: _onLogoTapped,
+                  child: Stack(
+                    alignment: Alignment(0.0, -2),//.
+                    children: [
+                      Image.asset(
+                        'assets/Amagi logo azul_Pequeño(3).png',
+                        alignment: Alignment(0.0, -2), 
+                        width: 150,
+                        height: 100,
+                      ),
+                      if (!_showAnimatedImage) 
+                        Image.asset(
+                          'assets/Amagi logo azul_Pequeño(2).png',
+                          alignment: Alignment(0.0, -2), 
+                          width: 150,
+                          height: 61,
+                        ),
+                      if (_showAnimatedImage)
+                        SlideTransition(
+                          position: _offsetAnimation,
+                          child: Image.asset(
+                            'assets/Amagi logo azul_Pequeño(2).png',
+                            width: 150,
+                            height: 61, 
+                            alignment: Alignment(0.0, -2), 
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),

@@ -122,24 +122,32 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                 backgroundColor: Colors.white, // Cambiar el color del círculo a blanco
                 onRefresh: _refreshTickets,
                 child: _filteredTickets.isEmpty
-                    ? const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.inbox,
-                              size: 80,
-                              color: Colors.grey,
+                    ? SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height - kToolbarHeight,
+                          child: const Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.inbox,
+                                  size: 80,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(height: 16),
+                                Text(
+                                  'Ups... parece que no hay nada que mostrar',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 16),
-                            Text(
-                              'Ups... parece que no hay nada que mostrar',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       )
                     : ListView.builder(

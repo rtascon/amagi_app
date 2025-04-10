@@ -60,6 +60,7 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   flutter_downloader: ^1.11.8
   android_intent_plus: ^5.3.0
+  open_file: ^3.5.10
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +90,8 @@ flutter:
    - assets/GIA IOT BLANCO.png
    - assets/A logo azul_sin_Digital (1).png
    - assets/Amagi logo azul_Pequeño.png
+   - assets/Amagi logo azul_Pequeño(2).png
+   - assets/Amagi logo azul_Pequeño(3).png
    - assets/GIA IOT AZUL Y BLANCO.png
    - assets/Amagi logo azul_sin_Digital.png
    - assets/Amagi logo blanco.png

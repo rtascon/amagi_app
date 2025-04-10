@@ -116,9 +116,9 @@ class FilterTicketMenuController {
     if (selectedDateRange != null) {
       final formattedRange = _formatDateRange(selectedDateRange.start, selectedDateRange.end);
       filteredTickets = filteredTickets.where((ticket) {
-        return ticket.fechaCreacion.isAfter(selectedDateRange.start.subtract(const Duration(days: 1))) &&
-            ticket.fechaCreacion.isBefore(selectedDateRange.end.add(const Duration(days: 1)));
-      }).toList();
+        return ticket.fechaCreacion.isAfter(selectedDateRange.start.subtract(const Duration(seconds: 1))) &&
+               ticket.fechaCreacion.isBefore(selectedDateRange.end.add(const Duration(days: 1)));
+      }).toList(); // Incluir el día de inicio y fin en el rango
       print('Filtrando por rango formateado: $formattedRange'); // Opcional: para depuración
     }
 

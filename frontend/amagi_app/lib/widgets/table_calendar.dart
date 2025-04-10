@@ -129,35 +129,52 @@ class _CalendarDialogState extends State<CalendarDialog> {
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {
                       _focusedDay = focusedDay;
-                      if (_rangeStart != null && _rangeStart == selectedDay) {
-                        _rangeEnd = selectedDay; 
+
+                      if (_rangeStart == _rangeEnd && _rangeStart != null) {
+                        _rangeStart = null; 
+                        _rangeEnd = null;
                         _rangeSelectionMode = RangeSelectionMode.toggledOff;
                         _endDayController.text = selectedDay.day.toString();
                         _endMonthController.text = selectedDay.month.toString();
                         _endYearController.text = selectedDay.year.toString();
-                      } else if (_rangeStart != null && _rangeEnd == null && _rangeStart != selectedDay) {
+                      }
+
+                      else if (_rangeStart != null && _rangeEnd == null) {
+                        _rangeStart = _rangeStart; // Mantener la fecha de inicio
                         _rangeEnd = selectedDay;
-                        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                        _rangeSelectionMode = RangeSelectionMode.toggledOn;
                         _endDayController.text = selectedDay.day.toString();
                         _endMonthController.text = selectedDay.month.toString();
                         _endYearController.text = selectedDay.year.toString();
-                      } else{
+                      }
+
+                      // Caso: iniciar un nuevo rango
+                      else {
                         _rangeStart = selectedDay;
-                        _rangeEnd = null; // Asignar la misma fecha a _rangeEnd
-                        _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                        _rangeEnd = null; // Reiniciar el rango final
+                        _rangeSelectionMode = RangeSelectionMode.toggledOff;
                         _startDayController.text = selectedDay.day.toString();
                         _startMonthController.text = selectedDay.month.toString();
                         _startYearController.text = selectedDay.year.toString();
-                        _endDayController.text = selectedDay.day.toString(); // Actualizar _endDayController
-                        _endMonthController.text = selectedDay.month.toString(); // Actualizar _endMonthController
-                        _endYearController.text = selectedDay.year.toString(); // Actualizar _endYearController
                       }
                     });
+
+                    // Notificar al widget padre sobre el rango seleccionado
+                    widget.onRangeSelected(_rangeStart, _rangeEnd, _focusedDay);
+                  },
+                  enabledDayPredicate: (day) {
+                    
+                    if (_rangeStart == _rangeEnd) {
+                      return true; // Habilitar todas las fechas si _rangeStart y _rangeEnd son iguales
+                    } else if (_rangeStart != null) { 
+                      return day.isAfter(_rangeStart!.subtract(const Duration(days: 1))); // Habilitar solo las fechas iguales o posteriores a _rangeStart
+                    } 
+                    return true; // Habilitar todas las fechas si no hay rango de inicio
                   },
                   calendarStyle: const CalendarStyle(
                     todayDecoration: BoxDecoration(
-                    color: Color(0xFFE98300),
-                    shape: BoxShape.circle,
+                      color: Color(0xFFE98300),
+                      shape: BoxShape.circle,
                     ),
                     selectedDecoration: BoxDecoration(
                       color: Color(0xFF005586),
@@ -168,7 +185,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
                     ),
                     defaultTextStyle: TextStyle(
                       color: Colors.black,
-                      ),
+                    ),
                     rangeStartDecoration: BoxDecoration(
                       color: Color(0xFF005586),
                       shape: BoxShape.circle,
