@@ -5,6 +5,7 @@ import '../config/environment.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Servicio general para interactuar con la API de GLPI.
+
 class GlpiGeneralService {
   final String url = Environment.apiUrl;
   static const _storage = FlutterSecureStorage();
@@ -28,7 +29,7 @@ class GlpiGeneralService {
       final response = await http
           .get(Uri.parse('$url/RequestType'), headers: headers)
           .timeout(const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+              seconds: 15));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -58,7 +59,7 @@ class GlpiGeneralService {
       final response = await http
           .get(Uri.parse('$url/getMyEntities'), headers: headers)
           .timeout(const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+              seconds: 15));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -94,7 +95,7 @@ class GlpiGeneralService {
           .post(Uri.parse('$url/changeActiveEntities'),
               headers: headers, body: body)
           .timeout(const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+              seconds: 15));
 
       if (response.statusCode != 200) {
         throw Exception('Error al cambiar la entidad activa');
@@ -105,9 +106,6 @@ class GlpiGeneralService {
       throw Exception("Error al cambiar la entidad activa: $e");
     }
   }
-
-  //_______________________________________________________________________
-
 
  /// Obtiene LOS PERFILES del usuario desde la API.
   /// 
@@ -124,7 +122,7 @@ class GlpiGeneralService {
     try {
       final response = await http
           .get(Uri.parse('$url/getMyProfiles'), headers: headers)
-          .timeout(const Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -161,7 +159,4 @@ class GlpiGeneralService {
       throw Exception('Error al cambiar el perfil: ${response.body}');
     }
   }
-
-//___________________________________________________________________________
-
 }

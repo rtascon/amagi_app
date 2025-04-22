@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../controllers/create_ticket_controller.dart';
-import '../views/main_menu_screen.dart'; // Importar MainMenuScreen
+import '../views/main_menu_screen.dart';
+
+/// Este archivo contiene la pantalla de creación de tickets, donde los usuarios pueden ingresar
+/// información sobre un nuevo ticket, incluyendo el título, tipo y descripción.
 
 class CreateTicketScreen extends StatefulWidget {
   const CreateTicketScreen({super.key});
@@ -16,7 +19,6 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _descripcionController = TextEditingController();
   final TextEditingController _tipoController = TextEditingController();
-  //String? _tipo;
   bool _isLoading = false;
 
   final List<Map<String, dynamic>> tipoItems = [
@@ -81,10 +83,10 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-            (route) => false, // Elimina todas las pantallas anteriores.
+            (route) => false,
           );
         }
-        return false; // Bloquea el comportamiento predeterminado del botón de retroceso.
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -95,7 +97,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-                  (route) => false, // Elimina todas las pantallas anteriores.
+                  (route) => false,
                 );
               }
             },
@@ -112,13 +114,13 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
           centerTitle: true,
         ),
         body: Container(
-          color: Colors.white, // Asegurar que el fondo sea blanco y ocupe toda la pantalla
-          height: MediaQuery.of(context).size.height, // Asegurar que el contenedor ocupe toda la altura de la pantalla
+          color: Colors.white, 
+          height: MediaQuery.of(context).size.height, 
           child: SingleChildScrollView(
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(16.0), // Margen del formulario
+                  padding: const EdgeInsets.all(16.0),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -129,7 +131,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.edit_note, color: Colors.grey[600]), // Ajustar ícono
+                              Icon(Icons.edit_note, color: Colors.grey[600]),
                               const SizedBox(width: 4.0),
                               Text(
                                 'Título',
@@ -140,7 +142,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                         ),
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0), // Margen del campo de texto
+                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(15.0),
@@ -148,14 +150,14 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: TextFormField(
                             controller: _tituloController,
                             decoration: InputDecoration(
-                              hintText: 'Ingrese un título', // Texto de marcador de posición
-                              hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17), // Tamaño de letra igual al de título
+                              hintText: 'Ingrese un título',
+                              hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17),
                               filled: true,
-                              fillColor: Colors.grey[200], // Ajustar el fondo del texto
-                              border: InputBorder.none, // Eliminar el borde del campo de texto
-                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Reducir altura
+                              fillColor: Colors.grey[200],
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
                             ),
-                            maxLength: 50, // Límite de 50 caracteres
+                            maxLength: 50,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor ingrese un título';
@@ -171,7 +173,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.playlist_add_check , color: Colors.grey[600]), // Ajustar ícono
+                              Icon(Icons.playlist_add_check , color: Colors.grey[600]),
                               const SizedBox(width: 4.0),
                               Text(
                                 'Tipo',
@@ -182,7 +184,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                         ),
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0), // Margen del campo de texto
+                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(15.0),
@@ -190,14 +192,14 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.grey[200], // Ajustar el fondo del texto
-                              border: InputBorder.none, // Eliminar el borde del campo de texto
-                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Ajustar el padding vertical
+                              fillColor: Colors.grey[200],
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
                             ),
                              dropdownColor: Colors.grey[200],
                             hint: const Text(
                               'Seleccione una opción',
-                              style: TextStyle(fontSize: 17), // Tamaño de letra igual al de título
+                              style: TextStyle(fontSize: 17),
                             ),
                             items: tipoItems.map((item) {
                               return DropdownMenuItem<String>(
@@ -237,7 +239,7 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.edit_note, color: Colors.grey[600]), // Ajustar ícono
+                              Icon(Icons.edit_note, color: Colors.grey[600]),
                               const SizedBox(width: 4.0),
                               Text(
                                 'Descripción',
@@ -260,15 +262,15 @@ class CreateTicketScreenState extends State<CreateTicketScreen> {
                             child: TextFormField(
                               controller: _descripcionController,
                               decoration: InputDecoration(
-                                hintText: 'Ingrese una descripción', // Texto de marcador de posición
-                                hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17), // Tamaño de letra igual al de título
+                                hintText: 'Ingrese una descripción',
+                                hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17),
                                 filled: true,
-                                fillColor: Colors.grey[200], // Ajustar el fondo del texto
-                                border: InputBorder.none, // Eliminar el borde del campo de texto
-                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0), // Ajustar el padding vertical
+                                fillColor: Colors.grey[200],
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
                               ),
                               maxLines: 5,
-                              maxLength: 2000, // Límite de 2000 caracteres
+                              maxLength: 2000,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Por favor ingrese una descripción';

@@ -6,8 +6,8 @@ import '../controllers/tickets_controller.dart';
 import '../controllers/main_menu_controller.dart';
 import '../views/side_menu.dart';
 import 'package:flutter/cupertino.dart';
-import '../services/auth_service.dart'; // Importar AuthService
-import 'package:shared_preferences/shared_preferences.dart'; // Importar SharedPreferences
+import '../services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Esta vista representa el menú principal de la aplicación, desde donde los usuarios
 /// pueden navegar a diferentes secciones, como la creación y consulta de tickets.
@@ -25,7 +25,7 @@ class MainMenuScreenState extends State<MainMenuScreen> {
   final MainMenuController _mainMenuController = MainMenuController();
   Future<Map<String, String>>? _userNameFuture;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final AuthService _authService = AuthService(); // Instanciar AuthService
+  final AuthService _authService = AuthService();
   DateTime? _lastPressedAt;
 
   Future<void> _saveSelectedOption(String option) async {
@@ -54,18 +54,18 @@ class MainMenuScreenState extends State<MainMenuScreen> {
           );
           return false;
         }
-        await _authService.logOut(); // Llamar a logOut
-        SystemNavigator.pop(); // Cerrar la aplicación
+        await _authService.logOut();
+        SystemNavigator.pop();
         return true;
       },
       child: Container(
-        color: const Color(0xFF005586), // Set the background color for the entire screen
+        color: const Color(0xFF005586),
         child: Scaffold(
           key: _scaffoldKey,
-          backgroundColor: Colors.transparent, // Make the Scaffold background transparent
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white), // Set the icon color to white
+              icon: const Icon(Icons.menu, color: Colors.white),
               onPressed: () async {
                 await _saveSelectedOption('Inicio');
                 _scaffoldKey.currentState?.openDrawer();
@@ -80,7 +80,7 @@ class MainMenuScreenState extends State<MainMenuScreen> {
             ),
             backgroundColor: Colors.transparent,
             elevation: 0,
-            centerTitle: true, // Ensure the title is centered
+            centerTitle: true,
           ),
           drawer: SideMenu(
             sideMenuController: _sideMenuController,
@@ -91,16 +91,16 @@ class MainMenuScreenState extends State<MainMenuScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: Align(
-                alignment: Alignment.topCenter, // Centrar en la parte superior
+                alignment: Alignment.topCenter,
                 child: Container(
-                  width: 300, // Ajusta el tamaño del contenedor central según sea necesario
+                  width: 300, 
                   height: 400,
                   child: Stack(
                     children: [
                       Positioned(
                         top: 0,
                         left: 10,
-                        height: 200, // Altura del botón
+                        height: 200,
                         child: _buildMenuButton(
                           context,
                           icon: CupertinoIcons.doc_text_search,
@@ -114,7 +114,7 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                       Positioned(
                         top: 0,
                         right: 10,
-                        height: 200, // Altura del botón
+                        height: 200,
                         child: _buildMenuButton(
                           context,
                           icon: CupertinoIcons.doc_append,
@@ -126,9 +126,9 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                         ),
                       ),
                       Positioned(
-                        bottom: 0, // Aumentar el espacio desde la parte inferior
+                        bottom: 0,
                         left: 10,
-                        height: 200, // Altura del botón
+                        height: 200,
                         child: _buildMenuButton(
                           context,
                           icon: CupertinoIcons.doc_checkmark,
@@ -139,7 +139,6 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                           },
                         ),
                       ),
-                      // Añadir más botones aquí si es necesario
                     ],
                   ),
                 ),
@@ -155,24 +154,24 @@ class MainMenuScreenState extends State<MainMenuScreen> {
     return Column(
       children: [
         SizedBox(
-          width: 112, // Double the default size (56 * 2)
-          height: 112, // Double the default size (56 * 2)
+          width: 112, 
+          height: 112,
           child: FloatingActionButton(
             onPressed: onPressed,
             backgroundColor: Colors.white,
-            child: Icon(icon, color: Colors.blueGrey, size: 48), // Icon
+            child: Icon(icon, color: Colors.blueGrey, size: 48),
           ),
         ),
-        const SizedBox(height: 8), // Space between button and text
+        const SizedBox(height: 8),
         SizedBox(
-          width: 112, // Ensure the text container has the same width as the button
+          width: 112,
           child: Text(
             label,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
             ),
-            textAlign: TextAlign.center, // Center the text
+            textAlign: TextAlign.center,
           ),
         ),
       ],

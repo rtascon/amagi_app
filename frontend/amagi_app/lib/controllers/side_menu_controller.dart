@@ -31,11 +31,11 @@ class SideMenuController {
     try {
       await _authService.logOut();
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.clear(); // Limpia todas las preferencias guardadas
-      await _storage.delete(key: _sessionTokenKey); // Elimina el token de sesión
+      await prefs.clear();
+      await _storage.delete(key: _sessionTokenKey);
       if (!context.mounted) return;
       Navigator.of(context).pop(); 
-      Navigator.of(context).pushReplacementNamed('/login'); // Redirige a la pantalla de inicio de sesión
+      Navigator.of(context).pushReplacementNamed('/login');
     } catch (e) {
       if (!context.mounted) return;
       Navigator.of(context).pop(); 

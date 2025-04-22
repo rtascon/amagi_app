@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:double_tap_to_exit/double_tap_to_exit.dart';
 
+/// Widget que permite salir de la aplicación al hacer doble tap
+/// en la pantalla, mostrando un mensaje de confirmación.
+
 class DoubleBackToExitApp extends StatefulWidget {
   final Widget child;
   final String exitMessage;

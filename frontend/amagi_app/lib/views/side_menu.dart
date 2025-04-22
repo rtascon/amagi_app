@@ -98,11 +98,11 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
       onWillPop: () async => true,
       child: Drawer(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.75, // 75% of screen width
+          width: MediaQuery.of(context).size.width * 0.75,
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 50), // Reduce the space above the image and icon
+              const SizedBox(height: 50),
               Container(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -110,11 +110,11 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                     Row(
                       children: [
                         Image.asset(
-                          'assets/Solo la a (1).png', // Replace with your image path
+                          'assets/Solo la a (1).png',
                           width: 80,
                           height: 80,
                         ),
-                        const SizedBox(width: 8), // Add some space between the image and the text
+                        const SizedBox(width: 8),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -131,44 +131,44 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                                         snapshot.data?['glpifriendlyname'] ?? '',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 18, // Make the font size larger
+                                          fontSize: 18,
                                         ),
                                       ),
                                       Row(
                                         children: [
-                                          const Icon(Icons.person_outline, color: Color(0xFF005586), size: 20), // Person icon
-                                          const SizedBox(width: 2), // Space between icon and text
+                                          const Icon(Icons.person_outline, color: Color(0xFF005586), size: 20),
+                                          const SizedBox(width: 2),
                                           Text(
                                             snapshot.data?['glpiname'] ?? '',
                                             style: const TextStyle(
-                                              fontSize: 16, // Slightly smaller font size
-                                              color: Color(0xFF005586), // Color for glpiname
+                                              fontSize: 16,
+                                              color: Color(0xFF005586),
                                             ),
                                           ),
                                         ],
                                       ),
                                       Row(
                                         children: [
-                                          const Icon(Icons.badge_outlined, color: Color(0xFF005586), size: 20), // Badge icon
-                                          const SizedBox(width: 2), // Space between icon and text
+                                          const Icon(Icons.badge_outlined, color: Color(0xFF005586), size: 20),
+                                          const SizedBox(width: 2),
                                           Text(
                                             snapshot.data?['glpiactiveprofile']?.replaceAll('_', ' ') ?? '',
                                             style: const TextStyle(
-                                              fontSize: 14, // Slightly smaller font size
-                                              color: Color(0xFF005586), // Different color for profile name
+                                              fontSize: 14,
+                                              color: Color(0xFF005586),
                                             ),
                                           ),
                                         ],
                                       ),
                                       Row(
                                         children: [
-                                          const Icon(Icons.work_outline, color: Color(0xFF005586), size: 20), // Apartment icon
-                                          const SizedBox(width: 2), // Space between icon and text
+                                          const Icon(Icons.work_outline, color: Color(0xFF005586), size: 20),
+                                          const SizedBox(width: 2),
                                           Text(
                                             snapshot.data?['glpiactive_entity_name']?.substring(0, 3) ?? '',
                                             style: const TextStyle(
-                                              fontSize: 14, // Slightly smaller font size
-                                              color: Color(0xFF005586), // Different color for entity name
+                                              fontSize: 14,
+                                              color: Color(0xFF005586),
                                             ),
                                           ),
                                         ],
@@ -181,7 +181,7 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                           ],
                         ),
                         const Spacer(),
-                        /*
+/*
                         IconButton(
                           icon: Icon(Icons.settings),
                           onPressed: () {
@@ -200,8 +200,8 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.home_outlined, color: Colors.black), 
-                        const SizedBox(width: 8), 
+                        const Icon(Icons.home_outlined, color: Colors.black),
+                        const SizedBox(width: 8),
                         ValueListenableBuilder<String>(
                           valueListenable: selectedOptionMenu,
                           builder: (context, value, child) {
@@ -225,8 +225,8 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                     ),
                     Row(
                       children: [
-                        const Icon(CupertinoIcons.doc_text_search, color: Colors.black), // Ticket icon
-                        const SizedBox(width: 8), // Space between icon and text
+                        const Icon(CupertinoIcons.doc_text_search, color: Colors.black),
+                        const SizedBox(width: 8),
                         ValueListenableBuilder<String>(
                           valueListenable: selectedOptionMenu,
                           builder: (context, value, child) {
@@ -252,10 +252,10 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                       children: [
                         const Stack(
                           children: [
-                            Icon(CupertinoIcons.doc_richtext, color: Colors.black, size: 24), 
+                            Icon(CupertinoIcons.doc_richtext, color: Colors.black, size: 24),
                           ],
                         ),
-                        const SizedBox(width: 8), 
+                        const SizedBox(width: 8),
                         ValueListenableBuilder<String>(
                           valueListenable: selectedOptionMenu,
                           builder: (context, value, child) {
@@ -279,8 +279,8 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                     ),
                     Row(
                       children: [
-                        const Icon(CupertinoIcons.doc_checkmark, color: Colors.black), // Resolved tickets icon
-                        const SizedBox(width: 8), // Space between icon and text
+                        const Icon(CupertinoIcons.doc_checkmark, color: Colors.black),
+                        const SizedBox(width: 8),
                         ValueListenableBuilder<String>(
                           valueListenable: selectedOptionMenu,
                           builder: (context, value, child) {
@@ -311,14 +311,14 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.info_outline, color: Colors.black), // About icon
-                        const SizedBox(width: 8), // Space between icon and text
+                        const Icon(Icons.info_outline, color: Colors.black),
+                        const SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const AboutScreen()),
-                            ); // Navegar a la pantalla AboutScreen
+                            );
                           },
                           child: const Text(
                             'Acerca de',
@@ -333,7 +333,7 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                     Row(
                       children: [
                         const Icon(Icons.logout, color: Colors.black),
-                        const SizedBox(width: 8), // Space between icon and text
+                        const SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
                             widget.sideMenuController.logOut(context);
@@ -351,24 +351,24 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                   ],
                 ),
               ),
-              const Spacer(), // Pushes the image to the bottom
+              const Spacer(),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: GestureDetector(
                   onTap: _onLogoTapped,
                   child: Stack(
-                    alignment: Alignment(0.0, -2),//.
+                    alignment: Alignment(0.0, -2),
                     children: [
                       Image.asset(
                         'assets/Amagi logo azul_Pequeño(3).png',
-                        alignment: Alignment(0.0, -2), 
+                        alignment: Alignment(0.0, -2),
                         width: 150,
                         height: 100,
                       ),
-                      if (!_showAnimatedImage) 
+                      if (!_showAnimatedImage)
                         Image.asset(
                           'assets/Amagi logo azul_Pequeño(2).png',
-                          alignment: Alignment(0.0, -2), 
+                          alignment: Alignment(0.0, -2),
                           width: 150,
                           height: 61,
                         ),
@@ -378,8 +378,8 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                           child: Image.asset(
                             'assets/Amagi logo azul_Pequeño(2).png',
                             width: 150,
-                            height: 61, 
-                            alignment: Alignment(0.0, -2), 
+                            height: 61,
+                            alignment: Alignment(0.0, -2),
                           ),
                         ),
                     ],

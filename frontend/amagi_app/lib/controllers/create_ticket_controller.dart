@@ -6,17 +6,16 @@ import '../views/main_menu_screen.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import '../services/ticket_service.dart'; // Add this line to import the ticket_service
+import '../services/ticket_service.dart';
 import '../services/glpi_general_service.dart';
-
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
 class CreateTicketController {
   final String request = Environment.requesttypes;
 
   final user = User();
-  final TicketService _ticketService = TicketService(); // Add this line to define the _ticketService variable
-  final GlpiGeneralService _glpiGeneralService = GlpiGeneralService(); // Add this line to define the _glpiGeneralService variable
+  final TicketService _ticketService = TicketService();
+  final GlpiGeneralService _glpiGeneralService = GlpiGeneralService();
   final String entity = Environment.entity;
 
   Future<bool> submitCrearticketController(
@@ -34,8 +33,6 @@ class CreateTicketController {
     }
 
     try {
-
-      // Mostrar la pantalla de carga
       if (context.mounted) {
         showDialog(
           context: context,
@@ -66,18 +63,14 @@ class CreateTicketController {
       }
 
       if (context.mounted) {
-      Navigator.of(context).pop();
-
-      // Eliminar la pantalla anterior
-      Navigator.of(context).pop();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const MainMenuScreen(),
-        ),
-      );
-
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MainMenuScreen(),
+          ),
+        );
       }
       return true;
     } catch (e) {
@@ -90,7 +83,6 @@ class CreateTicketController {
               'Hubo un error al enviar su solicitud. Por favor, intente de nuevo.');
         }
       }
-      // Imprime el error en la consola de depuración
       debugPrint('Error al enviar el ticket: $e');
       return false;
     }

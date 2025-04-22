@@ -3,6 +3,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+/// Widget personalizado que muestra un calendario en un diálogo,
+/// permitiendo la selección de un rango de fechas.
+
 class CalendarDialog extends StatefulWidget {
   final DateTime focusedDay;
   final DateTime? rangeStart;
@@ -36,17 +39,16 @@ class _CalendarDialogState extends State<CalendarDialog> {
   late TextEditingController _endDayController;
   late TextEditingController _endMonthController;
   late TextEditingController _endYearController;
-  bool _showDateFields = true; // Mostrar los campos de fecha por defecto
+  bool _showDateFields = true;
 
   @override
   void initState() {
     super.initState();
-    // Inicializar localización en español
     initializeDateFormatting('es', null);
     _focusedDay = widget.focusedDay;
     _rangeStart = widget.rangeStart;
     _rangeEnd = widget.rangeEnd;
-    _calendarFormat = CalendarFormat.month; // Establecer formato a mes
+    _calendarFormat = CalendarFormat.month;
     _rangeSelectionMode = widget.rangeSelectionMode;
     _startDayController = TextEditingController();
     _startMonthController = TextEditingController();
@@ -59,9 +61,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
       _rangeStart = start;
-      _rangeEnd = end ?? start; // Asignar start a _rangeEnd si end es null
+      _rangeEnd = end ?? start;
       _focusedDay = focusedDay;
-      // Actualizar los campos de texto cuando se selecciona un rango
       if (_rangeStart != null) {
         _startDayController.text = _rangeStart!.day.toString();
         _startMonthController.text = _rangeStart!.month.toString();
@@ -107,7 +108,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
             duration: const Duration(milliseconds: 300),
             width: 500,
             height: 450,
-            margin: const EdgeInsets.all(10), // Incluir margen de 1 píxel
+            margin: const EdgeInsets.all(10),
             child: Column(
               children: [
                 TableCalendar(
@@ -122,10 +123,10 @@ class _CalendarDialogState extends State<CalendarDialog> {
                   rangeSelectionMode: _rangeSelectionMode,
                   headerStyle: HeaderStyle(
                     formatButtonVisible: false,
-                    titleCentered: true, // Centrar el mes y el año
+                    titleCentered: true,
                     titleTextFormatter: (date, locale) => DateFormat.yMMMM(locale).format(date).replaceFirst(' de ', ' ').replaceFirstMapped(RegExp(r'^\w'), (match) => match.group(0)!.toUpperCase()),
                   ),
-                  locale: 'es_ES', // Configurar localización a español
+                  locale: 'es_ES',
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {
                       _focusedDay = focusedDay;
@@ -140,7 +141,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
                       }
 
                       else if (_rangeStart != null && _rangeEnd == null) {
-                        _rangeStart = _rangeStart; // Mantener la fecha de inicio
+                        _rangeStart = _rangeStart;
                         _rangeEnd = selectedDay;
                         _rangeSelectionMode = RangeSelectionMode.toggledOn;
                         _endDayController.text = selectedDay.day.toString();
@@ -148,10 +149,9 @@ class _CalendarDialogState extends State<CalendarDialog> {
                         _endYearController.text = selectedDay.year.toString();
                       }
 
-                      // Caso: iniciar un nuevo rango
                       else {
                         _rangeStart = selectedDay;
-                        _rangeEnd = null; // Reiniciar el rango final
+                        _rangeEnd = null;
                         _rangeSelectionMode = RangeSelectionMode.toggledOff;
                         _startDayController.text = selectedDay.day.toString();
                         _startMonthController.text = selectedDay.month.toString();
@@ -159,17 +159,16 @@ class _CalendarDialogState extends State<CalendarDialog> {
                       }
                     });
 
-                    // Notificar al widget padre sobre el rango seleccionado
                     widget.onRangeSelected(_rangeStart, _rangeEnd, _focusedDay);
                   },
                   enabledDayPredicate: (day) {
                     
                     if (_rangeStart == _rangeEnd) {
-                      return true; // Habilitar todas las fechas si _rangeStart y _rangeEnd son iguales
+                      return true; 
                     } else if (_rangeStart != null) { 
-                      return day.isAfter(_rangeStart!.subtract(const Duration(days: 1))); // Habilitar solo las fechas iguales o posteriores a _rangeStart
+                      return day.isAfter(_rangeStart!.subtract(const Duration(days: 1))); 
                     } 
-                    return true; // Habilitar todas las fechas si no hay rango de inicio
+                    return true; 
                   },
                   calendarStyle: const CalendarStyle(
                     todayDecoration: BoxDecoration(
@@ -196,18 +195,18 @@ class _CalendarDialogState extends State<CalendarDialog> {
                     ),
                     withinRangeTextStyle: TextStyle(color: Colors.white),
                     rangeHighlightColor: Color.fromARGB(255, 0, 105, 167),
-                    cellMargin: const EdgeInsets.all(1.0), // Agregar margen de 1 píxel
+                    cellMargin: const EdgeInsets.all(1.0),
                   ),
                   daysOfWeekStyle: const DaysOfWeekStyle(
-                    weekdayStyle: TextStyle(fontSize: 12.0), // Ajustar el tamaño de los días de la semana
-                    weekendStyle: TextStyle(fontSize: 12.0, color: Color(0xFFE98300)), // Ajustar el tamaño de los fines de semana
+                    weekdayStyle: TextStyle(fontSize: 12.0),
+                    weekendStyle: TextStyle(fontSize: 12.0, color: Color(0xFFE98300)),
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 10), // Margen superior
+                  margin: const EdgeInsets.only(top: 10),
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinear a los extremos
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         _formatDateRange(_rangeStart, _rangeEnd),

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
-import '../views/main_menu_screen.dart'; // Importar MainMenuScreen
+import '../views/main_menu_screen.dart';
+
+/// Pantalla de "Acerca de" que muestra información sobre la aplicación y sus características.
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -16,9 +17,9 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-      (route) => false, // Elimina todas las pantallas anteriores.
+      (route) => false,
     );
-    return false; // Bloquea el comportamiento predeterminado del botón de retroceso.
+    return false;
   }
 
   @override
@@ -64,7 +65,6 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             color: Color(0xFF005586),
                           ),
                         ),
-                        
                         TextSpan(
                           text: 'Versión 1.0.0\n\n',
                           style: TextStyle(
@@ -86,7 +86,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             color: Colors.black87,
                           ),
                         ),
-                                              ],
+                      ],
                     ),
                     textAlign: TextAlign.left, 
                   ),

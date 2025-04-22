@@ -118,8 +118,8 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
             Container(
               color: Colors.white,
               child: RefreshIndicator(
-                color: const Color(0xFF005586), // Cambiar el color del icono
-                backgroundColor: Colors.white, // Cambiar el color del círculo a blanco
+                color: const Color(0xFF005586),
+                backgroundColor: Colors.white,
                 onRefresh: _refreshTickets,
                 child: _filteredTickets.isEmpty
                     ? SingleChildScrollView(
@@ -152,11 +152,9 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.all(16.0),
-                        itemCount: _filteredTickets
-                            .length, // Usar _filteredTickets en lugar de tickets
+                        itemCount: _filteredTickets.length,
                         itemBuilder: (context, index) {
-                          final ticket = _filteredTickets[
-                              index]; // Usar _filteredTickets en lugar de tickets
+                          final ticket = _filteredTickets[index];
                           final fechaCreacion = ticket.fechaCreacion is String
                               ? DateTime.parse(ticket.fechaCreacion)
                               : ticket.fechaCreacion;
@@ -464,9 +462,7 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                       ),
                                     ),
                                   Positioned(
-                                    //top: 40,
                                     bottom: 35,
-                                    //left: 0,
                                     right: 1,
                                     child: Center(
                                       child: Container(
@@ -552,9 +548,9 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const MainMenuScreen()),
-      (route) => false, // Elimina todas las pantallas anteriores.
+      (route) => false,
     );
-    return false; // Bloquea el comportamiento predeterminado del botón de retroceso.
+    return false;
   }
 
   Future<void> _refreshTickets() async {

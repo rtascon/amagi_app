@@ -28,7 +28,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   bool _showScrollButton = false;
   Map<int, bool> _expandedMessages = {};
   bool _showFullText = false;
-  Map<int, bool> _showFullTextMap = {}; // Mapa para controlar el estado de cada burbuja de chat
+  Map<int, bool> _showFullTextMap = {}; 
 
   @override
   void initState() {
@@ -48,7 +48,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
     }
   }
 
-  // Método para desplazarse hacia abajo
   void _scrollDown() {
     _controller.animateTo(
       _controller.position.maxScrollExtent,
@@ -60,22 +59,19 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   @override
   Widget build(BuildContext context) {
     Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
-    // Verificar si el histórico inicial ya está presente
     bool historicoInicialPresente = widget.ticket.historicos.any((historico) => historico['isInitial'] == true);
 
     if (!historicoInicialPresente) {
-      // Agregar el histórico creado por el usuario logueado
       final historicoInicial = {
-        'date': widget.ticket.fechaCreacion.toString(), // Asegurarse de que la fecha de creación esté presente
+        'date': widget.ticket.fechaCreacion.toString(),
         'nombre_usuario': usuario.nombreCompleto,
         'content': widget.ticket.descripcion,
         'documentos': [],
-        'isInitial': true, // Marcar este histórico como inicial
+        'isInitial': true,
       };
       widget.ticket.historicos.insert(0, historicoInicial);
     }
 
-    // Combinar históricos y soluciones en una sola lista y ordenar por fecha
     final combinedList = [...widget.ticket.historicos, ...widget.ticket.soluciones];
     combinedList.sort((a, b) {
       DateTime fechaA = DateTime.tryParse(a['date'] ?? a['date_creation'] ?? '') ?? DateTime(1970);
@@ -107,7 +103,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
           Container(
             color: Colors.white,
             child: ListView.builder(
-              controller: _controller, // Asignar el controlador al ListView
+              controller: _controller,
               itemCount: combinedList.length,
               itemBuilder: (context, index) {
                 final item = combinedList[index];
@@ -118,7 +114,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                 final esHistoricoInicial = item['isInitial'] == true;
                 final esSolucion = widget.ticket.soluciones.contains(item);
 
-                // Formatear la fecha para no mostrar milisegundos
                 final formattedFecha = DateFormat('dd-MM-yy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
 
                 return MessageBubble(
@@ -147,7 +142,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                 ),
                                 const Icon(Icons.access_time, size: 16, color: Colors.white),
                                 const SizedBox(width: 5),
-                                Text(formattedFecha), // Usar la fecha formateada
+                                Text(formattedFecha),
                               ],
                             ),
                             const SizedBox(height: 5),
@@ -209,7 +204,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                             
                             ? '${item['content'].substring(0, 300)}...' 
                             : item['content']),
-                          ), // Mostrar el texto truncado o completo
+                          ),
                           
                           if (item['content'].length > 300 && _showFullTextMap[index] != true)
                             GestureDetector(
@@ -283,7 +278,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                   ],
                                 ),
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0), // Optional: Add border radius if needed
+                                  borderRadius: BorderRadius.circular(8.0),
                                   child: Image.file(
                                     file,
                                     width: 80,
@@ -318,7 +313,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                             TextButton(
                                               onPressed: () async {
                                                 await _ticketDetailController.downloadFile(context, filePath, documento['filename']);
-                                                OpenFile.open(filePath); // Abrir el archivo después de descargarlo
+                                                OpenFile.open(filePath);
                                               },
                                               child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
                                             ),
@@ -355,8 +350,8 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
           ),
           if (widget.ticket.estado != 5 && widget.ticket.estado != 6)
             Positioned(
-              bottom: 18, // Aumentar la altura del FAB
-              right: MediaQuery.of(context).size.width * 0.08, // Ajustar la posición del FAB
+              bottom: 18,
+              right: MediaQuery.of(context).size.width * 0.08,
               child: FloatingActionButton(
                 onPressed: () {
                   Navigator.push(
@@ -371,7 +366,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                 child: const Icon(Icons.add, color: Colors.white),
               ),
             ),
-          // Mostrar el FloatingActionButton solo cuando existan elementos ocultos
           if (_showScrollButton)
             Positioned(
               bottom: widget.ticket.estado == 5 || widget.ticket.estado == 6 ? 18 : 80,
@@ -411,11 +405,11 @@ class MessageBubble extends StatelessWidget {
 
     return FractionallySizedBox(
       alignment: messageAlignment,
-      widthFactor: 0.9, // Incrementar el ancho de las burbujas de chat
+      widthFactor: 0.9,
       child: Align(
         alignment: messageAlignment,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0), // Reducir el alto en un punto
+          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
             child: Container(

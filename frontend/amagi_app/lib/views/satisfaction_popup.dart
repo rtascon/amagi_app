@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// pantalla de satisfacción no funcional
 class SatisfactionPopup extends StatefulWidget {
   final Function(int, String) onSubmit;
   final Function onCancel;

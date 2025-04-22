@@ -25,19 +25,15 @@ class TicketDetailController {
   /// Verifica si la ruta es local o una URL válida. Si es una URL, solicita permisos de almacenamiento,
   /// descarga el archivo y lo guarda en el almacenamiento del dispositivo.
   Future<void> downloadFile(BuildContext context, String pathOrUrl, String fileName) async {
-    // Verificar si es una ruta local
     if (File(pathOrUrl).existsSync()) {
       print("File already exists at: $pathOrUrl");
       await _saveFileToDeviceStorage(context, pathOrUrl, fileName);
       return;
     }
-
-    // Verificar si la URL es válida
     if (!Uri.parse(pathOrUrl).isAbsolute) {
       print("Invalid URL: $pathOrUrl");
       return;
     }
-
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       status = await Permission.storage.request();
@@ -46,7 +42,6 @@ class TicketDetailController {
         return;
       }
     }
-
     try {
       Dio dio = Dio();
       var dir = await getApplicationDocumentsDirectory();
@@ -88,7 +83,6 @@ class TicketDetailController {
       await localFile.copy(newPath);
       print("File saved to device storage at: $newPath");
 
-      // Mostrar mensaje emergente con opción para abrir el archivo
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

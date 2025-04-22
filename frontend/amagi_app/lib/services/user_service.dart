@@ -6,6 +6,7 @@ import '../models/user.dart';
 import '../config/environment.dart';
 
 /// Servicio para manejar operaciones relacionadas con el usuario.
+
 class UserService {
   final String url = Environment.apiUrl;
   static const _storage = FlutterSecureStorage();
@@ -40,7 +41,6 @@ class UserService {
           otrasEntidadesActivas = {};
         }
 
-        // Configurar el objeto Usuario
         usuario.setUser(
           idUsuario: userInfo['session']['glpiID'] ?? 0,
           nombreUsuario: userInfo['session']['glpiname'] ?? '',
@@ -84,7 +84,7 @@ class UserService {
           'Session-Token': sessionToken!,
           'Content-Type': 'application/json',
         },
-      ).timeout(const Duration(seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+      ).timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200 || response.statusCode == 206) {
         final userInfo = jsonDecode(response.body);

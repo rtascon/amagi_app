@@ -6,7 +6,6 @@ import '../models/type_conversion.dart';
 import 'package:intl/intl.dart';
 
 /// Controlador para manejar la lógica de los filtros de tickets.
-
 class FilterTicketMenuController {
   final TypeConversion _typeConversion = TypeConversion();
 
@@ -116,10 +115,10 @@ class FilterTicketMenuController {
     if (selectedDateRange != null) {
       final formattedRange = _formatDateRange(selectedDateRange.start, selectedDateRange.end);
       filteredTickets = filteredTickets.where((ticket) {
-        return ticket.fechaCreacion.isAfter(selectedDateRange.start.subtract(const Duration(seconds: 1))) &&
-               ticket.fechaCreacion.isBefore(selectedDateRange.end.add(const Duration(days: 1)));
-      }).toList(); // Incluir el día de inicio y fin en el rango
-      print('Filtrando por rango formateado: $formattedRange'); // Opcional: para depuración
+        return 
+        ticket.fechaCreacion.isAfter(selectedDateRange.start.subtract(const Duration(seconds: 1))) &&
+        ticket.fechaCreacion.isBefore(selectedDateRange.end.add(const Duration(days: 1)));
+      }).toList();
     }
 
     return {

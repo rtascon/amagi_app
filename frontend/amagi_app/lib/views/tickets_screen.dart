@@ -7,7 +7,6 @@ import '../views/side_menu.dart';
 import 'filter_ticket_menu_screen.dart';
 import '../models/ticket.dart';
 import '../models/type_conversion.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// Esta vista muestra una lista de tickets del usuario, permitiendo filtrar y ordenar
 /// los tickets según diferentes criterios. También proporciona acceso a los detalles de cada ticket.
@@ -124,7 +123,7 @@ return WillPopScope(
       ),
       endDrawer: FilterTicketMenu(
         onFilterChanged: _applyFilters,
-      ), // Pasar la función de filtro
+      ),
       body: Stack(
         children: [
           Container(
@@ -165,10 +164,10 @@ return WillPopScope(
                   : ListView.builder(
                       padding: const EdgeInsets.all(16.0),
                       itemCount: _filteredTickets
-                          .length, // Usar _filteredTickets en lugar de tickets
+                          .length,
                       itemBuilder: (context, index) {
                         final ticket = _filteredTickets[
-                            index]; // Usar _filteredTickets en lugar de tickets
+                            index];
                         final fechaCreacion = ticket.fechaCreacion is String
                             ? DateTime.parse(ticket.fechaCreacion)
                             : ticket.fechaCreacion;
@@ -476,9 +475,7 @@ return WillPopScope(
                                     ),
                                   ),
                                 Positioned(
-                                  //top: 40,
                                   bottom: 35,
-                                  //left: 0,
                                   right: 1,
                                   child: Center(
                                     child: Container(
@@ -564,9 +561,8 @@ return WillPopScope(
       context,
       MaterialPageRoute(builder: (context) => const MainMenuScreen()),
       (route) => false,
-       // Elimina todas las pantallas anteriores.
     );
-    return false; // Bloquea el comportamiento predeterminado del botón de retroceso.
+    return false;
   }
 
   Future<void> _refreshTickets() async {

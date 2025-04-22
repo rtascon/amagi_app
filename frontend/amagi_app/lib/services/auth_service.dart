@@ -24,7 +24,6 @@ class AuthService {
   Future<bool> login(String username, String password) async {
     final loginUrl = Uri.parse('$url/initSession');
     try {
-      // Realiza la solicitud de inicio de sesión.
       var response = await http
           .post(
             loginUrl,
@@ -34,12 +33,10 @@ class AuthService {
             body: jsonEncode(<String, String>{
               'login': username,
               'password': password,
-              //'auth': internalDbAuthSource
             }),
           )
           .timeout(const Duration(seconds: 15));
 
-      // Si la autenticación falla, intenta nuevamente sin el campo 'auth'.
       if (response.statusCode == 401) {
         response = await http
             .post(
@@ -54,7 +51,6 @@ class AuthService {
             )
             .timeout(const Duration(seconds: 15));
 
-        // Si la autenticación es exitosa, almacena el token de sesión y se obtiene la información del usuario.
         if (response.statusCode == 200) {
           final responseBody = jsonDecode(response.body);
           await _storage.write(
@@ -62,8 +58,6 @@ class AuthService {
           UserService userService = UserService();
           User usuario = User();
           final success = await userService.getUserInfo(usuario);
-
-          // Usa getUserProfile desde SideMenuController
           final sideMenuController = SideMenuController();
           final userProfile = await sideMenuController.getUserProfile();
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -77,7 +71,6 @@ class AuthService {
         }
       }
 
-      // Si la autenticación es exitosa en el primer intento, almacena el token de sesión y se obtiene la información del usuario.
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
         await _storage.write(
@@ -86,7 +79,6 @@ class AuthService {
         User usuario = User();
         final success = await userService.getUserInfo(usuario);
 
-        // Usa getUserProfile desde SideMenuController
         final sideMenuController = SideMenuController();
         final userProfile = await sideMenuController.getUserProfile();
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -112,7 +104,6 @@ class AuthService {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     final logoutUrl = Uri.parse('$url/killSession');
     try {
-      // Realiza la solicitud de cierre de sesión.
       final response = await http.post(
         logoutUrl,
         headers: <String, String>{
@@ -120,7 +111,6 @@ class AuthService {
         },
       ).timeout(const Duration(seconds: 15));
 
-      // Si la solicitud de cierre de sesión falla, lanza una excepción.
       if (response.statusCode != 200) {
         throw Exception("Error al cerrar sesión: ${response.body}");
       }

@@ -12,13 +12,13 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart' show parse;
 import '../views/loading_screen.dart';
 import '../views/main_menu_screen.dart';
-//import '../views/satisfaction_popup.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart';
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../config/environment.dart';
 import '../controllers/filter_ticket_menu_controller.dart'; 
+
 /// Controlador para manejar las acciones relacionadas con los tickets.
 class TicketsController {
   final TicketService _ticketService = TicketService();
@@ -28,9 +28,7 @@ class TicketsController {
   final HtmlUnescape unescape = HtmlUnescape();
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
-  final String url = Environment.apiUrl; // Obtener la URL desde el archivo de configuración
-
-  /// Obtiene el ID del usuario actual.
+  final String url = Environment.apiUrl;
   int getUserId() {
     return usuario.idUsuario;
   }
@@ -141,7 +139,6 @@ class TicketsController {
             await _ticketService.getUserTicketFiltered(userId, filters ?? {});
       }
 
-      // Crear instancias de Ticket usando TicketFactory
       List<Ticket> tickets = ticketsData.map((ticketData) {
         return TicketFactory.createTicket(
           id: ticketData['2'],
@@ -176,7 +173,6 @@ class TicketsController {
     }
 
     final soluciones = await _ticketService.getTicketSolution(ticketId, sessionToken);
-
     return Future.wait(soluciones.map((solucion) async {
       final nombreUsuario = await _userService.getUserName(solucion['users_id']);
       return {
@@ -208,8 +204,6 @@ class TicketsController {
 
       final userId = getUserId();
       List<dynamic> ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
-
-      // Crear instancias de Ticket usando TicketFactory
       List<Ticket> tickets = ticketsData.map((ticketData) {
         return TicketFactory.createTicket(
           id: ticketData['2'],
@@ -238,16 +232,13 @@ class TicketsController {
   void navigateToTicketsScreen(BuildContext context,
       {Map<String, dynamic>? filters}) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
-
     if (connectivityResult == ConnectivityResult.none) {
       showNoInternetMessage(context);
       return;
     }
     try {
-      
       final FilterTicketMenuController filterController = FilterTicketMenuController();
       await filterController.clearFilters(context, TextEditingController(), () {});
-
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -262,7 +253,6 @@ class TicketsController {
       } else {
         tickets = await getTicketsList(context, true);
       }
-
       Navigator.of(context).pop();
 
       Navigator.push(
@@ -346,10 +336,8 @@ class TicketsController {
       final userId = getUserId();
       List<dynamic> ticketsData = await _ticketService.getUserTicketFiltered(
         userId,
-        {'status': '5'}, // Filtro para tickets con estado "Resuelto"
+        {'status': '5'},
       );
-
-      // Crear instancias de Ticket usando TicketFactory
       List<Ticket> tickets = ticketsData.map((ticketData) {
         return TicketFactory.createTicket(
           id: ticketData['2'],
@@ -363,11 +351,7 @@ class TicketsController {
           prioridad: ticketData['3'],
         );
       }).toList();
-
-      // Aquí puedes manejar los tickets resueltos según sea necesario
-      // Por ejemplo, actualizar la UI o almacenarlos en una variable
     } catch (e) {
-      // Manejo de errores
       return;
     }
   }
@@ -386,7 +370,6 @@ class TicketsController {
       return;
     }
     try {
-      // Mostrar la pantalla de carga
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -394,41 +377,25 @@ class TicketsController {
           return const LoadingScreen();
         },
       );
-
-      // Obtiene los históricos del ticket.
       List<dynamic> historicos =
           await _ticketService.getTicketFollowup(ticket.id);
-
-      // Procesa cada histórico y obtiene detalles adicionales.
       ticket.historicos = await Future.wait(historicos.map((historico) async {
-        // Obtiene el nombre del usuario que hizo el seguimiento.
         final nombreUsuario =
             await _userService.getUserName(historico['users_id']);
-
-        // Obtiene los detalles del comentario del seguimiento.
         final detalleComentario =
             await _ticketService.getFollowupDetail(historico['id']);
-
-        // Procesa cada detalle del comentario para obtener los documentos asociados.
         List<Map<String, dynamic>> documentos =
             await Future.wait(detalleComentario.map((detalle) async {
-          // Obtiene la información del documento.
           final documento =
               await _ticketService.getDocFollowup(detalle['documents_id']);
-
-          // Obtiene la ruta del archivo del documento.
           final String filePath =
               await _ticketService.getRawDoc(detalle['documents_id']);
-
-          // Retorna un mapa con los detalles del documento.
           return {
             'filename': documento['filename'] ?? '',
             'filepath': filePath,
             'mime': documento['mime'] ?? '',
           };
         }).toList());
-
-        // Retorna un mapa con los detalles del histórico procesado.
         return {
           'id': historico['id'] ?? '',
           'users_id': historico['users_id'] ?? '',
@@ -438,21 +405,14 @@ class TicketsController {
           'documentos': documentos.isNotEmpty ? documentos : null,
         };
       }).toList());
-
-      // Obtiene las soluciones del ticket.
       final sessionToken = await _storage.read(key: _sessionTokenKey);
       if (sessionToken == null) {
         throw Exception("No session token found");
       }
       List<dynamic> soluciones = await _ticketService.getTicketSolution(ticket.id, sessionToken);
-
-      // Procesa cada solución y obtiene detalles adicionales.
       ticket.soluciones = await Future.wait(soluciones.map((solucion) async {
-        // Obtiene el nombre del usuario que hizo la solución.
         final nombreUsuario =
             await _userService.getUserName(solucion['users_id']);
-
-        // Retorna un mapa con los detalles de la solución procesada.
         return {
           'id': solucion['id'] ?? '',
           'users_id': solucion['users_id'] ?? '',
@@ -461,10 +421,7 @@ class TicketsController {
           'nombre_usuario': nombreUsuario,
         };
       }).toList());
-
-      // Ocultar la pantalla de carga
       Navigator.of(context).pop();
-
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -497,7 +454,6 @@ class TicketsController {
       return;
     }
     try {
-      // Mostrar la pantalla de carga
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -505,33 +461,19 @@ class TicketsController {
           return const LoadingScreen();
         },
       );
-
-      // Obtiene los históricos del ticket.
       List<dynamic> historicos =
           await _ticketService.getTicketFollowup(ticket.id);
-
-      // Procesa cada histórico y obtiene detalles adicionales.
       ticket.historicos = await Future.wait(historicos.map((historico) async {
-        // Obtiene el nombre del usuario que hizo el seguimiento.
         final nombreUsuario =
             await _userService.getUserName(historico['users_id']);
-
-        // Obtiene los detalles del comentario del seguimiento.
         final detalleComentario =
             await _ticketService.getFollowupDetail(historico['id']);
-
-        // Procesa cada detalle del comentario para obtener los documentos asociados.
         List<Map<String, dynamic>> documentos =
             await Future.wait(detalleComentario.map((detalle) async {
-          // Obtiene la información del documento.
           final documento =
               await _ticketService.getDocFollowup(detalle['documents_id']);
-
-          // Obtiene la ruta del archivo del documento.
           final String filePath =
               await _ticketService.getRawDoc(detalle['documents_id']);
-
-          // Retorna un mapa con los detalles del documento.
           return {
             'filename': documento['filename'] ?? '',
             'filepath': filePath,
@@ -539,7 +481,6 @@ class TicketsController {
           };
         }).toList());
 
-        // Retorna un mapa con los detalles del histórico procesado.
         return {
           'id': historico['id'] ?? '',
           'users_id': historico['users_id'] ?? '',
@@ -550,20 +491,15 @@ class TicketsController {
         };
       }).toList());
 
-      // Obtiene las soluciones del ticket.
       final sessionToken = await _storage.read(key: _sessionTokenKey);
       if (sessionToken == null) {
         throw Exception("No session token found");
       }
       List<dynamic> soluciones = await _ticketService.getTicketSolution(ticket.id, sessionToken);
 
-      // Procesa cada solución y obtiene detalles adicionales.
       ticket.soluciones = await Future.wait(soluciones.map((solucion) async {
-        // Obtiene el nombre del usuario que hizo la solución.
-        final nombreUsuario =
-            await _userService.getUserName(solucion['users_id']);
+        final nombreUsuario = await _userService.getUserName(solucion['users_id']);
 
-        // Retorna un mapa con los detalles de la solución procesada.
         return {
           'id': solucion['id'] ?? '',
           'users_id': solucion['users_id'] ?? '',
@@ -573,13 +509,8 @@ class TicketsController {
         };
       }).toList());
 
-      // Ocultar la pantalla de carga
       Navigator.of(context).pop();
-
-      // Eliminar la pantalla anterior (TicketDetailScreen)
       Navigator.of(context).pop();
-
-      // Navegar a la nueva pantalla (historicalscreen) y luego a TicketDetailScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -642,8 +573,6 @@ class TicketsController {
       );
 
       List<Map<String, dynamic>> soluciones = await getTicketSolutions(ticket.id);
-
-      // Obtener la solución más reciente
       Map<String, dynamic> solucionReciente = soluciones.reduce((a, b) {
         DateTime fechaA = DateTime.parse(a['date_creation']);
         DateTime fechaB = DateTime.parse(b['date_creation']);
@@ -690,7 +619,7 @@ class TicketsController {
       );
 
       Map<String, dynamic> updateData = {
-        'status': '2', // 
+        'status': '2',
       };
       await _ticketService.updateTicket(ticket.id, updateData);
 
@@ -745,8 +674,6 @@ class TicketsController {
       }
 
       Navigator.of(context).pop();
-
-      // Eliminar la pantalla anterior
       Navigator.of(context).pop();
 
       Navigator.pushReplacement(
@@ -764,6 +691,4 @@ class TicketsController {
       }
     }
   }
-
-
 }

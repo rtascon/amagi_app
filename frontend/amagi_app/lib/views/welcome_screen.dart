@@ -24,12 +24,12 @@ class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Color de fondo
+      backgroundColor: Colors.white,
       body: Center(
         child: Image.asset(
-          'assets/Amagi logo azul_Pequeño.png', // Asegúrate de que la ruta sea correcta
-          width: 200, // Ajusta el ancho de la imagen según sea necesario
-          height: 200, // Ajusta la altura de la imagen según sea necesario
+          'assets/Amagi logo azul_Pequeño.png',
+          width: 200,
+          height: 200,
         ),
       ),
     );

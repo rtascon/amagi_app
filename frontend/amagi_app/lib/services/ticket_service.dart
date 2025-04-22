@@ -10,15 +10,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
+
 class TicketService {
   final String url = Environment.apiUrl;
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
   static final Map<String, String> criteriaBaseTicketAutogestion = {
     'criteria[0][field]':
-        '4', // 5 es el campo para el ID del solicitante (requester)
+        '4',
     'criteria[0][searchtype]': 'equals',
-    'criteria[0][value]': '' //Id de usuario
+    'criteria[0][value]': ''
   };
   static const Map<String, String> forceDisplayTicket = {
     'forcedisplay[0]': '2', // ID del ticket
@@ -51,11 +52,11 @@ class TicketService {
       'criteria[1][link]': 'AND NOT',
       'criteria[1][field]': '12',
       'criteria[1][searchtype]': 'equals',
-      'criteria[1][value]': '6', // criterio excluye los tickets con estado 6 cerrados
+      'criteria[1][value]': '6',
       'criteria[2][link]': 'AND NOT',
       'criteria[2][field]': '12',
       'criteria[2][searchtype]': 'equals',
-      'criteria[2][value]': '5', //criterio excluye los tickets con estado 5 resueltos
+      'criteria[2][value]': '5',
     };
     final params = {
       ...criteriaBaseTicketAutogestion,
@@ -97,10 +98,8 @@ class TicketService {
       'Content-Type': 'application/json',
     };
     criteriaBaseTicketAutogestion['criteria[0][value]'] = userId.toString();
-    // Base criteria
     Map<String, String> criteria = criteriaBaseTicketAutogestion;
 
-    // Add additional filters
     int criteriaIndex = 1;
     if (filters['ticketId'] != null) {
       criteria['criteria[$criteriaIndex][link]'] = 'AND';
@@ -147,7 +146,7 @@ class TicketService {
       final response = await http
           .get(ticketsUrl.replace(queryParameters: params), headers: headers)
           .timeout(const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+              seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
@@ -280,7 +279,7 @@ class TicketService {
     try {
       final response = await http.get(documentoUrl, headers: headers).timeout(
           const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+              seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -318,7 +317,7 @@ class TicketService {
     try {
       final response = await http.get(documentoUrl, headers: headers).timeout(
           const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+              seconds: 15));
 
       if (response.statusCode == 200) {
         final directory = await getTemporaryDirectory();
@@ -356,7 +355,7 @@ class TicketService {
     try {
       final response = await http.get(comentarioUrl, headers: headers).timeout(
           const Duration(
-              seconds: 15)); // Configurar el tiempo de espera a 15 segundos
+              seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -501,7 +500,7 @@ class TicketService {
         "items_id": ticketId,
         "itemtype": "Ticket",
         "content": descripcion,
-        "is_private": false // Asegura que el comentario sea público
+        "is_private": false
       }
     });
 
@@ -545,7 +544,7 @@ class TicketService {
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else if (response.statusCode == 404) {
-        return []; // No hay solución para este ticket
+        return [];
       } else {
         throw Exception("Error al obtener la solución del ticket: ${response.body}");
       }

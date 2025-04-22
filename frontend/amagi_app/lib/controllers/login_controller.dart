@@ -47,17 +47,13 @@ class LoginController {
       final success = await _authService.login(formattedUsername, password);
  
       if (success) {
-        // Guardar el estado de inicio de sesión
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
         await prefs.setString('username', formattedUsername);
         String? sessionToken = await _storage.read(key: 'session_token'); 
         await prefs.setString('sessionToken', sessionToken ?? '');
 
-//Cambia al perfil: Autogestión_App
-Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
-
-        // Cambia al perfil: Autogestión_App
+        Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
         var myProfilesList = myProfiles['myprofiles'];
         if (myProfilesList != null && myProfilesList is List) {
           var myProfile = myProfilesList.firstWhere(
@@ -77,8 +73,6 @@ Map<String, dynamic> myProfiles = await _glpiGeneralService.getMyProfiles();
         }
 
         Map<String, dynamic> myEntities = await _glpiGeneralService.getMyEntities();
-
-        // Cambia a la entidad raíz: GIA
         var myEntitiesList = myEntities['myentities'];
         if (myEntitiesList != null && myEntitiesList is List) {
           var myEntity = myEntitiesList.firstWhere(

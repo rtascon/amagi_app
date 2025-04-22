@@ -22,7 +22,7 @@ class LoadingScreenState extends State<LoadingScreen>
     super.initState();
     _controller = AnimationController(
       duration: const Duration(
-          milliseconds: 400), // Duración de la animación de escala
+          milliseconds: 400),
       vsync: this,
     );
     _scaleAnimation =
@@ -37,7 +37,6 @@ class LoadingScreenState extends State<LoadingScreen>
   void _startAnimation() {
     _controller.forward().then((_) {
       _timer = Timer(const Duration(milliseconds: 320), () {
-        // Ajustar el tiempo de espera
         _controller.reverse().then((_) {
           _timer = Timer(const Duration(milliseconds: 320), () {
             _startAnimation();
@@ -81,11 +80,11 @@ class LoadingScreenState extends State<LoadingScreen>
           Positioned(
             top: MediaQuery.of(context).size.height / 2 -
                 50 -
-                20, // Ajuste para que el círculo esté en la esquina superior derecha de la imagen
+                20,
             left: MediaQuery.of(context).size.width / 2 +
-                25, // Ajuste para que el círculo esté en la esquina superior derecha de la imagen
+                25,
             child: const CircleAvatar(
-              radius: 6, // Tamaño más pequeño del círculo
+              radius: 6,
               backgroundColor: Color(0xFFE98300),
             ),
           ),

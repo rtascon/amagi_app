@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import '../controllers/tickets_controller.dart';
 import '../models/ticket.dart';
 
+/// Esta vista permite a los usuarios ver la solución de un ticket específico y decidir si lo aprueban o lo rechazan.
+/// La vista muestra la fecha y hora de creación de la solución, el nombre del usuario que la creó y el contenido de la solución.
 class SolucionScreen extends StatefulWidget {
   final Ticket ticket;
   final Map<String, dynamic> solucion;
@@ -20,7 +22,6 @@ class SolucionScreenState extends State<SolucionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Obtener la fecha y hora formateada
     final fecha = widget.solucion['date_creation'] ?? '';
     final formattedFecha = DateFormat('dd-MM-yy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
     final usuarioNombre = widget.solucion['nombre_usuario'] ?? '';
@@ -50,7 +51,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                 ),
                 const Icon(Icons.access_time, size: 16, color: Colors.black),
                 const SizedBox(width: 5),
-                Text(formattedFecha), // Usar la fecha formateada
+                Text(formattedFecha),
               ],
             ),
             const SizedBox(height: 5),
@@ -86,7 +87,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: Scrollbar(
-                  thumbVisibility: true, // Mostrar la barra de desplazamiento
+                  thumbVisibility: true,
                   child: SingleChildScrollView(
                     child: Text(
                       widget.solucion['content'],
@@ -96,7 +97,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 16), // Espacio entre el texto y los botones
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -111,7 +112,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Color verde para el botón de aprobar
+                    backgroundColor: Colors.green, 
                   ),
                   child: _isLoadingAprobar
                       ? const CircularProgressIndicator(
@@ -119,7 +120,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                         )
                       : const Row(
                           children: [
-                            Icon(Icons.check, color: Colors.white), // Icono de check
+                            Icon(Icons.check, color: Colors.white),
                             SizedBox(width: 5),
                             Text(
                               'Aprobar',
@@ -139,7 +140,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Color rojo para el botón de rechazar
+                    backgroundColor: Colors.red, 
                   ),
                   child: _isLoadingRechazar
                       ? const CircularProgressIndicator(
@@ -147,7 +148,7 @@ class SolucionScreenState extends State<SolucionScreen> {
                         )
                       : const Row(
                           children: [
-                            Icon(Icons.close, color: Colors.white), // Icono acorde
+                            Icon(Icons.close, color: Colors.white), 
                             SizedBox(width: 5),
                             Text(
                               'Rechazar',

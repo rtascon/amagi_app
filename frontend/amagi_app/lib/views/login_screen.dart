@@ -16,8 +16,7 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _loginController = LoginController();
-  bool _obscureText =
-      true; // Estado para controlar la visibilidad de la contraseña
+  bool _obscureText = true;
 
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
@@ -36,28 +35,28 @@ class LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF005586),
       body: SafeArea(
-        child: Center( // Centrar el contenedor principal
+        child: Center(
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisSize: MainAxisSize.min, // Permitir que se expanda según el espacio disponible
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(height: 20), // Espacio superior
+                  const SizedBox(height: 20),
                   Form(
                     key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
-                          width: 150, // Ajusta el ancho de la imagen
-                          height: 150, // Ajusta la altura de la imagen
+                          width: 150,
+                          height: 150,
                           child: Image.asset(
-                              'assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png'), // Asegúrate de que la ruta sea correcta
+                              'assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png'),
                         ),
                         const SizedBox(
                             height:
-                                50), // Reduce el espacio entre la imagen y el cuadro
+                                50),
                         Container(
                           padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
@@ -68,19 +67,18 @@ class LoginScreenState extends State<LoginScreen> {
                             children: [
                               SizedBox(
                                 width: MediaQuery.of(context).size.width *
-                                    0.8, // Reduce el ancho
+                                    0.8,
                                 child: TextFormField(
                                   controller: _usernameController,
                                   focusNode: _usernameFocusNode,
                                   style: const TextStyle(
-                                      color: Colors.black), // Color del texto
+                                      color: Colors.black),
                                   decoration: InputDecoration(
                                     filled: true,
-                                    fillColor: Colors
-                                        .white, // Color de fondo del campo de texto
+                                    fillColor: Colors.white,
                                     labelText: 'Usuario',
                                     labelStyle: const TextStyle(
-                                        color: Colors.black), // Color del label
+                                        color: Colors.black),
                                     prefixIcon: Padding(
                                       padding: const EdgeInsets.only(right: 8.0),
                                       child: Icon(
@@ -89,11 +87,11 @@ class LoginScreenState extends State<LoginScreen> {
                                         size:
                                             _usernameFocusNode.hasFocus ? 20 : 24,
                                       ),
-                                    ), // Icono de usuario
+                                    ),
                                     contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 15), // Ajusta el padding
+                                        vertical: 15),
                                     border:
-                                        const UnderlineInputBorder(), // Línea debajo del campo
+                                        const UnderlineInputBorder(),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -109,19 +107,19 @@ class LoginScreenState extends State<LoginScreen> {
                               const SizedBox(height: 20),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width *
-                                    0.8, // Reduce el ancho
+                                    0.8,
                                 child: TextFormField(
                                   controller: _passwordController,
                                   focusNode: _passwordFocusNode,
                                   style: const TextStyle(
-                                      color: Colors.black), // Color del texto
+                                      color: Colors.black),
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors
-                                        .white, // Color de fondo del campo de texto
+                                        .white,
                                     labelText: 'Contraseña',
                                     labelStyle: const TextStyle(
-                                        color: Colors.black), // Color del label
+                                        color: Colors.black),
                                     prefixIcon: Padding(
                                       padding: const EdgeInsets.only(right: 8.0),
                                       child: Icon(
@@ -130,11 +128,11 @@ class LoginScreenState extends State<LoginScreen> {
                                         size:
                                             _passwordFocusNode.hasFocus ? 20 : 24,
                                       ),
-                                    ), // Icono de llave
+                                    ),
                                     contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 15), // Ajusta el padding
+                                        vertical: 15),
                                     border:
-                                        const UnderlineInputBorder(), // Línea debajo del campo
+                                        const UnderlineInputBorder(),
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _obscureText
@@ -173,17 +171,17 @@ class LoginScreenState extends State<LoginScreen> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                      const Color(0xFFE98300), // Color del botón
+                                      const Color(0xFFE98300),
                                   foregroundColor:
-                                      Colors.white, // Color del texto
+                                      Colors.white,
                                   minimumSize: Size(
                                       MediaQuery.of(context).size.width * 0.5,
-                                      40), // Ajusta el ancho del botón
+                                      40),
                                 ),
                                 child: const Text('Iniciar sesión'),
                               ),
                               const SizedBox(
-                                  height: 5), // Espacio entre los botones
+                                  height: 5),
                               ElevatedButton(
                                 onPressed: () {
                                   _loginController
@@ -191,12 +189,12 @@ class LoginScreenState extends State<LoginScreen> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                      const Color(0xFF747678), // Color del botón
+                                      const Color(0xFF747678),
                                   foregroundColor:
-                                      Colors.white, // Color del texto
+                                      Colors.white,
                                   minimumSize: Size(
                                       MediaQuery.of(context).size.width * 0.2,
-                                      30), // Ajusta el ancho del botón
+                                      30),
                                 ),
                                 child: const Text('Registrarse'),
                               ),
@@ -206,7 +204,7 @@ class LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20), // Espacio inferior
+                  const SizedBox(height: 20),
                   Column(
                     children: [
                       const SizedBox(
@@ -219,9 +217,9 @@ class LoginScreenState extends State<LoginScreen> {
                         height: 100,
                       ),
                       const SizedBox(
-                          height: 10), // Espacio inferior para el texto
+                          height: 10),
                       const Text(
-                        'V 1.0.0',
+                        'V 1.0.1',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],

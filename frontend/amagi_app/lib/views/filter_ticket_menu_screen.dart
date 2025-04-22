@@ -6,7 +6,8 @@ import '../widgets/table_calendar.dart';
 import '../models/ticket.dart'; 
 import '../controllers/filter_ticket_menu_controller.dart';
 
-/// Vista para filtrar tickets según criterios como ID, tipo, estado y rango de fechas.
+/// Este archivo contiene la pantalla de menú de filtro de tickets, que permite a los usuarios filtrar tickets
+/// según diferentes criterios, como ID de ticket, tipo, estado y rango de fechas.
 
 class FilterTicketMenu extends StatefulWidget {
   final Function(Map<String, dynamic>) onFilterChanged;
@@ -96,7 +97,7 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
       _selectedDateRange = start != null ? DateTimeRange(start: start, end: end ?? start) : null;
       if (_selectedDateRange != null) {
         final formattedRange = _formatDateRange(_selectedDateRange!.start, _selectedDateRange!.end);
-        print('Rango formateado: $formattedRange'); // Opcional: para depuración
+        print('Rango formateado: $formattedRange');
       }
     });
   }

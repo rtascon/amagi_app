@@ -159,7 +159,7 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                       contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
                     ),
                     maxLines: 5,
-                    maxLength: 2000, // Límite de 2000 caracteres
+                    maxLength: 2000,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingrese una descripción';

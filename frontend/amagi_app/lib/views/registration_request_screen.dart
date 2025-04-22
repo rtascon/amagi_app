@@ -119,7 +119,7 @@ Future<bool> _onWillPop() async {
                       child: _buildTextField(
                         controller: _nombreController,
                         label: 'Nombre',
-                        icon: Icons.person, // Icono para Nombre
+                        icon: Icons.person,
                         validator: (value) {
                           value = value?.trim();
                           if (value == null ||
@@ -137,7 +137,7 @@ Future<bool> _onWillPop() async {
                       child: _buildTextField(
                         controller: _apellidoController,
                         label: 'Apellido',
-                        icon: Icons.person, // Icono para Apellido
+                        icon: Icons.person,
                         validator: (value) {
                           value = value?.trim();
                           if (value == null ||
@@ -171,7 +171,7 @@ Future<bool> _onWillPop() async {
                 _buildTextField(
                   controller: _correoController,
                   label: 'Correo Electrónico',
-                  icon: Icons.mail, // Icono para Correo Electrónico
+                  icon: Icons.mail,
                   validator: (value) {
                     value = value?.trim();
                     if (value == null ||
@@ -188,7 +188,7 @@ Future<bool> _onWillPop() async {
                 _buildTextField(
                   controller: _confirmCorreoController,
                   label: 'Confirmación de Correo Electrónico',
-                  icon: Icons.mail, // Icono para Confirmación de Correo Electrónico
+                  icon: Icons.mail,
                   validator: (value) {
                     value = value?.trim();
                     if (value == null ||
@@ -206,7 +206,7 @@ Future<bool> _onWillPop() async {
                       child: _buildTextField(
                         controller: _telefonoController,
                         label: 'Teléfono',
-                        icon: Icons.phone_android, // Icono para Teléfono
+                        icon: Icons.phone_android,
                         validator: (value) {
                           value = value?.trim();
                           if (value == null ||
@@ -223,7 +223,7 @@ Future<bool> _onWillPop() async {
                       child: _buildTextField(
                         controller: _cedulaController,
                         label: 'Cédula',
-                        icon: Icons.badge, // Icono para Cédula
+                        icon: Icons.badge,
                         validator: (value) {
                           value = value?.trim();
                           if (value == null ||
@@ -244,8 +244,8 @@ Future<bool> _onWillPop() async {
                   controller: _sliderController,
                   title: 'Deslice para confirmar que no es un robot',
                   image: SizedBox(
-                    width: 400, // Ajusta el ancho según tus necesidades
-                    height: 180, // Ajusta la altura según tus necesidades
+                    width: 400,
+                    height: 180,
                     child: Image.asset(
                       'assets/captcha_image.png',
                       fit: BoxFit.fitWidth,

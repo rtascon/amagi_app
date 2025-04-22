@@ -54,16 +54,15 @@ class RegistrationRequestController {
       if (success) {
         final Map<String, dynamic> ticketData = {
           "_users_id_requester": _user.getIdUsuario,
-          //"entities_id": 0,
           'name': 'Solicitud de registro: $empresa - $nombre $apellido',
           'content': '''
-Nombre: $nombre
-Apellido: $apellido
-Empresa: $empresa
-Correo Electrónico: $correo
-Número de Teléfono: $telefono
-Cédula: $cedula
-''',
+          Nombre: $nombre
+          Apellido: $apellido
+          Empresa: $empresa
+          Correo Electrónico: $correo
+          Número de Teléfono: $telefono
+          Cédula: $cedula
+          ''',
         };
         ticketData['entities_id'] = await _getEntityId();
         // Envía la solicitud de registro.
@@ -172,7 +171,7 @@ Cédula: $cedula
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pop(); // Regresa a la vista de login
+                Navigator.of(context).pop();
               },
               child: Text('Aceptar',style: TextStyle(color: Theme.of(context).primaryColor),),
             ),

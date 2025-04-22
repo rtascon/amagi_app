@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:connectivity_plus/connectivity_plus.dart'; // Importar el paquete de conectividad
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../views/common_pop_ups.dart';
 import '../services/ticket_service.dart';
 import 'tickets_controller.dart';
@@ -39,29 +39,18 @@ class CreateHistoricalController {
         return;
       }
 
-      // Añade un seguimiento al ticket.
       int followupId =
-          await _ticketService.addFollowupToTicket(ticketId, descripcion);
-      // Sube los archivos seleccionados.
+      await _ticketService.addFollowupToTicket(ticketId, descripcion);
       await _ticketService.uploadFiles(selectedFiles, followupId);
-
-      // Muestra un mensaje de éxito.
       scaffoldMessenger.showSnackBar(
         const SnackBar(content: Text('Histórico enviado con éxito')),
       );
       
-
-      // Navega a la pantalla de detalles del ticket actualizada.
       final TicketsController ticketsController = TicketsController();
       if (context.mounted) {
         await ticketsController.navigateEnviadoToTicketDetailScreen(context, ticket);
       }
-
-
-
-
     } catch (e) {
-      // Muestra un mensaje de error.
       scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Error al enviar el histórico: $e')),
       );
@@ -76,7 +65,6 @@ class CreateHistoricalController {
     final XFile? image =
         await _imagePicker.pickImage(source: ImageSource.camera);
     if (image != null) {
-      // Convierte XFile a PlatformFile.
       PlatformFile platformFile = PlatformFile(
         name: image.name,
         size: await image.length(),

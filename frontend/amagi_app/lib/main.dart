@@ -47,26 +47,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'GIA App',
-      debugShowCheckedModeBanner: false, // Quitar la cinta de debug
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: createMaterialColor(const Color(0xFF000000)),
         primaryColor: const Color(0xFF000000), 
-        textTheme: GoogleFonts.notoSansTextTheme(), // Usa la tipografía Noto Sans
+        textTheme: GoogleFonts.notoSansTextTheme(),
         textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: Color(0xFF005586), // Cambia el color del cursor
-          selectionColor: Color(0xFF009FDA), // Cambia el color de la selección
+          cursorColor: Color(0xFF005586),
+          selectionColor: Color(0xFF009FDA),
           selectionHandleColor:
-              Color(0xFF747678), // Cambia el color del handle de selección
+              Color(0xFF747678),
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
-          fillColor: Colors.white, // Color de fondo del campo de texto
-          labelStyle: TextStyle(color: Colors.black), // Color del label
-          border: UnderlineInputBorder(), // Línea debajo del campo
+          fillColor: Colors.white,
+          labelStyle: TextStyle(color: Colors.black),
+          border: UnderlineInputBorder(),
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
                 color: Color(
-                    0xFF005586)), // Color de la línea cuando está enfocado
+                    0xFF005586)),
           ),
         ),
       ),
@@ -81,7 +81,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Crea un MaterialColor a partir de un Color dado.
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
   Map<int, Color> swatch = {};
