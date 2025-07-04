@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
+import 'mime_extension.dart';
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
 
@@ -278,14 +279,18 @@ class TicketService {
 
     try {
       final response = await http.get(documentoUrl, headers: headers).timeout(
-          const Duration(
-              seconds: 15));
+          const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        // Extraer el tipo MIME del header
+        final mimeType = response.headers['content-type'] ?? 'application/octet-stream';
+        final ext = extensionFromMime(mimeType) ?? 'bin';
+        final data = jsonDecode(response.body);
+        data['mimeType'] = mimeType;
+        data['extension'] = ext;
+        return data;
       } else {
-        throw Exception(
-            "Error al obtener documento del ticket: ${response.body}");
+        throw Exception("Error al obtener documento del ticket: ${response.body}");
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
@@ -316,18 +321,18 @@ class TicketService {
 
     try {
       final response = await http.get(documentoUrl, headers: headers).timeout(
-          const Duration(
-              seconds: 15));
+          const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
+        final mimeType = response.headers['content-type'] ?? 'application/octet-stream';
+        final ext = extensionFromMime(mimeType) ?? 'bin';
         final directory = await getTemporaryDirectory();
-        final filePath = '${directory.path}/document_$docId';
+        final filePath = '${directory.path}/document_${docId}.$ext';
         final file = File(filePath);
         await file.writeAsBytes(response.bodyBytes);
         return filePath;
       } else {
-        throw Exception(
-            "Error al obtener documento del ticket: ${response.body}");
+        throw Exception("Error al obtener documento del ticket: ${response.body}");
       }
     } on TimeoutException catch (e) {
       throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");

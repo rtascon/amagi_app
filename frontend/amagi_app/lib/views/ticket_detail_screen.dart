@@ -257,7 +257,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                               onPressed: () async {
                                                 await _ticketDetailController.downloadFile(context, filePath, documento['filename']);
                                               },
-                                              icon: const Icon(Icons.download, color: Colors.black),
+                                              icon: const Icon(Icons.file_open_outlined, color: Colors.black),
                                             ),
                                           ],
                                         ),
@@ -315,7 +315,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                                 await _ticketDetailController.downloadFile(context, filePath, documento['filename']);
                                                 OpenFile.open(filePath);
                                               },
-                                              child: Text('Descargar',style: TextStyle(color: defaultTextButtonColor)),
+                                              child: const Icon(Icons.file_open_outlined, color: Colors.black),
                                             ),
                                           ],
                                         ),

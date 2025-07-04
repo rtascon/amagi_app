@@ -66,7 +66,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           ),
                         ),
                         TextSpan(
-                          text: 'Versión 1.0.0\n\n',
+                          text: 'Versión 1.1.0\n\n',
                           style: TextStyle(
                             fontSize: 15.0,
                             color: Color(0xFF005586),
