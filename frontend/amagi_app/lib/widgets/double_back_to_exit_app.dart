@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:double_tap_to_exit/double_tap_to_exit.dart';
+import '../controllers/side_menu_controller.dart';
 
 /// Widget que permite salir de la aplicación al hacer doble tap
 /// en la pantalla, mostrando un mensaje de confirmación.
@@ -23,10 +23,21 @@ class DoubleBackToExitAppState extends State<DoubleBackToExitApp> {
 
   @override
   Widget build(BuildContext context) {
-    return DoubleTapToExit(
-      snackBar: SnackBar(
-        content: Text(widget.exitMessage),
-      ),
+    return WillPopScope(
+      onWillPop: () async {
+        final now = DateTime.now();
+        if (_lastPressedAt == null ||
+            now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+          _lastPressedAt = now;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(widget.exitMessage)),
+          );
+          return false;
+        }
+        // Cierra sesión antes de salir
+        SideMenuController().logOut(context);
+        return false;
+      },
       child: widget.child,
     );
   }

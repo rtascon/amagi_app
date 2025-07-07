@@ -92,6 +92,13 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
     });
   }
 
+  /// Abrevia el nombre si tiene más de 25 caracteres, usando las iniciales de cada palabra.
+  String abbreviateName(String name) {
+    if (name.length <= 25) return name;
+    final words = name.split(' ');
+    return words.map((w) => w.isNotEmpty ? w[0] : '').join();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -128,10 +135,10 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        snapshot.data?['glpifriendlyname'] ?? '',
+                                        abbreviateName(snapshot.data?['glpifriendlyname'] ?? ''),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 18,
+                                          fontSize: 17,
                                         ),
                                       ),
                                       Row(

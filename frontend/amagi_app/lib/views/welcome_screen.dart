@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controllers/welcome_controller.dart'; // Importar el controlador
+import '../controllers/welcome_controller.dart';
 
 /// Esta vista muestra una pantalla de bienvenida mientras se verifica el estado de inicio de sesión
 /// del usuario. Si el usuario está logueado, se redirige al menú principal; de lo contrario, se redirige a la pantalla de inicio de sesión.

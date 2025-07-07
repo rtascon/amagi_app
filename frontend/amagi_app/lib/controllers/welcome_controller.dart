@@ -46,9 +46,7 @@ class WelcomeController {
         await prefs.clear();
         if (e is TimeoutException) {
           showTimeoutMessage(context);
-        } else {
-          _showErrorMessage(context);
-        }
+        } 
       }
     }
 

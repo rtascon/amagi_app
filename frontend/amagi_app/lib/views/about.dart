@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../views/main_menu_screen.dart';
 
 /// Pantalla de "Acerca de" que muestra información sobre la aplicación y sus características.
@@ -12,6 +13,7 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStateMixin {
+  String _version = '';
 
   Future<bool> _onWillPop(BuildContext context) async {
     Navigator.pushAndRemoveUntil(
@@ -20,6 +22,19 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
       (route) => false,
     );
     return false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = info.version;
+    });
   }
 
   @override
@@ -54,10 +69,10 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: const Text.rich(
+                  child: Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(
+                        const TextSpan(
                           text: 'GIA App  ',
                           style: TextStyle(
                             fontSize: 22.0,
@@ -66,13 +81,13 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           ),
                         ),
                         TextSpan(
-                          text: 'Versión 1.1.0\n\n',
-                          style: TextStyle(
+                          text: 'Versión ${_version.isNotEmpty ? _version : "..."}\n\n',
+                          style: const TextStyle(
                             fontSize: 15.0,
                             color: Color(0xFF005586),
                           ),
                         ),
-                        TextSpan(
+                        const TextSpan(
                           text: 'Aplicación de autogestión para usuarios del servicio GIA de Amagi Group.\n\n'
                               '✨ Características clave\n\n'
                               '📝 Creación de tickets.\n'

@@ -27,18 +27,24 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
   bool _isLoading = false;
 
   Future<void> _pickFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
-      allowMultiple: true,
-    );
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
+        allowMultiple: true,
+      );
 
-    if (result != null) {
-      setState(() {
-        _selectedFiles.addAll(
-          result.files.where((file) => file.size <= 10 * 1024 * 1024).toList(),
-        );
-      });
+      if (result != null) {
+        setState(() {
+          _selectedFiles.addAll(
+            result.files.where((file) => file.size <= 10 * 1024 * 1024).toList(),
+          );
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo acceder a los archivos. Verifica los permisos de almacenamiento.')),
+      );
     }
   }
 
