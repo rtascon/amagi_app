@@ -93,9 +93,10 @@ class LoginController {
         if (!context.mounted) return;
         Navigator.of(context).pop();
         if (!context.mounted) return;
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+          (Route<dynamic> route) => false,
         );
       } else {
         if (!context.mounted) return;
