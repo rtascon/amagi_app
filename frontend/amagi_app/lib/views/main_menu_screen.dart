@@ -5,9 +5,9 @@ import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
 import '../controllers/main_menu_controller.dart';
 import '../views/side_menu.dart';
-import 'package:flutter/cupertino.dart';
 import '../services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 /// Esta vista representa el menú principal de la aplicación, desde donde los usuarios
 /// pueden navegar a diferentes secciones, como la creación y consulta de tickets.
@@ -44,7 +44,8 @@ class MainMenuScreenState extends State<MainMenuScreen> {
     return WillPopScope(
       onWillPop: () async {
         final now = DateTime.now();
-        if (_lastPressedAt == null || now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+        if (_lastPressedAt == null ||
+            now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
           _lastPressedAt = now;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -92,18 +93,18 @@ class MainMenuScreenState extends State<MainMenuScreen> {
             child: Center(
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Container(
-                  width: 300, 
-                  height: 400,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   child: Stack(
                     children: [
                       Positioned(
                         top: 0,
                         left: 10,
-                        height: 200,
+                        height: MediaQuery.of(context).size.height * 0.25,
                         child: _buildMenuButton(
                           context,
-                          icon: CupertinoIcons.doc_text_search,
+                          icon: Symbols.document_search,
                           label: 'Consulta de Tickets',
                           onPressed: () async {
                             await _saveSelectedOption('Consulta de Tickets');
@@ -114,28 +115,31 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                       Positioned(
                         top: 0,
                         right: 10,
-                        height: 200,
+                        height: MediaQuery.of(context).size.height * 0.25,
                         child: _buildMenuButton(
                           context,
-                          icon: CupertinoIcons.doc_append,
+                          icon: Symbols.note_add,
                           label: 'Crear Ticket',
                           onPressed: () async {
                             await _saveSelectedOption('Crear Ticket');
-                            _mainMenuController.navigateToCreateTicketScreen(context);
+                            _mainMenuController
+                                .navigateToCreateTicketScreen(context);
                           },
                         ),
                       ),
                       Positioned(
                         bottom: 0,
                         left: 10,
-                        height: 200,
+                        height: MediaQuery.of(context).size.height * 0.25,
                         child: _buildMenuButton(
                           context,
-                          icon: CupertinoIcons.doc_checkmark,
+                          icon: Symbols.unknown_document,
                           label: 'Tickets Resueltos',
                           onPressed: () async {
                             await _saveSelectedOption('Tickets Resueltos');
-                            _ticketsController.navigateToTicketsResolvedScreen(context, filters: {'status': 5});
+                            _ticketsController.navigateToTicketsResolvedScreen(
+                                context,
+                                filters: {'status': 5});
                           },
                         ),
                       ),
@@ -150,21 +154,25 @@ class MainMenuScreenState extends State<MainMenuScreen> {
     );
   }
 
-  Widget _buildMenuButton(BuildContext context, {required IconData icon, required String label, required VoidCallback onPressed}) {
+  Widget _buildMenuButton(BuildContext context,
+      {required IconData icon,
+      required String label,
+      required VoidCallback onPressed}) {
     return Column(
       children: [
         SizedBox(
-          width: 112, 
-          height: 112,
+          width: MediaQuery.of(context).size.width * 0.3,
+          height: MediaQuery.of(context).size.width * 0.3,
           child: FloatingActionButton(
             onPressed: onPressed,
             backgroundColor: Colors.white,
-            child: Icon(icon, color: Colors.blueGrey, size: 48),
+            child: Icon(icon,
+                color: Colors.blueGrey, size: 64), // aumentado de 56 a 64
           ),
         ),
         const SizedBox(height: 8),
         SizedBox(
-          width: 112,
+          width: MediaQuery.of(context).size.width * 0.3,
           child: Text(
             label,
             style: const TextStyle(

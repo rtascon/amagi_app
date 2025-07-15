@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gia_app/views/about.dart';
 import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 /// Esta vista representa el menú lateral de la aplicación, que permite a los usuarios
 /// navegar a diferentes secciones de la aplicación, como la creación y consulta de tickets.
@@ -25,7 +25,8 @@ class SideMenu extends StatefulWidget {
   _SideMenuState createState() => _SideMenuState();
 }
 
-class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin {
+class _SideMenuState extends State<SideMenu>
+    with SingleTickerProviderStateMixin {
   late ValueNotifier<String> selectedOptionMenu;
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
@@ -101,299 +102,412 @@ class _SideMenuState extends State<SideMenu> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+    // Definir tamaños relativos
+    final horizontalPadding = screenWidth * 0.04;
+    final verticalPadding = screenHeight * 0.02;
+    final avatarSize = screenWidth * 0.18;
+    final logoWidth = screenWidth * 0.38;
+    final logoHeight = isPortrait ? screenHeight * 0.13 : screenHeight * 0.20;
+
     return WillPopScope(
       onWillPop: () async => true,
       child: Drawer(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.75,
+          width: screenWidth * 0.75,
           color: Colors.white,
-          child: Column(
-            children: <Widget>[
-              const SizedBox(height: 50),
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Usar LayoutBuilder para media queries adicionales
+              final isSmallScreen = constraints.maxWidth < 400;
+              final fontSizeTitle = isSmallScreen ? 15.0 : 17.0;
+              final fontSize = isSmallScreen ? 13.0 : 16.0;
+              final iconSize = isSmallScreen ? 24.0 : 26.0;
+              final iconColor = const Color(0xFF005586);
+
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: screenHeight * 0.06),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
+                      vertical: verticalPadding,
+                    ),
+                    child: Column(
                       children: [
-                        Image.asset(
-                          'assets/Solo la a (1).png',
-                          width: 80,
-                          height: 80,
-                        ),
-                        const SizedBox(width: 8),
-                        Column(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            FutureBuilder<Map<String, dynamic>>(
-                              future: _getUserProfileFromPrefs(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        abbreviateName(snapshot.data?['glpifriendlyname'] ?? ''),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.person_outline, color: Color(0xFF005586), size: 20),
-                                          const SizedBox(width: 2),
-                                          Text(
-                                            snapshot.data?['glpiname'] ?? '',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Color(0xFF005586),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.badge_outlined, color: Color(0xFF005586), size: 20),
-                                          const SizedBox(width: 2),
-                                          Text(
-                                            snapshot.data?['glpiactiveprofile']?.replaceAll('_', ' ') ?? '',
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF005586),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.work_outline, color: Color(0xFF005586), size: 20),
-                                          const SizedBox(width: 2),
-                                          Text(
-                                            snapshot.data?['glpiactive_entity_name']?.substring(0, 3) ?? '',
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF005586),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                }
-                              },
+                            Image.asset(
+                              'assets/Solo la a (1).png',
+                              width: avatarSize,
+                              height: avatarSize,
                             ),
-                          ],
-                        ),
-                        const Spacer(),
+                            SizedBox(width: screenWidth * 0.02),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                FutureBuilder<Map<String, dynamic>>(
+                                  future: _getUserProfileFromPrefs(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            abbreviateName(snapshot.data?[
+                                                    'glpifriendlyname'] ??
+                                                ''),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: fontSizeTitle,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.person_outline,
+                                                  color: iconColor,
+                                                  size: iconSize),
+                                              SizedBox(width: 2),
+                                              Text(
+                                                snapshot.data?['glpiname'] ??
+                                                    '',
+                                                style: TextStyle(
+                                                  fontSize: fontSize,
+                                                  color: iconColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.badge_outlined,
+                                                  color: iconColor,
+                                                  size: iconSize),
+                                              SizedBox(width: 2),
+                                              Text(
+                                                snapshot.data?[
+                                                            'glpiactiveprofile']
+                                                        ?.replaceAll(
+                                                            '_', ' ') ??
+                                                    '',
+                                                style: TextStyle(
+                                                  fontSize: fontSize - 2,
+                                                  color: iconColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.work_outline,
+                                                  color: iconColor,
+                                                  size: iconSize),
+                                              SizedBox(width: 2),
+                                              Text(
+                                                snapshot.data?[
+                                                            'glpiactive_entity_name']
+                                                        ?.substring(0, 3) ??
+                                                    '',
+                                                style: TextStyle(
+                                                  fontSize: fontSize - 2,
+                                                  color: iconColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                            Spacer(),
 /*
-                        IconButton(
-                          icon: Icon(Icons.settings),
-                          onPressed: () {
-                            // Handle settings button tap
-                          },
-                        ),
-                        */
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.home_outlined, color: Colors.black),
-                        const SizedBox(width: 8),
-                        ValueListenableBuilder<String>(
-                          valueListenable: selectedOptionMenu,
-                          builder: (context, value, child) {
-                            return TextButton(
-                              onPressed: () async {
-                                selectedOptionMenu.value = 'Inicio';
-                                await _saveSelectedOptionMenu('Inicio');
-                                widget.sideMenuController.navigateToMainMenuScreen(context);
+                            IconButton(
+                              icon: Icon(Icons.settings),
+                              onPressed: () {
+                                // Handle settings button tap
                               },
-                              child: Text(
-                                'Inicio',
-                                style: TextStyle(
-                                  color: value == 'Inicio' ? Color(0xFF005586) : Colors.black,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Icon(CupertinoIcons.doc_text_search, color: Colors.black),
-                        const SizedBox(width: 8),
-                        ValueListenableBuilder<String>(
-                          valueListenable: selectedOptionMenu,
-                          builder: (context, value, child) {
-                            return TextButton(
-                              onPressed: () async {
-                                selectedOptionMenu.value = 'Consulta de Tickets';
-                                await _saveSelectedOptionMenu('Consulta de Tickets');
-                                widget.ticketsController.navigateToTicketsScreen(context);
-                              },
-                              child: Text(
-                                'Consulta de Tickets',
-                                style: TextStyle(
-                                  color: value == 'Consulta de Tickets' ? Color(0xFF005586) : Colors.black,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Stack(
-                          children: [
-                            Icon(CupertinoIcons.doc_richtext, color: Colors.black, size: 24),
+                            ),
+                            */
                           ],
                         ),
-                        const SizedBox(width: 8),
-                        ValueListenableBuilder<String>(
-                          valueListenable: selectedOptionMenu,
-                          builder: (context, value, child) {
-                            return TextButton(
-                              onPressed: () async {
-                                selectedOptionMenu.value = 'Crear Ticket';
-                                await _saveSelectedOptionMenu('Crear Ticket');
-                                widget.sideMenuController.navigateToCreateTicketScreen(context);
-                              },
-                              child: Text(
-                                'Crear Ticket',
-                                style: TextStyle(
-                                  color: value == 'Crear Ticket' ? Color(0xFF005586) : Colors.black,
-                                  fontSize: 16,
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: verticalPadding * 0.5),
+                          child: Divider(
+                            thickness: 1,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.home_outlined,
+                                    color: iconColor, size: iconSize),
+                                SizedBox(width: screenWidth * 0.02),
+                                Expanded(
+                                  child: ValueListenableBuilder<String>(
+                                    valueListenable: selectedOptionMenu,
+                                    builder: (context, value, child) {
+                                      return TextButton(
+                                        onPressed: () async {
+                                          selectedOptionMenu.value = 'Inicio';
+                                          await _saveSelectedOptionMenu(
+                                              'Inicio');
+                                          widget.sideMenuController
+                                              .navigateToMainMenuScreen(
+                                                  context);
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Inicio',
+                                            style: TextStyle(
+                                              color: value == 'Inicio'
+                                                  ? Color(0xFF005586)
+                                                  : Colors.black,
+                                              fontSize: fontSize,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(Symbols.document_search,
+                                    color: iconColor, size: iconSize),
+                                SizedBox(width: screenWidth * 0.02),
+                                Expanded(
+                                  child: ValueListenableBuilder<String>(
+                                    valueListenable: selectedOptionMenu,
+                                    builder: (context, value, child) {
+                                      return TextButton(
+                                        onPressed: () async {
+                                          selectedOptionMenu.value =
+                                              'Consulta de Tickets';
+                                          await _saveSelectedOptionMenu(
+                                              'Consulta de Tickets');
+                                          widget.ticketsController
+                                              .navigateToTicketsScreen(context);
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Consulta de Tickets',
+                                            style: TextStyle(
+                                              color:
+                                                  value == 'Consulta de Tickets'
+                                                      ? Color(0xFF005586)
+                                                      : Colors.black,
+                                              fontSize: fontSize,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Icon(Symbols.note_add,
+                                        color: iconColor,
+                                        size: iconSize),
+                                  ],
+                                ),
+                                SizedBox(width: screenWidth * 0.02),
+                                Expanded(
+                                  child: ValueListenableBuilder<String>(
+                                    valueListenable: selectedOptionMenu,
+                                    builder: (context, value, child) {
+                                      return TextButton(
+                                        onPressed: () async {
+                                          selectedOptionMenu.value =
+                                              'Crear Ticket';
+                                          await _saveSelectedOptionMenu(
+                                              'Crear Ticket');
+                                          widget.sideMenuController
+                                              .navigateToCreateTicketScreen(
+                                                  context);
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Crear Ticket',
+                                            style: TextStyle(
+                                              color: value == 'Crear Ticket'
+                                                  ? Color(0xFF005586)
+                                                  : Colors.black,
+                                              fontSize: fontSize,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(Symbols.unknown_document,
+                                    color: iconColor, size: iconSize),
+                                SizedBox(width: screenWidth * 0.02),
+                                Expanded(
+                                  child: ValueListenableBuilder<String>(
+                                    valueListenable: selectedOptionMenu,
+                                    builder: (context, value, child) {
+                                      return TextButton(
+                                        onPressed: () async {
+                                          selectedOptionMenu.value =
+                                              'Tickets Resueltos';
+                                          await _saveSelectedOptionMenu(
+                                              'Tickets Resueltos');
+                                          widget.ticketsController
+                                              .navigateToTicketsResolvedScreen(
+                                                  context,
+                                                  filters: {'status': 5});
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Tickets Resueltos',
+                                            style: TextStyle(
+                                              color:
+                                                  value == 'Tickets Resueltos'
+                                                      ? Color(0xFF005586)
+                                                      : Colors.black,
+                                              fontSize: fontSize,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: verticalPadding * 0.5),
+                          child: Divider(
+                            thickness: 1,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.info_outline,
+                                color: iconColor, size: iconSize),
+                            SizedBox(width: screenWidth * 0.02),
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AboutScreen()),
+                                  );
+                                },
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Acerca de',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: fontSize,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            );
-                          },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Icon(CupertinoIcons.doc_checkmark, color: Colors.black),
-                        const SizedBox(width: 8),
-                        ValueListenableBuilder<String>(
-                          valueListenable: selectedOptionMenu,
-                          builder: (context, value, child) {
-                            return TextButton(
-                              onPressed: () async {
-                                selectedOptionMenu.value = 'Tickets Resueltos';
-                                await _saveSelectedOptionMenu('Tickets Resueltos');
-                                widget.ticketsController.navigateToTicketsResolvedScreen(context, filters: {'status': 5});
-                              },
-                              child: Text(
-                                'Tickets Resueltos',
-                                style: TextStyle(
-                                  color: value == 'Tickets Resueltos' ? Color(0xFF005586) : Colors.black,
-                                  fontSize: 16,
+                        Row(
+                          children: [
+                            Icon(Icons.logout,
+                                color: iconColor, size: iconSize),
+                            SizedBox(width: screenWidth * 0.02),
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () {
+                                  widget.sideMenuController.logOut(context);
+                                },
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Cerrar Sesión',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: fontSize,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.info_outline, color: Colors.black),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const AboutScreen()),
-                            );
-                          },
-                          child: const Text(
-                            'Acerca de',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        const Icon(Icons.logout, color: Colors.black),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            widget.sideMenuController.logOut(context);
-                          },
-                          child: const Text(
-                            'Cerrar Sesión',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: GestureDetector(
-                  onTap: _onLogoTapped,
-                  child: Stack(
-                    alignment: Alignment(0.0, -2),
-                    children: [
-                      Image.asset(
-                        'assets/Amagi logo azul_Pequeño(3).png',
-                        alignment: Alignment(0.0, -2),
-                        width: 150,
-                        height: 100,
-                      ),
-                      if (!_showAnimatedImage)
-                        Image.asset(
-                          'assets/Amagi logo azul_Pequeño(2).png',
-                          alignment: Alignment(0.0, -2),
-                          width: 150,
-                          height: 61,
-                        ),
-                      if (_showAnimatedImage)
-                        SlideTransition(
-                          position: _offsetAnimation,
-                          child: Image.asset(
-                            'assets/Amagi logo azul_Pequeño(2).png',
-                            width: 150,
-                            height: 61,
-                            alignment: Alignment(0.0, -2),
-                          ),
-                        ),
-                    ],
                   ),
-                ),
-              ),
-            ],
+                  Spacer(),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GestureDetector(
+                      onTap: _onLogoTapped,
+                      child: Stack(
+                        alignment: Alignment(0.0, -2),
+                        children: [
+                          Image.asset(
+                            'assets/Amagi logo azul_Pequeño(3).png',
+                            alignment: Alignment(0.0, -2),
+                            width: logoWidth,
+                            height: logoHeight,
+                          ),
+                          if (!_showAnimatedImage)
+                            Image.asset(
+                              'assets/Amagi logo azul_Pequeño(2).png',
+                              alignment: Alignment(0.0, -2),
+                              width: logoWidth,
+                              height: logoHeight * 0.61,
+                            ),
+                          if (_showAnimatedImage)
+                            SlideTransition(
+                              position: _offsetAnimation,
+                              child: Image.asset(
+                                'assets/Amagi logo azul_Pequeño(2).png',
+                                width: logoWidth,
+                                height: logoHeight * 0.61,
+                                alignment: Alignment(0.0, -2),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

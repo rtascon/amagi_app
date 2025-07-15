@@ -50,13 +50,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: createMaterialColor(const Color(0xFF000000)),
-        primaryColor: const Color(0xFF000000), 
+        primaryColor: const Color(0xFF000000),
         textTheme: GoogleFonts.notoSansTextTheme(),
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Color(0xFF005586),
           selectionColor: Color(0xFF009FDA),
-          selectionHandleColor:
-              Color(0xFF747678),
+          selectionHandleColor: Color(0xFF747678),
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
@@ -64,9 +63,7 @@ class MyApp extends StatelessWidget {
           labelStyle: TextStyle(color: Colors.black),
           border: UnderlineInputBorder(),
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                color: Color(
-                    0xFF005586)),
+            borderSide: BorderSide(color: Color(0xFF005586)),
           ),
         ),
       ),
