@@ -1,0 +1,35 @@
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoGalleryContentVC.swift":
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryContentVC.d"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryContentVC.dia"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryContentVC.o"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryContentVC.swiftdeps"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/ImagePreview/DKPhotoBaseImagePreviewVC.swift":
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBaseImagePreviewVC.o"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBaseImagePreviewVC.swiftdeps"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBaseImagePreviewVC.dia"
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBaseImagePreviewVC.d"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/PDFPreview/DKPDFView.swift":
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPDFView.d"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPDFView.o"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPDFView.dia"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPDFView.swiftdeps"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/DKPhotoContentAnimationView.swift":
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoContentAnimationView.o"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoContentAnimationView.swiftdeps"
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoContentAnimationView.d"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoContentAnimationView.dia"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKPhotoGallery/DKPhotoGallery/Preview/DKPhotoBasePreviewVC.swift":
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBasePreviewVC.d"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBasePreviewVC.o"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBasePreviewVC.dia"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoBasePreviewVC.swiftdeps"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKPhotoGallery/DKPhotoGallery/Transition/DKPhotoGalleryInteractiveTransition.swift":
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryInteractiveTransition.swiftdeps"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryInteractiveTransition.dia"
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryInteractiveTransition.d"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGalleryInteractiveTransition.o"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKPhotoGallery/DKPhotoGallery/DKPhotoGallery.swift":
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGallery.d"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGallery.dia"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGallery.swiftdeps"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKPhotoGallery.build/Objects-normal/x86_64/DKPhotoGallery.o"

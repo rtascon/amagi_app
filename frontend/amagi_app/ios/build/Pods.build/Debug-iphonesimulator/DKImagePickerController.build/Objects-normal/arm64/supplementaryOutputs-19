@@ -1,0 +1,30 @@
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/DKImageDataManager.swift":
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageDataManager.d"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageDataManager.swiftdeps"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageDataManager.dia"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageDataManager.o"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/DKImageAssetExporter.swift":
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageAssetExporter.dia"
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageAssetExporter.d"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageAssetExporter.swiftdeps"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageAssetExporter.o"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKImagePickerController/Sources/DKImagePickerController/DKImageExtensionController.swift":
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionController.d"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionController.dia"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionController.o"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionController.swiftdeps"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKImagePickerController/Sources/Extensions/DKImageExtensionGallery.swift":
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionGallery.d"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionGallery.dia"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionGallery.o"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageExtensionGallery.swiftdeps"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/DKImageGroupDataManager.swift":
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageGroupDataManager.o"
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageGroupDataManager.dia"
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageGroupDataManager.d"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageGroupDataManager.swiftdeps"
+"/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/DKImagePickerController/Sources/DKImageDataManager/DKImageBaseManager.swift":
+  diagnostics: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageBaseManager.dia"
+  object: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageBaseManager.o"
+  swift-dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageBaseManager.swiftdeps"
+  dependencies: "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/DKImagePickerController.build/Objects-normal/arm64/DKImageBaseManager.d"

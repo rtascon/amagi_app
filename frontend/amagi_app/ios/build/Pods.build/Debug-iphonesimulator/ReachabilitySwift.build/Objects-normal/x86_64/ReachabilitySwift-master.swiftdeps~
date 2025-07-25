@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "f6bcd1b8bc365e29eaf8d24a3d0d9491efd7e7cfb89255f20dca33b871b55274"
+build_start_time: [1753123457, 110102176]
+build_end_time: [1753123457, 168759822]
+inputs:
+  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/ReachabilitySwift/Sources/Reachability.swift": !private [1753123431, 257447004]

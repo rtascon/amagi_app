@@ -1,0 +1,91 @@
+Target dependency graph (28 targets)
+SDWebImage in Pods, no dependencies
+SwiftyGif-SwiftyGif in Pods, no dependencies
+SwiftyGif in Pods, depends on:
+SwiftyGif-SwiftyGif in Pods (explicit)
+DKPhotoGallery-DKPhotoGallery in Pods, depends on:
+SDWebImage in Pods (implicit dependency via options '-framework SDWebImage' in build setting 'OTHER_LDFLAGS')
+SwiftyGif in Pods (implicit dependency via options '-framework SwiftyGif' in build setting 'OTHER_LDFLAGS')
+DKPhotoGallery in Pods, depends on:
+DKPhotoGallery-DKPhotoGallery in Pods (explicit)
+SDWebImage in Pods (explicit)
+SwiftyGif in Pods (explicit)
+DKImagePickerController-DKImagePickerController in Pods, depends on:
+DKPhotoGallery in Pods (implicit dependency via options '-framework DKPhotoGallery' in build setting 'OTHER_LDFLAGS')
+DKImagePickerController in Pods, depends on:
+DKImagePickerController-DKImagePickerController in Pods (explicit)
+DKPhotoGallery in Pods (explicit)
+Flutter in Pods, no dependencies
+ReachabilitySwift-ReachabilitySwift in Pods, no dependencies
+ReachabilitySwift in Pods, depends on:
+ReachabilitySwift-ReachabilitySwift in Pods (explicit)
+connectivity_plus in Pods, depends on:
+Flutter in Pods (explicit)
+ReachabilitySwift in Pods (explicit)
+file_picker in Pods, depends on:
+DKImagePickerController in Pods (explicit)
+Flutter in Pods (explicit)
+flutter_downloader-FlutterDownloaderDatabase in Pods, no dependencies
+flutter_downloader in Pods, depends on:
+Flutter in Pods (explicit)
+flutter_downloader-FlutterDownloaderDatabase in Pods (explicit)
+flutter_pdfview in Pods, depends on:
+Flutter in Pods (explicit)
+flutter_secure_storage in Pods, depends on:
+Flutter in Pods (explicit)
+image_picker_ios-image_picker_ios_privacy in Pods, no dependencies
+image_picker_ios in Pods, depends on:
+Flutter in Pods (explicit)
+image_picker_ios-image_picker_ios_privacy in Pods (explicit)
+open_file_ios in Pods, depends on:
+Flutter in Pods (explicit)
+package_info_plus-package_info_plus_privacy in Pods, no dependencies
+package_info_plus in Pods, depends on:
+Flutter in Pods (explicit)
+package_info_plus-package_info_plus_privacy in Pods (explicit)
+path_provider_foundation-path_provider_foundation_privacy in Pods, no dependencies
+path_provider_foundation in Pods, depends on:
+Flutter in Pods (explicit)
+path_provider_foundation-path_provider_foundation_privacy in Pods (explicit)
+permission_handler_apple in Pods, depends on:
+Flutter in Pods (explicit)
+shared_preferences_foundation-shared_preferences_foundation_privacy in Pods, no dependencies
+shared_preferences_foundation in Pods, depends on:
+Flutter in Pods (explicit)
+shared_preferences_foundation-shared_preferences_foundation_privacy in Pods (explicit)
+Pods-Runner in Pods, depends on:
+DKImagePickerController in Pods (explicit)
+DKPhotoGallery in Pods (explicit)
+Flutter in Pods (explicit)
+ReachabilitySwift in Pods (explicit)
+SDWebImage in Pods (explicit)
+SwiftyGif in Pods (explicit)
+connectivity_plus in Pods (explicit)
+file_picker in Pods (explicit)
+flutter_downloader in Pods (explicit)
+flutter_pdfview in Pods (explicit)
+flutter_secure_storage in Pods (explicit)
+image_picker_ios in Pods (explicit)
+open_file_ios in Pods (explicit)
+package_info_plus in Pods (explicit)
+path_provider_foundation in Pods (explicit)
+permission_handler_apple in Pods (explicit)
+shared_preferences_foundation in Pods (explicit)
+Runner in Runner, depends on:
+Pods-Runner in Pods (implicit dependency via file 'Pods_Runner.framework' in build phase 'Link Binary')
+DKImagePickerController in Pods (implicit dependency via options '-framework DKImagePickerController' in build setting 'OTHER_LDFLAGS')
+DKPhotoGallery in Pods (implicit dependency via options '-framework DKPhotoGallery' in build setting 'OTHER_LDFLAGS')
+ReachabilitySwift in Pods (implicit dependency via options '-framework Reachability' in build setting 'OTHER_LDFLAGS')
+SDWebImage in Pods (implicit dependency via options '-framework SDWebImage' in build setting 'OTHER_LDFLAGS')
+SwiftyGif in Pods (implicit dependency via options '-framework SwiftyGif' in build setting 'OTHER_LDFLAGS')
+connectivity_plus in Pods (implicit dependency via options '-framework connectivity_plus' in build setting 'OTHER_LDFLAGS')
+file_picker in Pods (implicit dependency via options '-framework file_picker' in build setting 'OTHER_LDFLAGS')
+flutter_downloader in Pods (implicit dependency via options '-framework flutter_downloader' in build setting 'OTHER_LDFLAGS')
+flutter_pdfview in Pods (implicit dependency via options '-framework flutter_pdfview' in build setting 'OTHER_LDFLAGS')
+flutter_secure_storage in Pods (implicit dependency via options '-framework flutter_secure_storage' in build setting 'OTHER_LDFLAGS')
+image_picker_ios in Pods (implicit dependency via options '-framework image_picker_ios' in build setting 'OTHER_LDFLAGS')
+open_file_ios in Pods (implicit dependency via options '-framework open_file_ios' in build setting 'OTHER_LDFLAGS')
+package_info_plus in Pods (implicit dependency via options '-framework package_info_plus' in build setting 'OTHER_LDFLAGS')
+path_provider_foundation in Pods (implicit dependency via options '-framework path_provider_foundation' in build setting 'OTHER_LDFLAGS')
+permission_handler_apple in Pods (implicit dependency via options '-framework permission_handler_apple' in build setting 'OTHER_LDFLAGS')
+shared_preferences_foundation in Pods (implicit dependency via options '-framework shared_preferences_foundation' in build setting 'OTHER_LDFLAGS')

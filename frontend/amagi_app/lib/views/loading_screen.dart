@@ -21,8 +21,7 @@ class LoadingScreenState extends State<LoadingScreen>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(
-          milliseconds: 400),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
     _scaleAnimation =
@@ -67,25 +66,27 @@ class LoadingScreenState extends State<LoadingScreen>
               ),
             ),
             child: Center(
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Image.asset(
-                  'assets/a de Amagi Blanca.png',
-                  width: 100,
-                  height: 100,
-                ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Image.asset(
+                      'assets/a de Amagi Blanca.png',
+                      width: 100,
+                      height: 100,
+                    ),
+                  ),
+                  const Positioned(
+                    top: 0,
+                    right: 0,
+                    child: CircleAvatar(
+                      radius: 6,
+                      backgroundColor: Color(0xFFE98300),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height / 2 -
-                50 -
-                20,
-            left: MediaQuery.of(context).size.width / 2 +
-                25,
-            child: const CircleAvatar(
-              radius: 6,
-              backgroundColor: Color(0xFFE98300),
             ),
           ),
         ],

@@ -106,7 +106,6 @@ class _SideMenuState extends State<SideMenu>
     final screenHeight = MediaQuery.of(context).size.height;
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
-    // Definir tamaños relativos
     final horizontalPadding = screenWidth * 0.04;
     final verticalPadding = screenHeight * 0.02;
     final avatarSize = screenWidth * 0.18;
@@ -121,12 +120,11 @@ class _SideMenuState extends State<SideMenu>
           color: Colors.white,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              // Usar LayoutBuilder para media queries adicionales
               final isSmallScreen = constraints.maxWidth < 400;
-              final fontSizeTitle = isSmallScreen ? 15.0 : 17.0;
-              final fontSize = isSmallScreen ? 13.0 : 16.0;
-              final iconSize = isSmallScreen ? 24.0 : 26.0;
-              final iconColor = const Color(0xFF005586);
+              final fontSizeTitle = isSmallScreen ? 17.0 : 22.0;
+              final fontSize = isSmallScreen ? 17.0 : 22.0;
+              final iconSize = isSmallScreen ? 28.0 : 32.0;
+              const iconColor = Color(0xFF005586);
 
               return Column(
                 children: <Widget>[
@@ -143,8 +141,9 @@ class _SideMenuState extends State<SideMenu>
                           children: [
                             Image.asset(
                               'assets/Solo la a (1).png',
-                              width: avatarSize,
-                              height: avatarSize,
+                              width: 80,
+                              height: 120,
+                              fit: BoxFit.contain,
                             ),
                             SizedBox(width: screenWidth * 0.02),
                             Column(
@@ -174,7 +173,7 @@ class _SideMenuState extends State<SideMenu>
                                               Icon(Icons.person_outline,
                                                   color: iconColor,
                                                   size: iconSize),
-                                              SizedBox(width: 2),
+                                              const SizedBox(width: 2),
                                               Text(
                                                 snapshot.data?['glpiname'] ??
                                                     '',
@@ -190,7 +189,7 @@ class _SideMenuState extends State<SideMenu>
                                               Icon(Icons.badge_outlined,
                                                   color: iconColor,
                                                   size: iconSize),
-                                              SizedBox(width: 2),
+                                              const SizedBox(width: 2),
                                               Text(
                                                 snapshot.data?[
                                                             'glpiactiveprofile']
@@ -209,7 +208,7 @@ class _SideMenuState extends State<SideMenu>
                                               Icon(Icons.work_outline,
                                                   color: iconColor,
                                                   size: iconSize),
-                                              SizedBox(width: 2),
+                                              const SizedBox(width: 2),
                                               Text(
                                                 snapshot.data?[
                                                             'glpiactive_entity_name']
@@ -229,7 +228,7 @@ class _SideMenuState extends State<SideMenu>
                                 ),
                               ],
                             ),
-                            Spacer(),
+                            const Spacer(),
 /*
                             IconButton(
                               icon: Icon(Icons.settings),
@@ -243,7 +242,7 @@ class _SideMenuState extends State<SideMenu>
                         Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: verticalPadding * 0.5),
-                          child: Divider(
+                          child: const Divider(
                             thickness: 1,
                             color: Colors.grey,
                           ),
@@ -274,7 +273,7 @@ class _SideMenuState extends State<SideMenu>
                                             'Inicio',
                                             style: TextStyle(
                                               color: value == 'Inicio'
-                                                  ? Color(0xFF005586)
+                                                  ? const Color(0xFF005586)
                                                   : Colors.black,
                                               fontSize: fontSize,
                                             ),
@@ -311,7 +310,7 @@ class _SideMenuState extends State<SideMenu>
                                             style: TextStyle(
                                               color:
                                                   value == 'Consulta de Tickets'
-                                                      ? Color(0xFF005586)
+                                                      ? const Color(0xFF005586)
                                                       : Colors.black,
                                               fontSize: fontSize,
                                             ),
@@ -328,8 +327,7 @@ class _SideMenuState extends State<SideMenu>
                                 Stack(
                                   children: [
                                     Icon(Symbols.note_add,
-                                        color: iconColor,
-                                        size: iconSize),
+                                        color: iconColor, size: iconSize),
                                   ],
                                 ),
                                 SizedBox(width: screenWidth * 0.02),
@@ -353,7 +351,7 @@ class _SideMenuState extends State<SideMenu>
                                             'Crear Ticket',
                                             style: TextStyle(
                                               color: value == 'Crear Ticket'
-                                                  ? Color(0xFF005586)
+                                                  ? const Color(0xFF005586)
                                                   : Colors.black,
                                               fontSize: fontSize,
                                             ),
@@ -392,7 +390,7 @@ class _SideMenuState extends State<SideMenu>
                                             style: TextStyle(
                                               color:
                                                   value == 'Tickets Resueltos'
-                                                      ? Color(0xFF005586)
+                                                      ? const Color(0xFF005586)
                                                       : Colors.black,
                                               fontSize: fontSize,
                                             ),
@@ -409,7 +407,7 @@ class _SideMenuState extends State<SideMenu>
                         Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: verticalPadding * 0.5),
-                          child: Divider(
+                          child: const Divider(
                             thickness: 1,
                             color: Colors.grey,
                           ),
@@ -470,35 +468,35 @@ class _SideMenuState extends State<SideMenu>
                       ],
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: GestureDetector(
                       onTap: _onLogoTapped,
                       child: Stack(
-                        alignment: Alignment(0.0, -2),
+                        alignment: const Alignment(0.0, -2),
                         children: [
                           Image.asset(
                             'assets/Amagi logo azul_Pequeño(3).png',
-                            alignment: Alignment(0.0, -2),
-                            width: logoWidth,
-                            height: logoHeight,
+                            alignment: const Alignment(0.0, -2),
+                            width: 150,
+                            height: 100,
                           ),
                           if (!_showAnimatedImage)
                             Image.asset(
                               'assets/Amagi logo azul_Pequeño(2).png',
-                              alignment: Alignment(0.0, -2),
-                              width: logoWidth,
-                              height: logoHeight * 0.61,
+                              alignment: const Alignment(0.0, -2),
+                              width: 150,
+                              height: 61,
                             ),
                           if (_showAnimatedImage)
                             SlideTransition(
                               position: _offsetAnimation,
                               child: Image.asset(
                                 'assets/Amagi logo azul_Pequeño(2).png',
-                                width: logoWidth,
-                                height: logoHeight * 0.61,
-                                alignment: Alignment(0.0, -2),
+                                width: 150,
+                                height: 61,
+                                alignment: const Alignment(0.0, -2),
                               ),
                             ),
                         ],

@@ -17,8 +17,7 @@ class TicketService {
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
   static final Map<String, String> criteriaBaseTicketAutogestion = {
-    'criteria[0][field]':
-        '4',
+    'criteria[0][field]': '4',
     'criteria[0][searchtype]': 'equals',
     'criteria[0][value]': ''
   };
@@ -72,12 +71,12 @@ class TicketService {
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
-      
       } else {
         throw Exception("Error al obtener tickets: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al obtener tickets: $e");
     }
@@ -146,8 +145,7 @@ class TicketService {
     try {
       final response = await http
           .get(ticketsUrl.replace(queryParameters: params), headers: headers)
-          .timeout(const Duration(
-              seconds: 15));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
@@ -188,8 +186,9 @@ class TicketService {
       if (response.statusCode != 200) {
         throw Exception("Error al actualizar el ticket: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al actualizar el ticket: $e");
     }
@@ -255,8 +254,9 @@ class TicketService {
         throw Exception(
             "Error al obtener comentarios del ticket: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al obtener comentarios del ticket: $e");
     }
@@ -278,22 +278,26 @@ class TicketService {
     };
 
     try {
-      final response = await http.get(documentoUrl, headers: headers).timeout(
-          const Duration(seconds: 15));
+      final response = await http
+          .get(documentoUrl, headers: headers)
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         // Extraer el tipo MIME del header
-        final mimeType = response.headers['content-type'] ?? 'application/octet-stream';
+        final mimeType =
+            response.headers['content-type'] ?? 'application/octet-stream';
         final ext = extensionFromMime(mimeType) ?? 'bin';
         final data = jsonDecode(response.body);
         data['mimeType'] = mimeType;
         data['extension'] = ext;
         return data;
       } else {
-        throw Exception("Error al obtener documento del ticket: ${response.body}");
+        throw Exception(
+            "Error al obtener documento del ticket: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al obtener documento del ticket: $e");
     }
@@ -320,11 +324,13 @@ class TicketService {
     }
 
     try {
-      final response = await http.get(documentoUrl, headers: headers).timeout(
-          const Duration(seconds: 15));
+      final response = await http
+          .get(documentoUrl, headers: headers)
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
-        final mimeType = response.headers['content-type'] ?? 'application/octet-stream';
+        final mimeType =
+            response.headers['content-type'] ?? 'application/octet-stream';
         final ext = extensionFromMime(mimeType) ?? 'bin';
         final directory = await getTemporaryDirectory();
         final filePath = '${directory.path}/document_${docId}.$ext';
@@ -332,10 +338,12 @@ class TicketService {
         await file.writeAsBytes(response.bodyBytes);
         return filePath;
       } else {
-        throw Exception("Error al obtener documento del ticket: ${response.body}");
+        throw Exception(
+            "Error al obtener documento del ticket: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al obtener documento del ticket: $e");
     }
@@ -358,9 +366,9 @@ class TicketService {
     };
 
     try {
-      final response = await http.get(comentarioUrl, headers: headers).timeout(
-          const Duration(
-              seconds: 15));
+      final response = await http
+          .get(comentarioUrl, headers: headers)
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -368,22 +376,24 @@ class TicketService {
         throw Exception(
             "Error al obtener detalle del comentario: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al obtener detalle del comentario: $e");
     }
   }
 
- /// Crea un nuevo ticket con los datos proporcionados.
-  /// 
+  /// Crea un nuevo ticket con los datos proporcionados.
+  ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<Map<String, dynamic>> createTicket(Map<String, dynamic> ticketData) async {
+  Future<Map<String, dynamic>> createTicket(
+      Map<String, dynamic> ticketData) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-  
+
     final ticketUrl = Uri.parse('$url/Ticket');
     final headers = {
       'Session-Token': sessionToken,
@@ -399,27 +409,29 @@ class TicketService {
         "entities_id": ticketData['entities_id'],
       }
     });
-  
+
     try {
-      final response = await http.post(ticketUrl, headers: headers, body: body)
-          .timeout(
-            const Duration(seconds: 15),
-            onTimeout: () {
-              throw TimeoutException("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
-            },
-          ); 
-  
+      final response =
+          await http.post(ticketUrl, headers: headers, body: body).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw TimeoutException(
+              "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+        },
+      );
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final resp = jsonDecode(response.body);
         return {
           'success': true,
-          'ticketId': resp['id'], 
+          'ticketId': resp['id'],
         };
       } else {
         throw Exception("Error al crear ticket: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al crear ticket: $e");
     }
@@ -467,7 +479,8 @@ class TicketService {
           const Duration(seconds: 15),
           onTimeout: () {
             request.finalize();
-            throw TimeoutException("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+            throw TimeoutException(
+                "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
           },
         );
         final response = await http.Response.fromStream(streamedResponse);
@@ -475,8 +488,9 @@ class TicketService {
         if (response.statusCode != 201) {
           throw Exception("Error al subir el archivo: ${response.body}");
         }
-      } on TimeoutException catch (e) {
-        throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      } on TimeoutException {
+        throw Exception(
+            "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
       } catch (e) {
         throw Exception("Error al subir el archivo: $e");
       }
@@ -510,22 +524,23 @@ class TicketService {
     });
 
     try {
-      final response = await http
-          .post(followupUrl, headers: headers, body: body)
-          .timeout(
-            const Duration(seconds: 15),
-            onTimeout: () {
-              throw TimeoutException("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
-            },
-          );
+      final response =
+          await http.post(followupUrl, headers: headers, body: body).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw TimeoutException(
+              "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+        },
+      );
 
       if (response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
         followupId = responseData['id'];
       }
       return followupId;
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al añadir el comentario/histórico: $e");
     }
@@ -534,7 +549,8 @@ class TicketService {
   /// Obtiene el comentario de la solución de un ticket.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-    Future<List<dynamic>> getTicketSolution(int idTicket, String sessionToken) async {
+  Future<List<dynamic>> getTicketSolution(
+      int idTicket, String sessionToken) async {
     final solucionUrl = Uri.parse('$url/Ticket/$idTicket/ITILSolution');
     final headers = {
       'Session-Token': sessionToken,
@@ -551,10 +567,12 @@ class TicketService {
       } else if (response.statusCode == 404) {
         return [];
       } else {
-        throw Exception("Error al obtener la solución del ticket: ${response.body}");
+        throw Exception(
+            "Error al obtener la solución del ticket: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+    } on TimeoutException {
+      throw Exception(
+          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
     } catch (e) {
       throw Exception("Error al obtener la solución del ticket: $e");
     }

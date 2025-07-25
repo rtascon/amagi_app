@@ -13,7 +13,8 @@ class TicketsResolvedScreen extends StatefulWidget {
   final List<dynamic> tickets;
   final Map<String, dynamic>? initialFilters;
 
-  const TicketsResolvedScreen({super.key, required this.tickets, this.initialFilters});
+  const TicketsResolvedScreen(
+      {super.key, required this.tickets, this.initialFilters});
 
   @override
   TicketsResolvedScreenState createState() => TicketsResolvedScreenState();
@@ -25,7 +26,6 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
   final SideMenuController _sideMenuController = SideMenuController();
   late final Future<Map<String, String>> _userNameFuture;
   List<dynamic> _filteredTickets = [];
-  bool _isLoading = false;
   final TypeConversion _typeConversion = TypeConversion();
 
   @override
@@ -55,9 +55,7 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
   }
 
   void _applyFilters(Map<String, dynamic> filters) async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() {});
 
     List<Ticket> filteredTickets;
     if (filters.containsKey('tickets')) {
@@ -70,7 +68,6 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
     setState(() {
       _filteredTickets = filteredTickets;
       _sortTicketsByDate();
-      _isLoading = false;
     });
   }
 
@@ -125,7 +122,8 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                     ? SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         child: SizedBox(
-                          height: MediaQuery.of(context).size.height - kToolbarHeight,
+                          height: MediaQuery.of(context).size.height -
+                              kToolbarHeight,
                           child: const Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -158,8 +156,8 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                           final fechaCreacion = ticket.fechaCreacion is String
                               ? DateTime.parse(ticket.fechaCreacion)
                               : ticket.fechaCreacion;
-                          final formattedDate =
-                              DateFormat('dd-MM-yyyy HH:mm').format(fechaCreacion);
+                          final formattedDate = DateFormat('dd-MM-yyyy HH:mm')
+                              .format(fechaCreacion);
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: GestureDetector(
@@ -177,7 +175,8 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                       borderRadius: BorderRadius.circular(15.0),
                                     ),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           mainAxisAlignment:
@@ -186,19 +185,21 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                             Row(
                                               children: [
                                                 Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 8.0,
-                                                          vertical: 4.0),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 4.0),
                                                   decoration: BoxDecoration(
                                                     color: Colors.grey[300],
                                                     borderRadius:
-                                                        BorderRadius.circular(8.0),
+                                                        BorderRadius.circular(
+                                                            8.0),
                                                   ),
                                                   child: Row(
                                                     children: [
-                                                      if (_typeConversion.getEstado(
-                                                              ticket.estado) ==
+                                                      if (_typeConversion
+                                                              .getEstado(ticket
+                                                                  .estado) ==
                                                           'Nuevo')
                                                         Container(
                                                           width: 10,
@@ -206,63 +207,77 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                           decoration:
                                                               const BoxDecoration(
                                                             color: Colors.green,
-                                                            shape: BoxShape.circle,
+                                                            shape:
+                                                                BoxShape.circle,
                                                           ),
                                                           margin:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   right: 8.0),
                                                         ),
-                                                      if (_typeConversion.getEstado(
-                                                              ticket.estado) ==
+                                                      if (_typeConversion
+                                                              .getEstado(ticket
+                                                                  .estado) ==
                                                           'En curso (asignado)')
                                                         Container(
                                                           width: 10,
                                                           height: 10,
-                                                          decoration: BoxDecoration(
+                                                          decoration:
+                                                              BoxDecoration(
                                                             border: Border.all(
-                                                                color:
-                                                                    Colors.green),
-                                                            shape: BoxShape.circle,
+                                                                color: Colors
+                                                                    .green),
+                                                            shape:
+                                                                BoxShape.circle,
                                                           ),
                                                           margin:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   right: 8.0),
                                                         ),
-                                                      if (_typeConversion.getEstado(
-                                                              ticket.estado) ==
+                                                      if (_typeConversion
+                                                              .getEstado(ticket
+                                                                  .estado) ==
                                                           'En curso (Planificado)')
                                                         Container(
                                                           margin:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   right: 8.0),
                                                           child: const Icon(
-                                                            Icons.calendar_today,
+                                                            Icons
+                                                                .calendar_today,
                                                             color: Colors.black,
                                                             size: 16,
                                                           ),
                                                         ),
-                                                      if (_typeConversion.getEstado(
-                                                              ticket.estado) ==
+                                                      if (_typeConversion
+                                                              .getEstado(ticket
+                                                                  .estado) ==
                                                           'En espera')
                                                         Container(
                                                           width: 10,
                                                           height: 10,
                                                           decoration:
                                                               const BoxDecoration(
-                                                            color:
-                                                                Color(0xFFE98300),
-                                                            shape: BoxShape.circle,
+                                                            color: Color(
+                                                                0xFFE98300),
+                                                            shape:
+                                                                BoxShape.circle,
                                                           ),
                                                           margin:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   right: 8.0),
                                                         ),
-                                                      if (_typeConversion.getEstado(
-                                                              ticket.estado) ==
+                                                      if (_typeConversion
+                                                              .getEstado(ticket
+                                                                  .estado) ==
                                                           'Resuelto')
                                                         Container(
                                                           margin:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   right: 8.0),
                                                           child: const Icon(
                                                             Icons
@@ -271,8 +286,9 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                             size: 16,
                                                           ),
                                                         ),
-                                                      if (_typeConversion.getEstado(
-                                                              ticket.estado) ==
+                                                      if (_typeConversion
+                                                              .getEstado(ticket
+                                                                  .estado) ==
                                                           'Cerrado')
                                                         Container(
                                                           width: 10,
@@ -280,10 +296,12 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                           decoration:
                                                               const BoxDecoration(
                                                             color: Colors.black,
-                                                            shape: BoxShape.circle,
+                                                            shape:
+                                                                BoxShape.circle,
                                                           ),
                                                           margin:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   right: 8.0),
                                                         ),
                                                       Column(
@@ -294,12 +312,15 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                           Text(
                                                             _typeConversion
                                                                 .getEstado(
-                                                                    ticket.estado)
+                                                                    ticket
+                                                                        .estado)
                                                                 .split(' (')[0],
-                                                            style: const TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               fontSize: 16,
                                                               fontWeight:
-                                                                  FontWeight.bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                             ),
                                                           ),
                                                           if (_typeConversion
@@ -326,18 +347,20 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                             Row(
                                               children: [
                                                 Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 10.0,
-                                                          vertical: 4.0),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10.0,
+                                                      vertical: 4.0),
                                                   decoration: BoxDecoration(
-                                                    color: _typeConversion.getTipo(
-                                                                ticket.tipo) ==
+                                                    color: _typeConversion
+                                                                .getTipo(ticket
+                                                                    .tipo) ==
                                                             'Requerimiento'
                                                         ? Colors.blue[100]
                                                         : Colors.orange[100],
                                                     borderRadius:
-                                                        BorderRadius.circular(8.0),
+                                                        BorderRadius.circular(
+                                                            8.0),
                                                   ),
                                                   child: Row(
                                                     children: [
@@ -352,26 +375,34 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                                     'Requerimiento'
                                                                 ? Icons.help
                                                                 : Icons.error,
-                                                            color: _typeConversion.getTipo(ticket.tipo) == 'Requerimiento'
-                                                                ? const Color(0xFF009FDA)
-                                                                : const Color(0xFFE98300),
+                                                            color: _typeConversion
+                                                                        .getTipo(ticket
+                                                                            .tipo) ==
+                                                                    'Requerimiento'
+                                                                ? const Color(
+                                                                    0xFF009FDA)
+                                                                : const Color(
+                                                                    0xFFE98300),
                                                             size: 20,
                                                           ),
                                                         ),
                                                       ),
-                                                      const SizedBox(width: 8.0),
+                                                      const SizedBox(
+                                                          width: 8.0),
                                                       Text(
-                                                        _typeConversion
-                                                            .getTipo(ticket.tipo),
+                                                        _typeConversion.getTipo(
+                                                            ticket.tipo),
                                                         style: TextStyle(
                                                           color: _typeConversion
-                                                                      .getTipo(ticket
-                                                                          .tipo) ==
+                                                                      .getTipo(
+                                                                          ticket
+                                                                              .tipo) ==
                                                                   'Requerimiento'
                                                               ? const Color(
                                                                   0xFF009FDA)
                                                               : const Color(
-                                                                  0xFFE98300), fontSize: 10,
+                                                                  0xFFE98300),
+                                                          fontSize: 10,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -381,14 +412,15 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                 ),
                                                 const SizedBox(width: 8.0),
                                                 Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 10.0,
-                                                          vertical: 4.0),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10.0,
+                                                      vertical: 4.0),
                                                   decoration: BoxDecoration(
                                                     color: Colors.grey[300],
                                                     borderRadius:
-                                                        BorderRadius.circular(8.0),
+                                                        BorderRadius.circular(
+                                                            8.0),
                                                   ),
                                                   child: Row(
                                                     children: [
@@ -400,11 +432,13 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                               FontWeight.bold,
                                                         ),
                                                       ),
-                                                      const SizedBox(width: 4.0),
+                                                      const SizedBox(
+                                                          width: 4.0),
                                                       Text(
                                                         ticket.id.toString(),
                                                         style: const TextStyle(
-                                                          color: Colors.black, fontSize: 10,
+                                                          color: Colors.black,
+                                                          fontSize: 10,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -430,7 +464,7 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(width: 14.0), 
+                                            const SizedBox(width: 14.0),
                                           ],
                                         ),
                                         const SizedBox(height: 4.0),
@@ -444,19 +478,23 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                       ],
                                     ),
                                   ),
-                                  if (_typeConversion.getEstado(ticket.estado) ==
+                                  if (_typeConversion
+                                          .getEstado(ticket.estado) ==
                                       'Resuelto')
                                     Positioned(
                                       right: -10,
                                       bottom: 0,
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(0xFF005586),
+                                          backgroundColor:
+                                              const Color(0xFF005586),
                                           foregroundColor: Colors.white,
                                           minimumSize: const Size(50, 30),
                                         ),
                                         onPressed: () {
-                                          _ticketsController.navigateToSolucionScreen(context, ticket);
+                                          _ticketsController
+                                              .navigateToSolucionScreen(
+                                                  context, ticket);
                                         },
                                         child: const Text('Cerrar Ticket'),
                                       ),
@@ -482,31 +520,55 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
-                                                final String fechaCreacion = DateFormat('dd-MM-yyyy HH:mm').format(ticket.fechaCreacion);
-                                                final String fechaModificacion = DateFormat('dd-MM-yyyy HH:mm').format(ticket.fechaActualizacion);
-                                                final String prioridad = _typeConversion.getPrioridad(ticket.prioridad);
+                                                final String fechaCreacion =
+                                                    DateFormat(
+                                                            'dd-MM-yyyy HH:mm')
+                                                        .format(ticket
+                                                            .fechaCreacion);
+                                                final String fechaModificacion =
+                                                    DateFormat(
+                                                            'dd-MM-yyyy HH:mm')
+                                                        .format(ticket
+                                                            .fechaActualizacion);
+                                                final String prioridad =
+                                                    _typeConversion
+                                                        .getPrioridad(
+                                                            ticket.prioridad);
                                                 return AlertDialog(
                                                   title: const Text(
                                                     'Más detalles',
-                                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                                   ),
-                                                  content: SingleChildScrollView(
+                                                  content:
+                                                      SingleChildScrollView(
                                                     child: ListBody(
                                                       children: <Widget>[
                                                         ListTile(
-                                                          leading: const Icon(Icons.date_range),
-                                                          title: const Text('Fecha de Creación'),
-                                                          subtitle: Text(fechaCreacion),
+                                                          leading: const Icon(
+                                                              Icons.date_range),
+                                                          title: const Text(
+                                                              'Fecha de Creación'),
+                                                          subtitle: Text(
+                                                              fechaCreacion),
                                                         ),
                                                         ListTile(
-                                                          leading: const Icon(Icons.update),
-                                                          title: const Text('Fecha de Modificación'),
-                                                          subtitle: Text(fechaModificacion),
+                                                          leading: const Icon(
+                                                              Icons.update),
+                                                          title: const Text(
+                                                              'Fecha de Modificación'),
+                                                          subtitle: Text(
+                                                              fechaModificacion),
                                                         ),
                                                         ListTile(
-                                                          leading: const Icon(Icons.priority_high),
-                                                          title: const Text('Prioridad'),
-                                                          subtitle: Text(prioridad),
+                                                          leading: const Icon(
+                                                              Icons
+                                                                  .priority_high),
+                                                          title: const Text(
+                                                              'Prioridad'),
+                                                          subtitle:
+                                                              Text(prioridad),
                                                         ),
                                                       ],
                                                     ),
@@ -515,10 +577,13 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                     TextButton(
                                                       child: Text(
                                                         'Cerrar',
-                                                        style: TextStyle(color: defaultTextButtonColor),
+                                                        style: TextStyle(
+                                                            color:
+                                                                defaultTextButtonColor),
                                                       ),
                                                       onPressed: () {
-                                                        Navigator.of(context).pop();
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
                                                     ),
                                                   ],
@@ -554,16 +619,14 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
   }
 
   Future<void> _refreshTickets() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() {});
 
-    List<Ticket> updatedTicketsResolved = await _ticketsController.getTicketsList(context, false, filters: {'status': 5});
+    List<Ticket> updatedTicketsResolved = await _ticketsController
+        .getTicketsList(context, false, filters: {'status': 5});
 
     setState(() {
       _filteredTickets = updatedTicketsResolved;
       _sortTicketsByDate();
-      _isLoading = false;
     });
   }
 }

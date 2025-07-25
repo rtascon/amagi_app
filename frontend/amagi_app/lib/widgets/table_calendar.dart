@@ -14,7 +14,8 @@ class CalendarDialog extends StatefulWidget {
   final RangeSelectionMode rangeSelectionMode;
   final Function(DateTime?, DateTime?, DateTime) onRangeSelected;
 
-  CalendarDialog({
+  const CalendarDialog({
+    super.key,
     required this.focusedDay,
     required this.rangeStart,
     required this.rangeEnd,
@@ -39,7 +40,6 @@ class _CalendarDialogState extends State<CalendarDialog> {
   late TextEditingController _endDayController;
   late TextEditingController _endMonthController;
   late TextEditingController _endYearController;
-  bool _showDateFields = true;
 
   @override
   void initState() {
@@ -74,7 +74,10 @@ class _CalendarDialogState extends State<CalendarDialog> {
         _endYearController.text = _rangeEnd!.year.toString();
       }
     });
-    widget.onRangeSelected(start, end?.add(const Duration(days: 1)).subtract(const Duration(seconds: 1)), focusedDay);
+    widget.onRangeSelected(
+        start,
+        end?.add(const Duration(days: 1)).subtract(const Duration(seconds: 1)),
+        focusedDay);
   }
 
   bool _isValidDay(String value) {
@@ -93,7 +96,8 @@ class _CalendarDialogState extends State<CalendarDialog> {
   }
 
   String _formatDateRange(DateTime? start, DateTime? end) {
-    final startDate = start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';
+    final startDate =
+        start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';
     final endDate = end != null ? DateFormat('d MMM', 'es').format(end) : 'Fin';
     return '$startDate - $endDate';
   }
@@ -119,12 +123,19 @@ class _CalendarDialogState extends State<CalendarDialog> {
                   rangeStartDay: _rangeStart,
                   rangeEndDay: _rangeEnd,
                   onRangeSelected: _onRangeSelected,
-                  availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Month'
+                  },
                   rangeSelectionMode: _rangeSelectionMode,
                   headerStyle: HeaderStyle(
                     formatButtonVisible: false,
                     titleCentered: true,
-                    titleTextFormatter: (date, locale) => DateFormat.yMMMM(locale).format(date).replaceFirst(' de ', ' ').replaceFirstMapped(RegExp(r'^\w'), (match) => match.group(0)!.toUpperCase()),
+                    titleTextFormatter: (date, locale) =>
+                        DateFormat.yMMMM(locale)
+                            .format(date)
+                            .replaceFirst(' de ', ' ')
+                            .replaceFirstMapped(RegExp(r'^\w'),
+                                (match) => match.group(0)!.toUpperCase()),
                   ),
                   locale: 'es_ES',
                   onDaySelected: (selectedDay, focusedDay) {
@@ -132,29 +143,26 @@ class _CalendarDialogState extends State<CalendarDialog> {
                       _focusedDay = focusedDay;
 
                       if (_rangeStart == _rangeEnd && _rangeStart != null) {
-                        _rangeStart = null; 
+                        _rangeStart = null;
                         _rangeEnd = null;
                         _rangeSelectionMode = RangeSelectionMode.toggledOff;
                         _endDayController.text = selectedDay.day.toString();
                         _endMonthController.text = selectedDay.month.toString();
                         _endYearController.text = selectedDay.year.toString();
-                      }
-
-                      else if (_rangeStart != null && _rangeEnd == null) {
+                      } else if (_rangeStart != null && _rangeEnd == null) {
                         _rangeStart = _rangeStart;
                         _rangeEnd = selectedDay;
                         _rangeSelectionMode = RangeSelectionMode.toggledOn;
                         _endDayController.text = selectedDay.day.toString();
                         _endMonthController.text = selectedDay.month.toString();
                         _endYearController.text = selectedDay.year.toString();
-                      }
-
-                      else {
+                      } else {
                         _rangeStart = selectedDay;
                         _rangeEnd = null;
                         _rangeSelectionMode = RangeSelectionMode.toggledOff;
                         _startDayController.text = selectedDay.day.toString();
-                        _startMonthController.text = selectedDay.month.toString();
+                        _startMonthController.text =
+                            selectedDay.month.toString();
                         _startYearController.text = selectedDay.year.toString();
                       }
                     });
@@ -162,13 +170,13 @@ class _CalendarDialogState extends State<CalendarDialog> {
                     widget.onRangeSelected(_rangeStart, _rangeEnd, _focusedDay);
                   },
                   enabledDayPredicate: (day) {
-                    
                     if (_rangeStart == _rangeEnd) {
-                      return true; 
-                    } else if (_rangeStart != null) { 
-                      return day.isAfter(_rangeStart!.subtract(const Duration(days: 1))); 
-                    } 
-                    return true; 
+                      return true;
+                    } else if (_rangeStart != null) {
+                      return day.isAfter(
+                          _rangeStart!.subtract(const Duration(days: 1)));
+                    }
+                    return true;
                   },
                   calendarStyle: const CalendarStyle(
                     todayDecoration: BoxDecoration(
@@ -195,11 +203,12 @@ class _CalendarDialogState extends State<CalendarDialog> {
                     ),
                     withinRangeTextStyle: TextStyle(color: Colors.white),
                     rangeHighlightColor: Color.fromARGB(255, 0, 105, 167),
-                    cellMargin: const EdgeInsets.all(1.0),
+                    cellMargin: EdgeInsets.all(1.0),
                   ),
                   daysOfWeekStyle: const DaysOfWeekStyle(
                     weekdayStyle: TextStyle(fontSize: 12.0),
-                    weekendStyle: TextStyle(fontSize: 12.0, color: Color(0xFFE98300)),
+                    weekendStyle:
+                        TextStyle(fontSize: 12.0, color: Color(0xFFE98300)),
                   ),
                 ),
                 Container(
@@ -211,14 +220,17 @@ class _CalendarDialogState extends State<CalendarDialog> {
                       Text(
                         _formatDateRange(_rangeStart, _rangeEnd),
                         style: TextStyle(
-                          color: (_rangeStart == null || _rangeEnd == null) ? Colors.grey : Colors.black,
+                          color: (_rangeStart == null || _rangeEnd == null)
+                              ? Colors.grey
+                              : Colors.black,
                         ),
                       ),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text('Listo', style: TextStyle(color: Colors.black)),
+                        child: const Text('Listo',
+                            style: TextStyle(color: Colors.black)),
                       ),
                     ],
                   ),

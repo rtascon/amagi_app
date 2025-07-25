@@ -17,7 +17,7 @@ import '../views/common_pop_ups.dart';
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../config/environment.dart';
-import '../controllers/filter_ticket_menu_controller.dart'; 
+import '../controllers/filter_ticket_menu_controller.dart';
 
 /// Controlador para manejar las acciones relacionadas con los tickets.
 class TicketsController {
@@ -66,8 +66,6 @@ class TicketsController {
 
       if (!context.mounted) return;
       Navigator.of(context).pop();
-
-      
 
       // Este fragmento de código se comentó porque no se implementó la funcionalidad de calificar el ticket
       /*
@@ -120,7 +118,6 @@ class TicketsController {
   Future<List<Ticket>> getTicketsList(BuildContext context, bool primeraVez,
       {Map<String, dynamic>? filters}) async {
     try {
-
       final connectivityResult = await (Connectivity().checkConnectivity());
 
       if (connectivityResult == ConnectivityResult.none) {
@@ -133,7 +130,6 @@ class TicketsController {
       List<dynamic> ticketsData = [];
       if (primeraVez) {
         ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
-
       } else {
         ticketsData =
             await _ticketService.getUserTicketFiltered(userId, filters ?? {});
@@ -154,17 +150,16 @@ class TicketsController {
       }).toList();
 
       return tickets;
-      
     } catch (e) {
       return [];
     }
   }
 
   /// Obtiene la lista de soluciones de un ticket.
-  /// 
+  ///
   /// Parámetros:
   /// - [ticketId]: El ID del ticket.
-  /// 
+  ///
   /// Retorna una lista de soluciones.
   Future<List<Map<String, dynamic>>> getTicketSolutions(int ticketId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
@@ -172,9 +167,11 @@ class TicketsController {
       throw Exception("No session token found");
     }
 
-    final soluciones = await _ticketService.getTicketSolution(ticketId, sessionToken);
+    final soluciones =
+        await _ticketService.getTicketSolution(ticketId, sessionToken);
     return Future.wait(soluciones.map((solucion) async {
-      final nombreUsuario = await _userService.getUserName(solucion['users_id']);
+      final nombreUsuario =
+          await _userService.getUserName(solucion['users_id']);
       return {
         'id': solucion['id'],
         'users_id': solucion['users_id'],
@@ -186,15 +183,17 @@ class TicketsController {
   }
 
   /// Actualiza la lista de tickets haciendo otra consulta.
-  /// 
+  ///
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
-  /// 
+  ///
   /// Retorna una lista de tickets actualizada.
   Future<List<Ticket>> updateTickets(BuildContext context) async {
     try {
-      final FilterTicketMenuController filterController = FilterTicketMenuController();
-      await filterController.clearFilters(context, TextEditingController(), () {});
+      final FilterTicketMenuController filterController =
+          FilterTicketMenuController();
+      await filterController.clearFilters(
+          context, TextEditingController(), () {});
 
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
@@ -203,7 +202,8 @@ class TicketsController {
       }
 
       final userId = getUserId();
-      List<dynamic> ticketsData = await _ticketService.getUserTicketFilterDefault(userId);
+      List<dynamic> ticketsData =
+          await _ticketService.getUserTicketFilterDefault(userId);
       List<Ticket> tickets = ticketsData.map((ticketData) {
         return TicketFactory.createTicket(
           id: ticketData['2'],
@@ -237,8 +237,10 @@ class TicketsController {
       return;
     }
     try {
-      final FilterTicketMenuController filterController = FilterTicketMenuController();
-      await filterController.clearFilters(context, TextEditingController(), () {});
+      final FilterTicketMenuController filterController =
+          FilterTicketMenuController();
+      await filterController.clearFilters(
+          context, TextEditingController(), () {});
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -318,15 +320,14 @@ class TicketsController {
   }
 
   /// Actualiza la lista de tickets resueltos haciendo otra consulta.
-  /// 
+  ///
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
-  /// 
+  ///
   /// Retorna una lista de tickets resueltos actualizada.
-   void updateTicketsResolved(BuildContext context,
+  void updateTicketsResolved(BuildContext context,
       {Map<String, dynamic>? filters}) async {
     try {
-      
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
         showNoInternetMessage(context);
@@ -338,7 +339,7 @@ class TicketsController {
         userId,
         {'status': '5'},
       );
-      List<Ticket> tickets = ticketsData.map((ticketData) {
+      ticketsData.map((ticketData) {
         return TicketFactory.createTicket(
           id: ticketData['2'],
           titulo: ticketData['1'],
@@ -400,7 +401,8 @@ class TicketsController {
           'id': historico['id'] ?? '',
           'users_id': historico['users_id'] ?? '',
           'date': historico['date'] ?? '',
-          'content': _stripHtmlTags(unescape.convert(historico['content'] ?? '')),
+          'content':
+              _stripHtmlTags(unescape.convert(historico['content'] ?? '')),
           'nombre_usuario': nombreUsuario,
           'documentos': documentos.isNotEmpty ? documentos : null,
         };
@@ -409,7 +411,8 @@ class TicketsController {
       if (sessionToken == null) {
         throw Exception("No session token found");
       }
-      List<dynamic> soluciones = await _ticketService.getTicketSolution(ticket.id, sessionToken);
+      List<dynamic> soluciones =
+          await _ticketService.getTicketSolution(ticket.id, sessionToken);
       ticket.soluciones = await Future.wait(soluciones.map((solucion) async {
         final nombreUsuario =
             await _userService.getUserName(solucion['users_id']);
@@ -417,7 +420,8 @@ class TicketsController {
           'id': solucion['id'] ?? '',
           'users_id': solucion['users_id'] ?? '',
           'date_creation': solucion['date_creation'] ?? solucion['date'] ?? '',
-          'content': _stripHtmlTags(unescape.convert(solucion['content'] ?? '')),
+          'content':
+              _stripHtmlTags(unescape.convert(solucion['content'] ?? '')),
           'nombre_usuario': nombreUsuario,
         };
       }).toList());
@@ -428,7 +432,6 @@ class TicketsController {
           builder: (context) => TicketDetailScreen(ticket: ticket),
         ),
       );
-
     } catch (e) {
       Navigator.of(context).pop();
       if (e is TimeoutException) {
@@ -485,7 +488,8 @@ class TicketsController {
           'id': historico['id'] ?? '',
           'users_id': historico['users_id'] ?? '',
           'date': historico['date'] ?? '',
-          'content': _stripHtmlTags(unescape.convert(historico['content'] ?? '')),
+          'content':
+              _stripHtmlTags(unescape.convert(historico['content'] ?? '')),
           'nombre_usuario': nombreUsuario,
           'documentos': documentos.isNotEmpty ? documentos : null,
         };
@@ -495,16 +499,19 @@ class TicketsController {
       if (sessionToken == null) {
         throw Exception("No session token found");
       }
-      List<dynamic> soluciones = await _ticketService.getTicketSolution(ticket.id, sessionToken);
+      List<dynamic> soluciones =
+          await _ticketService.getTicketSolution(ticket.id, sessionToken);
 
       ticket.soluciones = await Future.wait(soluciones.map((solucion) async {
-        final nombreUsuario = await _userService.getUserName(solucion['users_id']);
+        final nombreUsuario =
+            await _userService.getUserName(solucion['users_id']);
 
         return {
           'id': solucion['id'] ?? '',
           'users_id': solucion['users_id'] ?? '',
           'date_creation': solucion['date_creation'] ?? solucion['date'] ?? '',
-          'content': _stripHtmlTags(unescape.convert(solucion['content'] ?? '')),
+          'content':
+              _stripHtmlTags(unescape.convert(solucion['content'] ?? '')),
           'nombre_usuario': nombreUsuario,
         };
       }).toList());
@@ -517,7 +524,6 @@ class TicketsController {
           builder: (context) => TicketDetailScreen(ticket: ticket),
         ),
       );
-
     } catch (e) {
       Navigator.of(context).pop();
       if (e is TimeoutException) {
@@ -537,7 +543,6 @@ class TicketsController {
       context,
       MaterialPageRoute(builder: (context) => const MainMenuScreen()),
     );
-
   }
 
   /// Elimina las etiquetas HTML de una cadena.
@@ -552,11 +557,12 @@ class TicketsController {
   }
 
   /// Navega a la pantalla de solución del ticket.
-  /// 
+  ///
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   /// - [ticket]: El ticket cuya solución se mostrará.
-  Future<void> navigateToSolucionScreen(BuildContext context, Ticket ticket) async {
+  Future<void> navigateToSolucionScreen(
+      BuildContext context, Ticket ticket) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
 
     if (connectivityResult == ConnectivityResult.none) {
@@ -572,7 +578,8 @@ class TicketsController {
         },
       );
 
-      List<Map<String, dynamic>> soluciones = await getTicketSolutions(ticket.id);
+      List<Map<String, dynamic>> soluciones =
+          await getTicketSolutions(ticket.id);
       Map<String, dynamic> solucionReciente = soluciones.reduce((a, b) {
         DateTime fechaA = DateTime.parse(a['date_creation']);
         DateTime fechaB = DateTime.parse(b['date_creation']);
@@ -584,7 +591,8 @@ class TicketsController {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SolucionScreen(ticket: ticket, solucion: solucionReciente),
+          builder: (context) =>
+              SolucionScreen(ticket: ticket, solucion: solucionReciente),
         ),
       );
     } catch (e) {
@@ -598,7 +606,7 @@ class TicketsController {
   }
 
   /// Pone el ticket Rechazado en Estado En curso (asignado) un ticket específico.
-  /// 
+  ///
   /// Parámetros:
   /// - [context]: El contexto de la aplicación.
   /// - [ticket]: El ticket en espera.
@@ -641,7 +649,6 @@ class TicketsController {
       }
     }
   }
-
 
   /// Navega a la pantalla de consulta de ticket una vez rechazada o aprobada la solución.
   ///

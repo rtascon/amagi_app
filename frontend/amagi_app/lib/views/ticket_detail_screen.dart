@@ -4,7 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import '../controllers/ticket_detail_controller.dart';
-import '../models/user.dart'; 
+import '../models/user.dart';
 import 'dart:io';
 import 'create_historical_screen.dart';
 import 'dart:ui' as ui;
@@ -15,20 +15,19 @@ import 'dart:ui' as ui;
 class TicketDetailScreen extends StatefulWidget {
   final dynamic ticket;
 
-  TicketDetailScreen({super.key, required this.ticket});
+  const TicketDetailScreen({super.key, required this.ticket});
 
   @override
   _TicketDetailScreenState createState() => _TicketDetailScreenState();
 }
 
 class _TicketDetailScreenState extends State<TicketDetailScreen> {
-  final TicketDetailController _ticketDetailController = TicketDetailController();
-  final User usuario = User(); 
+  final TicketDetailController _ticketDetailController =
+      TicketDetailController();
+  final User usuario = User();
   final ScrollController _controller = ScrollController();
   bool _showScrollButton = false;
-  Map<int, bool> _expandedMessages = {};
-  bool _showFullText = false;
-  Map<int, bool> _showFullTextMap = {}; 
+  final Map<int, bool> _showFullTextMap = {};
 
   @override
   void initState() {
@@ -37,7 +36,8 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
   }
 
   void _scrollListener() {
-    if (_controller.position.maxScrollExtent > _controller.position.pixels + 100) {
+    if (_controller.position.maxScrollExtent >
+        _controller.position.pixels + 100) {
       setState(() {
         _showScrollButton = true;
       });
@@ -58,8 +58,11 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
-    bool historicoInicialPresente = widget.ticket.historicos.any((historico) => historico['isInitial'] == true);
+    Color defaultTextButtonColor =
+        TextButton.styleFrom().foregroundColor?.resolve({}) ??
+            Theme.of(context).primaryColor;
+    bool historicoInicialPresente = widget.ticket.historicos
+        .any((historico) => historico['isInitial'] == true);
 
     if (!historicoInicialPresente) {
       final historicoInicial = {
@@ -72,11 +75,18 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
       widget.ticket.historicos.insert(0, historicoInicial);
     }
 
-    final combinedList = [...widget.ticket.historicos, ...widget.ticket.soluciones];
+    final combinedList = [
+      ...widget.ticket.historicos,
+      ...widget.ticket.soluciones
+    ];
     combinedList.sort((a, b) {
-      DateTime fechaA = DateTime.tryParse(a['date'] ?? a['date_creation'] ?? '') ?? DateTime(1970);
-      DateTime fechaB = DateTime.tryParse(b['date'] ?? b['date_creation'] ?? '') ?? DateTime(1970);
-      return fechaB.compareTo(fechaA); 
+      DateTime fechaA =
+          DateTime.tryParse(a['date'] ?? a['date_creation'] ?? '') ??
+              DateTime(1970);
+      DateTime fechaB =
+          DateTime.tryParse(b['date'] ?? b['date_creation'] ?? '') ??
+              DateTime(1970);
+      return fechaB.compareTo(fechaA);
     });
 
     return Scaffold(
@@ -108,17 +118,21 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
               itemBuilder: (context, index) {
                 final item = combinedList[index];
                 final fecha = item['date'] ?? item['date_creation'] ?? '';
-                final usuarioNombre = item['nombre_usuario'] ?? 'Desconocido'; 
+                final usuarioNombre = item['nombre_usuario'] ?? 'Desconocido';
                 final documentos = item['documentos'] ?? [];
-                final esUsuarioLogueado = usuarioNombre == usuario.nombreCompleto;
+                final esUsuarioLogueado =
+                    usuarioNombre == usuario.nombreCompleto;
                 final esHistoricoInicial = item['isInitial'] == true;
                 final esSolucion = widget.ticket.soluciones.contains(item);
 
-                final formattedFecha = DateFormat('dd-MM-yy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
+                final formattedFecha = DateFormat('dd-MM-yy HH:mm')
+                    .format(DateTime.tryParse(fecha) ?? DateTime(1970));
 
                 return MessageBubble(
                   message: Message(
-                    owner: esUsuarioLogueado ? MessageOwner.myself : MessageOwner.other,
+                    owner: esUsuarioLogueado
+                        ? MessageOwner.myself
+                        : MessageOwner.other,
                     text: item['content'] ?? '',
                   ),
                   isSolution: esSolucion,
@@ -138,9 +152,11 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                               children: [
                                 Text(
                                   esSolucion ? "Solución: " : "Creado: ",
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                const Icon(Icons.access_time, size: 16, color: Colors.white),
+                                const Icon(Icons.access_time,
+                                    size: 16, color: Colors.white),
                                 const SizedBox(width: 5),
                                 Text(formattedFecha),
                               ],
@@ -152,7 +168,8 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                   "Por: ",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                const Icon(Icons.person, size: 20, color: Colors.white),
+                                const Icon(Icons.person,
+                                    size: 20, color: Colors.white),
                                 const SizedBox(width: 5),
                                 Flexible(
                                   child: Text(
@@ -160,7 +177,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                
                               ],
                             ),
                             const Divider(
@@ -181,16 +197,20 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                             fontSize: 16,
                           ),
                         ),
-
                       ],
                       const SizedBox(height: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ...item.entries.where((entry) {
-                            return entry.key != 'id' && entry.key != 'users_id' && entry.key != 'date_creation' 
-                            && entry.key != 'nombre_usuario' && entry.key != 'documentos' && entry.key != 'isInitial'
-                            && entry.key != 'date' && entry.key != 'content';
+                            return entry.key != 'id' &&
+                                entry.key != 'users_id' &&
+                                entry.key != 'date_creation' &&
+                                entry.key != 'nombre_usuario' &&
+                                entry.key != 'documentos' &&
+                                entry.key != 'isInitial' &&
+                                entry.key != 'date' &&
+                                entry.key != 'content';
                           }).map<Widget>((entry) {
                             return Text(
                               '${entry.value}',
@@ -198,15 +218,14 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                             );
                           }).toList(),
                           Text(
-                            _showFullTextMap[index] == true ? item['content'] : 
-                            
-                            (item['content'].length > 300 
-                            
-                            ? '${item['content'].substring(0, 300)}...' 
-                            : item['content']),
+                            _showFullTextMap[index] == true
+                                ? item['content']
+                                : (item['content'].length > 300
+                                    ? '${item['content'].substring(0, 300)}...'
+                                    : item['content']),
                           ),
-                          
-                          if (item['content'].length > 300 && _showFullTextMap[index] != true)
+                          if (item['content'].length > 300 &&
+                              _showFullTextMap[index] != true)
                             GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -214,7 +233,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                 });
                               },
                               child: const Text(
-                                'Leer más', 
+                                'Leer más',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -245,19 +264,28 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                           ),
                                         ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             TextButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: const Text('Cerrar', style: TextStyle(color: Colors.black)),
+                                              child: const Text('Cerrar',
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
                                             ),
                                             IconButton(
                                               onPressed: () async {
-                                                await _ticketDetailController.downloadFile(context, filePath, documento['filename']);
+                                                await _ticketDetailController
+                                                    .downloadFile(
+                                                        context,
+                                                        filePath,
+                                                        documento['filename']);
                                               },
-                                              icon: const Icon(Icons.file_open_outlined, color: Colors.black),
+                                              icon: const Icon(
+                                                  Icons.file_open_outlined,
+                                                  color: Colors.black),
                                             ),
                                           ],
                                         ),
@@ -302,20 +330,30 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                           ),
                                         ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             TextButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text('Cerrar',style: TextStyle(color: defaultTextButtonColor)),
+                                              child: Text('Cerrar',
+                                                  style: TextStyle(
+                                                      color:
+                                                          defaultTextButtonColor)),
                                             ),
                                             TextButton(
                                               onPressed: () async {
-                                                await _ticketDetailController.downloadFile(context, filePath, documento['filename']);
+                                                await _ticketDetailController
+                                                    .downloadFile(
+                                                        context,
+                                                        filePath,
+                                                        documento['filename']);
                                                 OpenFile.open(filePath);
                                               },
-                                              child: const Icon(Icons.file_open_outlined, color: Colors.black),
+                                              child: const Icon(
+                                                  Icons.file_open_outlined,
+                                                  color: Colors.black),
                                             ),
                                           ],
                                         ),
@@ -326,7 +364,8 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                               },
                               child: Row(
                                 children: [
-                                  const Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
+                                  const Icon(Icons.picture_as_pdf,
+                                      size: 40, color: Colors.red),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
@@ -356,7 +395,9 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CreateHistoricalScreen(ticketId: widget.ticket.id,ticket: widget.ticket)),
+                    MaterialPageRoute(
+                        builder: (context) => CreateHistoricalScreen(
+                            ticketId: widget.ticket.id, ticket: widget.ticket)),
                   );
                 },
                 backgroundColor: Colors.orange,
@@ -368,7 +409,9 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
             ),
           if (_showScrollButton)
             Positioned(
-              bottom: widget.ticket.estado == 5 || widget.ticket.estado == 6 ? 18 : 80,
+              bottom: widget.ticket.estado == 5 || widget.ticket.estado == 6
+                  ? 18
+                  : 80,
               right: MediaQuery.of(context).size.width * 0.08,
               child: FloatingActionButton.small(
                 onPressed: _scrollDown,
@@ -424,10 +467,19 @@ class MessageBubble extends StatelessWidget {
               ),
               child: BubbleBackground(
                 colors: isSolution
-                    ? [const Color.fromARGB(255, 0, 134, 100), const Color.fromARGB(255, 0, 204, 153)]
+                    ? [
+                        const Color.fromARGB(255, 0, 134, 100),
+                        const Color.fromARGB(255, 0, 204, 153)
+                      ]
                     : message.isMine
-                        ? [const Color.fromARGB(255, 0, 128, 202), const Color(0xFF005586)]
-                        : [const Color(0xFF005586), const Color.fromARGB(255, 0, 40, 92)],
+                        ? [
+                            const Color.fromARGB(255, 0, 128, 202),
+                            const Color(0xFF005586)
+                          ]
+                        : [
+                            const Color(0xFF005586),
+                            const Color.fromARGB(255, 0, 40, 92)
+                          ],
                 child: DefaultTextStyle.merge(
                   style: const TextStyle(
                     fontSize: 18.0,

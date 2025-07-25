@@ -1,0 +1,11 @@
+version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
+options: "0d033fdefcfad1c292f6b68f2ffb7a389cfc04f99f2ba4bdf9fcee9ca2ef6ce0"
+build_start_time: [1753123456, 554277896]
+build_end_time: [1753123456, 817924976]
+inputs:
+  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/SwiftyGif/SwiftyGif/NSImage+SwiftyGif.swift": !private [1753123432, 39187192]
+  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/SwiftyGif/SwiftyGif/NSImageView+SwiftyGif.swift": !private [1753123432, 49236774]
+  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/SwiftyGif/SwiftyGif/ObjcAssociatedWeakObject.swift": !private [1753123432, 40876388]
+  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/SwiftyGif/SwiftyGif/SwiftyGifManager.swift": !private [1753123432, 47713279]
+  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/SwiftyGif/SwiftyGif/UIImage+SwiftyGif.swift": !private [1753123432, 41825771]
+  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Pods/SwiftyGif/SwiftyGif/UIImageView+SwiftyGif.swift": !private [1753123432, 38095474]

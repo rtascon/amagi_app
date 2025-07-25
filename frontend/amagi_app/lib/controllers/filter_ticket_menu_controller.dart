@@ -19,7 +19,8 @@ class FilterTicketMenuController {
     final prefs = await SharedPreferences.getInstance();
     ticketIdController.text = prefs.getString('ticketId') ?? '';
     final savedType = prefs.getString('selectedType');
-    setType(['Requerimiento', 'Incidente'].contains(savedType) ? savedType : null);
+    setType(
+        ['Requerimiento', 'Incidente'].contains(savedType) ? savedType : null);
     final savedStatus = prefs.getString('selectedStatus');
     setStatus([
       'Nuevo',
@@ -28,11 +29,14 @@ class FilterTicketMenuController {
       'En espera',
       'Resuelto',
       'Cerrado'
-    ].contains(savedStatus) ? savedStatus : null);
+    ].contains(savedStatus)
+        ? savedStatus
+        : null);
     final startDate = prefs.getString('rangeStart');
     final endDate = prefs.getString('rangeEnd');
     setDateRange(startDate != null && endDate != null
-        ? DateTimeRange(start: DateTime.parse(startDate), end: DateTime.parse(endDate))
+        ? DateTimeRange(
+            start: DateTime.parse(startDate), end: DateTime.parse(endDate))
         : null);
   }
 
@@ -47,8 +51,10 @@ class FilterTicketMenuController {
     await prefs.setString('selectedType', selectedType ?? '');
     await prefs.setString('selectedStatus', selectedStatus ?? '');
     if (selectedDateRange != null) {
-      await prefs.setString('rangeStart', selectedDateRange.start.toIso8601String());
-      await prefs.setString('rangeEnd', selectedDateRange.end.toIso8601String());
+      await prefs.setString(
+          'rangeStart', selectedDateRange.start.toIso8601String());
+      await prefs.setString(
+          'rangeEnd', selectedDateRange.end.toIso8601String());
     } else {
       await prefs.remove('rangeStart');
       await prefs.remove('rangeEnd');
@@ -91,7 +97,9 @@ class FilterTicketMenuController {
         final ticketsData = await TicketsController().getTicketsList(
           context,
           false,
-          filters: {'status': _typeConversion.getEstadoReversa(selectedStatus!)},
+          filters: {
+            'status': _typeConversion.getEstadoReversa(selectedStatus!)
+          },
         );
         filteredTickets = ticketsData;
       } catch (e) {
@@ -102,36 +110,44 @@ class FilterTicketMenuController {
       }
     } else if (selectedStatus != null) {
       filteredTickets = filteredTickets
-          .where((ticket) => ticket.estado == _typeConversion.getEstadoReversa(selectedStatus))
+          .where((ticket) =>
+              ticket.estado == _typeConversion.getEstadoReversa(selectedStatus))
           .toList();
     }
 
     if (selectedType != null) {
       filteredTickets = filteredTickets
-          .where((ticket) => ticket.tipo == _typeConversion.getTipoReversa(selectedType))
+          .where((ticket) =>
+              ticket.tipo == _typeConversion.getTipoReversa(selectedType))
           .toList();
     }
 
     if (selectedDateRange != null) {
-      final formattedRange = _formatDateRange(selectedDateRange.start, selectedDateRange.end);
+      _formatDateRange(selectedDateRange.start, selectedDateRange.end);
       filteredTickets = filteredTickets.where((ticket) {
-        return 
-        ticket.fechaCreacion.isAfter(selectedDateRange.start.subtract(const Duration(seconds: 1))) &&
-        ticket.fechaCreacion.isBefore(selectedDateRange.end.add(const Duration(days: 1)));
+        return ticket.fechaCreacion.isAfter(
+                selectedDateRange.start.subtract(const Duration(seconds: 1))) &&
+            ticket.fechaCreacion
+                .isBefore(selectedDateRange.end.add(const Duration(days: 1)));
       }).toList();
     }
 
     return {
       'ticketId': ticketId.isNotEmpty ? int.parse(ticketId) : null,
-      'type': selectedType != null ? _typeConversion.getTipoReversa(selectedType) : null,
-      'status': selectedStatus != null ? _typeConversion.getEstadoReversa(selectedStatus) : null,
+      'type': selectedType != null
+          ? _typeConversion.getTipoReversa(selectedType)
+          : null,
+      'status': selectedStatus != null
+          ? _typeConversion.getEstadoReversa(selectedStatus)
+          : null,
       'dateRange': selectedDateRange,
       'tickets': filteredTickets,
     };
   }
 
   String _formatDateRange(DateTime? start, DateTime? end) {
-    final startDate = start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';
+    final startDate =
+        start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';
     final endDate = end != null ? DateFormat('d MMM', 'es').format(end) : 'Fin';
     return '$startDate - $endDate';
   }
@@ -150,5 +166,4 @@ class FilterTicketMenuController {
     ticketIdController.clear();
     resetState();
   }
-
 }

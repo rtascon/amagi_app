@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../widgets/table_calendar.dart';
-import '../models/ticket.dart'; 
+import '../models/ticket.dart';
 import '../controllers/filter_ticket_menu_controller.dart';
 
 /// Este archivo contiene la pantalla de menú de filtro de tickets, que permite a los usuarios filtrar tickets
@@ -12,7 +12,7 @@ import '../controllers/filter_ticket_menu_controller.dart';
 class FilterTicketMenu extends StatefulWidget {
   final Function(Map<String, dynamic>) onFilterChanged;
 
-  FilterTicketMenu({required this.onFilterChanged});
+  const FilterTicketMenu({super.key, required this.onFilterChanged});
 
   @override
   _FilterTicketMenuState createState() => _FilterTicketMenuState();
@@ -94,16 +94,17 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
 
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
-      _selectedDateRange = start != null ? DateTimeRange(start: start, end: end ?? start) : null;
+      _selectedDateRange =
+          start != null ? DateTimeRange(start: start, end: end ?? start) : null;
       if (_selectedDateRange != null) {
-        final formattedRange = _formatDateRange(_selectedDateRange!.start, _selectedDateRange!.end);
-        print('Rango formateado: $formattedRange');
+        _formatDateRange(_selectedDateRange!.start, _selectedDateRange!.end);
       }
     });
   }
 
   String _formatDateRange(DateTime? start, DateTime? end) {
-    final startDate = start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';
+    final startDate =
+        start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';
     final endDate = end != null ? DateFormat('d MMM', 'es').format(end) : 'Fin';
     return '$startDate - $endDate';
   }
@@ -121,7 +122,9 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
           onRangeSelected: (start, end, focusedDay) {
             _onRangeSelected(start, end, focusedDay);
             setState(() {
-              _selectedDateRange = start != null ? DateTimeRange(start: start, end: end ?? start) : null;
+              _selectedDateRange = start != null
+                  ? DateTimeRange(start: start, end: end ?? start)
+                  : null;
             });
           },
         );
@@ -167,7 +170,9 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     _toggleFilters();
                   },
                   validator: (value) {
-                    if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
+                    if (value != null &&
+                        value.isNotEmpty &&
+                        int.tryParse(value) == null) {
                       return 'Por favor ingrese un número válido';
                     }
                     return null;
@@ -197,16 +202,18 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                         children: [
                           Icon(Icons.error, color: Color(0xFFE98300), size: 12),
                           SizedBox(width: 8),
-                          Text('Incidente', style: TextStyle(fontSize: 14)), 
+                          Text('Incidente', style: TextStyle(fontSize: 14)),
                         ],
                       ),
                     ),
                   ],
-                  onChanged: _ticketIdController.text.isEmpty ? (value) {
-                    setState(() {
-                      _selectedType = value;
-                    });
-                  } : null,
+                  onChanged: _ticketIdController.text.isEmpty
+                      ? (value) {
+                          setState(() {
+                            _selectedType = value;
+                          });
+                        }
+                      : null,
                   value: _selectedType,
                   icon: null,
                   disabledHint: const Text('Deshabilitado'),
@@ -218,7 +225,7 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     labelText: 'Estado',
                     labelStyle: TextStyle(fontSize: 16),
                   ),
-                  dropdownColor: Colors.grey[200], 
+                  dropdownColor: Colors.grey[200],
                   items: const [
                     DropdownMenuItem<String>(
                       value: 'Nuevo',
@@ -234,9 +241,11 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       value: 'En curso (asignado)',
                       child: Row(
                         children: [
-                          Icon(Icons.circle_outlined, color: Colors.green, size: 12),
+                          Icon(Icons.circle_outlined,
+                              color: Colors.green, size: 12),
                           SizedBox(width: 8),
-                          Text('En curso (asignado)', style: TextStyle(fontSize: 14)),
+                          Text('En curso (asignado)',
+                              style: TextStyle(fontSize: 14)),
                         ],
                       ),
                     ),
@@ -244,9 +253,11 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       value: 'En curso (Planificado)',
                       child: Row(
                         children: [
-                          Icon(Icons.calendar_today, color: Colors.black, size: 12),
+                          Icon(Icons.calendar_today,
+                              color: Colors.black, size: 12),
                           SizedBox(width: 8),
-                          Text('En curso (Planificado)', style: TextStyle(fontSize: 13)),
+                          Text('En curso (Planificado)',
+                              style: TextStyle(fontSize: 13)),
                         ],
                       ),
                     ),
@@ -254,7 +265,8 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       value: 'En espera',
                       child: Row(
                         children: [
-                          Icon(Icons.circle, color: Color(0xFFE98300), size: 12),
+                          Icon(Icons.circle,
+                              color: Color(0xFFE98300), size: 12),
                           SizedBox(width: 8),
                           Text('En espera', style: TextStyle(fontSize: 14)),
                         ],
@@ -264,7 +276,8 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       value: 'Resuelto',
                       child: Row(
                         children: [
-                          Icon(Icons.check_circle_outline, color: Colors.green, size: 12),
+                          Icon(Icons.check_circle_outline,
+                              color: Colors.green, size: 12),
                           SizedBox(width: 8),
                           Text('Resuelto', style: TextStyle(fontSize: 14)),
                         ],
@@ -281,26 +294,30 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       ),
                     ),
                   ],
-                  onChanged: _ticketIdController.text.isEmpty ? (value) {
-                    setState(() {
-                      _selectedStatus = value;
-                    });
-                  } : null,
+                  onChanged: _ticketIdController.text.isEmpty
+                      ? (value) {
+                          setState(() {
+                            _selectedStatus = value;
+                          });
+                        }
+                      : null,
                   value: _selectedStatus,
-                  icon: null, 
+                  icon: null,
                   disabledHint: const Text('Deshabilitado'),
-                  isExpanded: true, 
+                  isExpanded: true,
                 ),
                 const SizedBox(height: 16),
-                
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center, 
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       child: ElevatedButton(
-                        onPressed: _ticketIdController.text.isEmpty ? _showDateRangePicker : null,
+                        onPressed: _ticketIdController.text.isEmpty
+                            ? _showDateRangePicker
+                            : null,
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 4.0),
                           backgroundColor: Colors.red,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
@@ -313,9 +330,11 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                           children: [
                             Text(
                               ' Seleccionar rango de fechas ',
-                              style: TextStyle(fontSize: 12, color: Colors.white), 
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.white),
                             ),
-                            Icon(Icons.edit_calendar_rounded, color: Colors.white),
+                            Icon(Icons.edit_calendar_rounded,
+                                color: Colors.white),
                           ],
                         ),
                       ),
@@ -326,18 +345,22 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Text('Inicio:', style: TextStyle(fontSize: 16),),
+                      const Text(
+                        'Inicio:',
+                        style: TextStyle(fontSize: 16),
+                      ),
                       const SizedBox(width: 8),
                       const Icon(Icons.today, color: Colors.grey),
                       Expanded(
                         child: Row(
                           children: [
                             Text(
-                              DateFormat('dd/MM/yyyy').format(_selectedDateRange!.start),
+                              DateFormat('dd/MM/yyyy')
+                                  .format(_selectedDateRange!.start),
                               style: const TextStyle(fontSize: 16),
                             ),
                             const SizedBox(width: 8),
-                            ],
+                          ],
                         ),
                       ),
                     ],
@@ -345,18 +368,21 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Text('Fin:', style: TextStyle(fontSize: 16),),
+                      const Text(
+                        'Fin:',
+                        style: TextStyle(fontSize: 16),
+                      ),
                       const SizedBox(width: 27),
                       const Icon(Icons.event, color: Colors.grey),
                       Expanded(
                         child: Row(
                           children: [
                             Text(
-                              DateFormat('dd/MM/yyyy').format(_selectedDateRange!.end),
+                              DateFormat('dd/MM/yyyy')
+                                  .format(_selectedDateRange!.end),
                               style: const TextStyle(fontSize: 16),
                             ),
                             const SizedBox(width: 8),
-                            
                           ],
                         ),
                       ),
@@ -393,17 +419,17 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: (_ticketIdController.text.isEmpty &&
-                                    _selectedType == null &&
-                                    _selectedStatus == null &&
-                                    _selectedDateRange == null)
+                                _selectedType == null &&
+                                _selectedStatus == null &&
+                                _selectedDateRange == null)
                             ? null
                             : _clearFilters,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           backgroundColor: (_ticketIdController.text.isEmpty &&
-                                            _selectedType == null &&
-                                            _selectedStatus == null &&
-                                            _selectedDateRange == null)
+                                  _selectedType == null &&
+                                  _selectedStatus == null &&
+                                  _selectedDateRange == null)
                               ? Colors.grey[300]
                               : Colors.red,
                           shape: RoundedRectangleBorder(
@@ -424,21 +450,6 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildDateCube(String text) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 14),
       ),
     );
   }

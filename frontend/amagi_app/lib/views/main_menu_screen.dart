@@ -1,13 +1,12 @@
-// main_menu_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
 import '../controllers/main_menu_controller.dart';
 import '../views/side_menu.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import '../services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 /// Esta vista representa el menú principal de la aplicación, desde donde los usuarios
 /// pueden navegar a diferentes secciones, como la creación y consulta de tickets.
@@ -93,59 +92,70 @@ class MainMenuScreenState extends State<MainMenuScreen> {
             child: Center(
               child: Align(
                 alignment: Alignment.topCenter,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 0,
-                        left: 10,
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        child: _buildMenuButton(
-                          context,
-                          icon: Symbols.document_search,
-                          label: 'Consulta de Tickets',
-                          onPressed: () async {
-                            await _saveSelectedOption('Consulta de Tickets');
-                            _ticketsController.navigateToTicketsScreen(context);
-                          },
+                child: LayoutBuilder(builder: (context, constraints) {
+                  final containerWidth = constraints.maxWidth > 600
+                      ? 500.0
+                      : constraints.maxWidth * 0.9;
+                  final containerHeight = containerWidth * 1.33;
+                  final buttonSize = containerWidth * 0.4;
+                  final horizontalPadding =
+                      (containerWidth - buttonSize * 2) / 6;
+
+                  return SizedBox(
+                    width: containerWidth,
+                    height: containerHeight,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 0,
+                          left: horizontalPadding,
+                          child: _buildMenuButton(
+                            context,
+                            icon: Symbols.document_search,
+                            label: 'Consulta de Tickets',
+                            onPressed: () async {
+                              await _saveSelectedOption('Consulta de Tickets');
+                              _ticketsController
+                                  .navigateToTicketsScreen(context);
+                            },
+                            buttonSize: buttonSize,
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        top: 0,
-                        right: 10,
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        child: _buildMenuButton(
-                          context,
-                          icon: Symbols.note_add,
-                          label: 'Crear Ticket',
-                          onPressed: () async {
-                            await _saveSelectedOption('Crear Ticket');
-                            _mainMenuController
-                                .navigateToCreateTicketScreen(context);
-                          },
+                        Positioned(
+                          top: 0,
+                          right: horizontalPadding,
+                          child: _buildMenuButton(
+                            context,
+                            icon: Symbols.note_add,
+                            label: 'Crear Ticket',
+                            onPressed: () async {
+                              await _saveSelectedOption('Crear Ticket');
+                              _mainMenuController
+                                  .navigateToCreateTicketScreen(context);
+                            },
+                            buttonSize: buttonSize,
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: 10,
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        child: _buildMenuButton(
-                          context,
-                          icon: Symbols.unknown_document,
-                          label: 'Tickets Resueltos',
-                          onPressed: () async {
-                            await _saveSelectedOption('Tickets Resueltos');
-                            _ticketsController.navigateToTicketsResolvedScreen(
-                                context,
-                                filters: {'status': 5});
-                          },
+                        Positioned(
+                          bottom: constraints.maxHeight * 0.070,
+                          left: horizontalPadding,
+                          child: _buildMenuButton(
+                            context,
+                            icon: Symbols.unknown_document,
+                            label: 'Tickets Resueltos',
+                            onPressed: () async {
+                              await _saveSelectedOption('Tickets Resueltos');
+                              _ticketsController
+                                  .navigateToTicketsResolvedScreen(context,
+                                      filters: {'status': 5});
+                            },
+                            buttonSize: buttonSize,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                }),
               ),
             ),
           ),
@@ -157,22 +167,24 @@ class MainMenuScreenState extends State<MainMenuScreen> {
   Widget _buildMenuButton(BuildContext context,
       {required IconData icon,
       required String label,
-      required VoidCallback onPressed}) {
+      required VoidCallback onPressed,
+      required double buttonSize}) {
+    final iconSize = buttonSize * 0.60;
+
     return Column(
       children: [
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.3,
-          height: MediaQuery.of(context).size.width * 0.3,
+          width: buttonSize,
+          height: buttonSize,
           child: FloatingActionButton(
             onPressed: onPressed,
             backgroundColor: Colors.white,
-            child: Icon(icon,
-                color: Colors.blueGrey, size: 64), // aumentado de 56 a 64
+            child: Icon(icon, color: Colors.blueGrey, size: iconSize),
           ),
         ),
         const SizedBox(height: 8),
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.3,
+          width: buttonSize,
           child: Text(
             label,
             style: const TextStyle(

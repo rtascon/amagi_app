@@ -1,0 +1,14 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/build/ios/Debug-iphonesimulator/path_provider_foundation/path_provider_foundation.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Pods.build/Debug-iphonesimulator/path_provider_foundation.build/unextended-module.modulemap",
+    }]
+  }]
+}

@@ -1,0 +1,20 @@
+dependencies: \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Runner/GeneratedPluginRegistrant.m \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Runner/GeneratedPluginRegistrant.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Modules/module.modulemap \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterViewController.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterHeadlessDartRunner.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterEngineGroup.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterEngine.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterDartProject.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterCallbackCache.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterTexture.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterPlatformViews.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterCodecs.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterChannels.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterBinaryMessenger.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterPlugin.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterMacros.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/FlutterAppDelegate.h \
+  /Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/build/Profile-iphoneos/Flutter.framework/Headers/Flutter.h
