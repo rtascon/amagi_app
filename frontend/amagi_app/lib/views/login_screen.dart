@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart';
+import '../theme/app_theme.dart';
 import 'dart:io';
+import 'package:package_info_plus/package_info_plus.dart';
 
 /// Esta vista permite a los usuarios iniciar sesión en la aplicación, proporcionando su nombre
 /// de usuario y contraseña. También incluye opciones para mostrar u ocultar la contraseña.
@@ -18,9 +20,23 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final _loginController = LoginController();
   bool _obscureText = true;
+  String _version = '';
 
   final FocusNode _usernameFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = info.version;
+    });
+  }
 
   @override
   void dispose() {
@@ -38,7 +54,7 @@ class LoginScreenState extends State<LoginScreen> {
         exit(0);
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF005586),
+        backgroundColor: AppColors.darkBlue,
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -59,44 +75,44 @@ class LoginScreenState extends State<LoginScreen> {
                             child: Image.asset(
                                 'assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png'),
                           ),
-                          const SizedBox(
-                              height:
-                                  50),
+                          const SizedBox(height: 50),
                           Container(
                             padding: const EdgeInsets.all(16.0),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AppColors.white,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(
                               children: [
                                 SizedBox(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.8,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
                                   child: TextFormField(
                                     controller: _usernameController,
                                     focusNode: _usernameFocusNode,
-                                    style: const TextStyle(
-                                        color: Colors.black),
+                                    style:
+                                        const TextStyle(color: AppColors.black),
                                     decoration: InputDecoration(
                                       filled: true,
-                                      fillColor: Colors.white,
+                                      fillColor: AppColors.white,
                                       labelText: 'Usuario',
                                       labelStyle: const TextStyle(
-                                          color: Colors.black),
+                                          color: AppColors.black),
                                       prefixIcon: Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
                                         child: Icon(
                                           Icons.person,
-                                          color: Colors.black,
-                                          size:
-                                              _usernameFocusNode.hasFocus ? 20 : 24,
+                                          color: AppColors.black,
+                                          size: _usernameFocusNode.hasFocus
+                                              ? 20
+                                              : 24,
                                         ),
                                       ),
-                                      contentPadding: const EdgeInsets.symmetric(
-                                          vertical: 15),
-                                      border:
-                                          const UnderlineInputBorder(),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 15),
+                                      border: const UnderlineInputBorder(),
                                     ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -111,39 +127,40 @@ class LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: 20),
                                 SizedBox(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.8,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
                                   child: TextFormField(
                                     controller: _passwordController,
                                     focusNode: _passwordFocusNode,
-                                    style: const TextStyle(
-                                        color: Colors.black),
+                                    style:
+                                        const TextStyle(color: AppColors.black),
                                     decoration: InputDecoration(
                                       filled: true,
-                                      fillColor: Colors
-                                          .white,
+                                      fillColor: AppColors.white,
                                       labelText: 'Contraseña',
                                       labelStyle: const TextStyle(
-                                          color: Colors.black),
+                                          color: AppColors.black),
                                       prefixIcon: Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
                                         child: Icon(
                                           Icons.vpn_key,
-                                          color: Colors.black,
-                                          size:
-                                              _passwordFocusNode.hasFocus ? 20 : 24,
+                                          color: AppColors.black,
+                                          size: _passwordFocusNode.hasFocus
+                                              ? 20
+                                              : 24,
                                         ),
                                       ),
-                                      contentPadding: const EdgeInsets.symmetric(
-                                          vertical: 15),
-                                      border:
-                                          const UnderlineInputBorder(),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 15),
+                                      border: const UnderlineInputBorder(),
                                       suffixIcon: IconButton(
                                         icon: Icon(
                                           _obscureText
                                               ? Icons.visibility
                                               : Icons.visibility_off,
-                                          color: Colors.black,
+                                          color: AppColors.black,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -167,36 +184,29 @@ class LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(height: 20),
                                 ElevatedButton(
                                   onPressed: () {
-                                            final username =
-                                                _usernameController.text;
-                                            final password =
-                                                _passwordController.text;
-                                            _loginController.login(
-                                                username, password, context);
+                                    final username = _usernameController.text;
+                                    final password = _passwordController.text;
+                                    _loginController.login(
+                                        username, password, context);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color(0xFFE98300),
-                                    foregroundColor:
-                                        Colors.white,
+                                    backgroundColor: AppColors.orange,
+                                    foregroundColor: AppColors.white,
                                     minimumSize: Size(
                                         MediaQuery.of(context).size.width * 0.5,
                                         40),
                                   ),
                                   child: const Text('Iniciar sesión'),
                                 ),
-                                const SizedBox(
-                                    height: 5),
+                                const SizedBox(height: 5),
                                 ElevatedButton(
                                   onPressed: () {
                                     _loginController
                                         .redirectToRegistration(context);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color(0xFF747678),
-                                    foregroundColor:
-                                        Colors.white,
+                                    backgroundColor: AppColors.blueGrey,
+                                    foregroundColor: AppColors.white,
                                     minimumSize: Size(
                                         MediaQuery.of(context).size.width * 0.2,
                                         30),
@@ -212,20 +222,17 @@ class LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 20),
                     Column(
                       children: [
-                        const SizedBox(
-                            height:
-                                30), 
+                        const SizedBox(height: 30),
                         Image.asset(
                           'assets/Amagi logo blanco.png',
                           alignment: Alignment.bottomCenter,
                           width: 100,
                           height: 100,
                         ),
-                        const SizedBox(
-                            height: 10),
-                        const Text(
-                          'V 1.0.1',
-                          style: TextStyle(color: Colors.white),
+                        const SizedBox(height: 10),
+                        Text(
+                          'V ${_version.isNotEmpty ? _version : "..."}',
+                          style: const TextStyle(color: AppColors.white),
                         ),
                       ],
                     ),

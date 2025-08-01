@@ -8,6 +8,7 @@ import '../models/user.dart';
 import 'dart:io';
 import 'create_historical_screen.dart';
 import 'dart:ui' as ui;
+import '../theme/app_theme.dart';
 
 /// Esta vista muestra los detalles de un ticket específico, incluyendo su descripción,
 /// históricos y documentos adjuntos. Permite a los usuarios ver y gestionar la información del ticket.
@@ -104,7 +105,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color(0xFF005586),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         elevation: 0,
         centerTitle: true,
       ),
@@ -342,7 +343,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                                       color:
                                                           defaultTextButtonColor)),
                                             ),
-                                            TextButton(
+                                            IconButton(
                                               onPressed: () async {
                                                 await _ticketDetailController
                                                     .downloadFile(
@@ -351,7 +352,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                                         documento['filename']);
                                                 OpenFile.open(filePath);
                                               },
-                                              child: const Icon(
+                                              icon: const Icon(
                                                   Icons.file_open_outlined,
                                                   color: Colors.black),
                                             ),
@@ -446,6 +447,23 @@ class MessageBubble extends StatelessWidget {
     final messageAlignment =
         message.isMine ? Alignment.topRight : Alignment.topLeft;
 
+    final themeColors = AppTheme.of(context);
+
+    final List<Color> solutionGradient = [
+      const Color(0xFF388E3C),
+      const Color(0xFF66BB6A),
+    ];
+
+    final List<Color> myMessageGradient = [
+      themeColors.primaryColor,
+      themeColors.primaryDarkColor,
+    ];
+
+    final List<Color> otherMessageGradient = [
+      themeColors.primaryDarkColor,
+      const Color.fromARGB(255, 0, 40, 92),
+    ];
+
     return FractionallySizedBox(
       alignment: messageAlignment,
       widthFactor: 0.9,
@@ -467,19 +485,10 @@ class MessageBubble extends StatelessWidget {
               ),
               child: BubbleBackground(
                 colors: isSolution
-                    ? [
-                        const Color.fromARGB(255, 0, 134, 100),
-                        const Color.fromARGB(255, 0, 204, 153)
-                      ]
+                    ? solutionGradient
                     : message.isMine
-                        ? [
-                            const Color.fromARGB(255, 0, 128, 202),
-                            const Color(0xFF005586)
-                          ]
-                        : [
-                            const Color(0xFF005586),
-                            const Color.fromARGB(255, 0, 40, 92)
-                          ],
+                        ? myMessageGradient
+                        : otherMessageGradient,
                 child: DefaultTextStyle.merge(
                   style: const TextStyle(
                     fontSize: 18.0,

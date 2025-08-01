@@ -1,9 +1,0 @@
-version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
-options: "b192c450016fa59629e5eba28c228953731714179b3aef942b26413eda5f600b"
-build_start_time: [1753123456, 547878026]
-build_end_time: [1753123456, 815871000]
-inputs:
-  ? "/Users/xirimiri/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.0/darwin/path_provider_foundation/Sources/path_provider_foundation/PathProviderPlugin.swift"
-  : !private [1752083773, 892985343]
-  ? "/Users/xirimiri/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.0/darwin/path_provider_foundation/Sources/path_provider_foundation/messages.g.swift"
-  : !private [1752083773, 896002531]

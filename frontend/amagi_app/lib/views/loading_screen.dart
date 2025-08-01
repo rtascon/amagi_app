@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../theme/app_theme.dart';
 
 /// Esta vista muestra una pantalla de carga animada, utilizada para indicar que una operación
 /// está en progreso y el usuario debe esperar.
@@ -60,7 +61,7 @@ class LoadingScreenState extends State<LoadingScreen>
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF005586), Color(0xFF005586)],
+                colors: [AppColors.darkBlue, AppColors.darkBlue],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -82,7 +83,7 @@ class LoadingScreenState extends State<LoadingScreen>
                     right: 0,
                     child: CircleAvatar(
                       radius: 6,
-                      backgroundColor: Color(0xFFE98300),
+                      backgroundColor: AppColors.orange,
                     ),
                   ),
                 ],

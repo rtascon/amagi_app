@@ -7,6 +7,7 @@ import '../views/side_menu.dart';
 import 'filter_ticket_menu_screen.dart';
 import '../models/ticket.dart';
 import '../models/type_conversion.dart';
+import '../theme/app_theme.dart';
 
 /// Esta vista muestra una lista de tickets del usuario, permitiendo filtrar y ordenar
 /// los tickets según diferentes criterios. También proporciona acceso a los detalles de cada ticket.
@@ -88,7 +89,7 @@ class TicketsScreenState extends State<TicketsScreen> {
         key: _scaffoldKey,
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
+            icon: const Icon(Icons.menu, color: AppColors.white),
             onPressed: () {
               _scaffoldKey.currentState?.openDrawer();
             },
@@ -96,19 +97,19 @@ class TicketsScreenState extends State<TicketsScreen> {
           title: const Text(
             'Servicio GIA',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.filter_list, color: Colors.white),
+              icon: const Icon(Icons.filter_list, color: AppColors.white),
               onPressed: () {
                 _scaffoldKey.currentState?.openEndDrawer();
               },
             ),
           ],
-          backgroundColor: const Color(0xFF005586),
+          backgroundColor: AppColors.darkBlue,
           elevation: 0,
           centerTitle: true,
         ),
@@ -123,10 +124,10 @@ class TicketsScreenState extends State<TicketsScreen> {
         body: Stack(
           children: [
             Container(
-              color: Colors.white,
+              color: AppColors.white,
               child: RefreshIndicator(
-                color: const Color(0xFF005586),
-                backgroundColor: Colors.white,
+                color: AppColors.darkBlue,
+                backgroundColor: AppColors.white,
                 onRefresh: _refreshTickets,
                 child: _filteredTickets.isEmpty
                     ? SingleChildScrollView(
@@ -142,7 +143,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                 Icon(
                                   Icons.inbox,
                                   size: 80,
-                                  color: Colors.grey,
+                                  color: AppColors.blueGrey,
                                 ),
                                 SizedBox(height: 16),
                                 Text(
@@ -150,7 +151,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.grey,
+                                    color: AppColors.blueGrey,
                                   ),
                                 ),
                               ],
@@ -181,7 +182,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                     width: double.infinity,
                                     padding: const EdgeInsets.all(16.0),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[200],
+                                      color:
+                                          AppColors.blueGrey.withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(15.0),
                                     ),
                                     child: Column(
@@ -200,7 +202,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                       horizontal: 8.0,
                                                       vertical: 4.0),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.grey[300],
+                                                    color: AppColors.blueGrey
+                                                        .withOpacity(0.2),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8.0),
@@ -216,7 +219,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                           height: 10,
                                                           decoration:
                                                               const BoxDecoration(
-                                                            color: Colors.green,
+                                                            color:
+                                                                AppColors.green,
                                                             shape:
                                                                 BoxShape.circle,
                                                           ),
@@ -235,7 +239,7 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                           decoration:
                                                               BoxDecoration(
                                                             border: Border.all(
-                                                                color: Colors
+                                                                color: AppColors
                                                                     .green),
                                                             shape:
                                                                 BoxShape.circle,
@@ -257,7 +261,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                           child: const Icon(
                                                             Icons
                                                                 .calendar_today,
-                                                            color: Colors.black,
+                                                            color:
+                                                                AppColors.black,
                                                             size: 16,
                                                           ),
                                                         ),
@@ -270,8 +275,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                           height: 10,
                                                           decoration:
                                                               const BoxDecoration(
-                                                            color: Color(
-                                                                0xFFE98300),
+                                                            color: AppColors
+                                                                .orange,
                                                             shape:
                                                                 BoxShape.circle,
                                                           ),
@@ -292,7 +297,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                           child: const Icon(
                                                             Icons
                                                                 .check_circle_outline,
-                                                            color: Colors.green,
+                                                            color:
+                                                                AppColors.green,
                                                             size: 16,
                                                           ),
                                                         ),
@@ -305,7 +311,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                           height: 10,
                                                           decoration:
                                                               const BoxDecoration(
-                                                            color: Colors.black,
+                                                            color:
+                                                                AppColors.black,
                                                             shape:
                                                                 BoxShape.circle,
                                                           ),
@@ -366,8 +373,10 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                                 .getTipo(ticket
                                                                     .tipo) ==
                                                             'Requerimiento'
-                                                        ? Colors.blue[100]
-                                                        : Colors.orange[100],
+                                                        ? AppColors.blue
+                                                            .withOpacity(0.1)
+                                                        : AppColors.orangeLight
+                                                            .withOpacity(0.3),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8.0),
@@ -389,10 +398,9 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                                         .getTipo(ticket
                                                                             .tipo) ==
                                                                     'Requerimiento'
-                                                                ? const Color(
-                                                                    0xFF009FDA)
-                                                                : const Color(
-                                                                    0xFFE98300),
+                                                                ? AppColors.blue
+                                                                : AppColors
+                                                                    .orange,
                                                             size: 20,
                                                           ),
                                                         ),
@@ -408,10 +416,9 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                                           ticket
                                                                               .tipo) ==
                                                                   'Requerimiento'
-                                                              ? const Color(
-                                                                  0xFF009FDA)
-                                                              : const Color(
-                                                                  0xFFE98300),
+                                                              ? AppColors.blue
+                                                              : AppColors
+                                                                  .orange,
                                                           fontSize: 10,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -427,7 +434,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                       horizontal: 10.0,
                                                       vertical: 4.0),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.grey[300],
+                                                    color: AppColors.blueGrey
+                                                        .withOpacity(0.2),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8.0),
@@ -437,7 +445,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                       const Text(
                                                         '#',
                                                         style: TextStyle(
-                                                          color: Colors.black,
+                                                          color:
+                                                              AppColors.black,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -447,8 +456,9 @@ class TicketsScreenState extends State<TicketsScreen> {
                                                       Text(
                                                         ticket.id.toString(),
                                                         style: const TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 10,
+                                                          color:
+                                                              AppColors.black,
+                                                          fontSize: 11.5,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -480,9 +490,9 @@ class TicketsScreenState extends State<TicketsScreen> {
                                         const SizedBox(height: 4.0),
                                         Text(
                                           formattedDate,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 14,
-                                            color: Colors.grey[600],
+                                            color: AppColors.blueGrey,
                                           ),
                                         ),
                                       ],
@@ -496,9 +506,8 @@ class TicketsScreenState extends State<TicketsScreen> {
                                       bottom: 0,
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              const Color(0xFF005586),
-                                          foregroundColor: Colors.white,
+                                          backgroundColor: AppColors.darkBlue,
+                                          foregroundColor: AppColors.white,
                                           minimumSize: const Size(50, 30),
                                         ),
                                         onPressed: () {
@@ -521,9 +530,9 @@ class TicketsScreenState extends State<TicketsScreen> {
                                           shape: BoxShape.rectangle,
                                         ),
                                         child: IconButton(
-                                          icon: Icon(
+                                          icon: const Icon(
                                             Icons.info_outline,
-                                            color: Colors.grey[500],
+                                            color: AppColors.blueGrey,
                                             size: 25,
                                           ),
                                           onPressed: () {

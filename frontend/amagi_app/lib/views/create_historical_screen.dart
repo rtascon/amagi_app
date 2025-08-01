@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../controllers/create_historical_controller.dart';
 import '../models/ticket.dart';
+import '../theme/app_theme.dart';
 
 /// Esta vista permite a los usuarios agregar un histórico a un ticket existente,
 /// incluyendo la descripción y la posibilidad de adjuntar archivos.
@@ -106,32 +107,33 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppTheme.of(context);
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            icon: Icon(Icons.arrow_back, color: colors.backgroundColor),
             onPressed: () async {
               if (await _onWillPop()) {
                 Navigator.pop(context);
               }
             },
           ),
-          title: const Text(
+          title: Text(
             'Agregar Histórico',
             style: TextStyle(
-              color: Colors.white,
+              color: colors.backgroundColor,
               fontWeight: FontWeight.bold,
             ),
           ),
-          backgroundColor: const Color(0xFF005586),
+          backgroundColor: colors.primaryDarkColor,
           elevation: 0,
           centerTitle: true,
         ),
         body: Container(
           padding: const EdgeInsets.all(16.0),
-          color: Colors.white,
+          color: colors.backgroundColor,
           child: Form(
             key: _formKey,
             child: ListView(
@@ -142,11 +144,11 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(Icons.edit_note, color: Colors.grey[600]),
+                      Icon(Icons.edit_note, color: colors.iconColor),
                       const SizedBox(width: 4.0),
                       Text(
                         'Descripción',
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: colors.iconColor),
                       ),
                     ],
                   ),
@@ -156,7 +158,7 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 16.0, horizontal: 16.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: colors.secondaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: ConstrainedBox(
@@ -168,9 +170,9 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                       decoration: InputDecoration(
                         hintText: 'Ingrese una descripción',
                         hintStyle:
-                            TextStyle(color: Colors.grey[600], fontSize: 17),
+                            TextStyle(color: colors.iconColor, fontSize: 17),
                         filled: true,
-                        fillColor: Colors.grey[200],
+                        fillColor: colors.secondaryColor.withOpacity(0),
                         border: InputBorder.none,
                         contentPadding:
                             const EdgeInsets.symmetric(vertical: 10.0),
@@ -197,11 +199,11 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: _pickFiles,
-                        icon: const Icon(Icons.folder, color: Colors.white),
+                        icon: Icon(Icons.folder, color: colors.backgroundColor),
                         label: const Text('Subir Archivo'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF005586),
-                          foregroundColor: Colors.white,
+                          backgroundColor: colors.primaryDarkColor,
+                          foregroundColor: colors.backgroundColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
@@ -212,11 +214,12 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: _pickImageFromCamera,
-                        icon: const Icon(Icons.camera_alt, color: Colors.white),
+                        icon: Icon(Icons.camera_alt,
+                            color: colors.backgroundColor),
                         label: const Text('Tomar Foto'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF005586),
-                          foregroundColor: Colors.white,
+                          backgroundColor: colors.primaryDarkColor,
+                          foregroundColor: colors.backgroundColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
@@ -232,7 +235,7 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 8.0, horizontal: 16.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: colors.secondaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Stack(
@@ -251,12 +254,12 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                                         children: [
                                           Icon(Icons.attach_file,
                                               size: 24,
-                                              color: Colors.grey[600]),
+                                              color: colors.iconColor),
                                           const SizedBox(width: 4.0),
                                           Text(
                                             'No se ha cargado ningún archivo',
                                             style: TextStyle(
-                                                color: Colors.grey[600],
+                                                color: colors.iconColor,
                                                 fontSize: 12),
                                           ),
                                         ],
@@ -287,7 +290,7 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                                               children: [
                                                 Icon(icon,
                                                     size: 25,
-                                                    color: Colors.grey[600]),
+                                                    color: colors.iconColor),
                                                 const SizedBox(width: 4.0),
                                                 Expanded(
                                                   child: Text(
@@ -340,8 +343,8 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                         color: _selectedFiles.fold<int>(
                                     0, (sum, file) => sum + file.size) >
                                 10 * 1024 * 1024
-                            ? Colors.red
-                            : Colors.grey[600],
+                            ? colors.errorColor
+                            : colors.iconColor,
                         fontSize: 12,
                       ),
                     ),
@@ -391,13 +394,13 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                               }
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF005586),
-                        foregroundColor: Colors.white,
+                        backgroundColor: colors.primaryDarkColor,
+                        foregroundColor: colors.backgroundColor,
                       ),
                       child: _isLoading
-                          ? const CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                          ? CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  colors.backgroundColor),
                             )
                           : const Text('Enviar'),
                     ),

@@ -59,22 +59,23 @@ class MainMenuScreenState extends State<MainMenuScreen> {
         return true;
       },
       child: Container(
-        color: const Color(0xFF005586),
+        color: Theme.of(context).colorScheme.primaryContainer,
         child: Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white),
+              icon: Icon(Icons.menu,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer),
               onPressed: () async {
                 await _saveSelectedOption('Inicio');
                 _scaffoldKey.currentState?.openDrawer();
               },
             ),
-            title: const Text(
+            title: Text(
               'Servicio GIA',
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -94,25 +95,25 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                 alignment: Alignment.topCenter,
                 child: LayoutBuilder(builder: (context, constraints) {
                   final containerWidth = constraints.maxWidth > 600
-                      ? 500.0
-                      : constraints.maxWidth * 0.9;
-                  final containerHeight = containerWidth * 1.33;
-                  final buttonSize = containerWidth * 0.4;
-                  final horizontalPadding =
-                      (containerWidth - buttonSize * 2) / 6;
+                      ? 400.0
+                      : constraints.maxWidth * 0.8;
+                  final buttonSize = containerWidth * 0.45;
+                  final squareSize = containerWidth;
+                  const offset = 0.0;
+                  final bottomOffset = squareSize - buttonSize;
 
                   return SizedBox(
-                    width: containerWidth,
-                    height: containerHeight,
+                    width: squareSize,
+                    height: squareSize,
                     child: Stack(
                       children: [
                         Positioned(
-                          top: 0,
-                          left: horizontalPadding,
+                          top: offset,
+                          left: offset,
                           child: _buildMenuButton(
                             context,
                             icon: Symbols.document_search,
-                            label: 'Consulta de Tickets',
+                            label: 'En Proceso',
                             onPressed: () async {
                               await _saveSelectedOption('Consulta de Tickets');
                               _ticketsController
@@ -122,12 +123,12 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                           ),
                         ),
                         Positioned(
-                          top: 0,
-                          right: horizontalPadding,
+                          top: offset,
+                          right: offset,
                           child: _buildMenuButton(
                             context,
                             icon: Symbols.note_add,
-                            label: 'Crear Ticket',
+                            label: 'Crear',
                             onPressed: () async {
                               await _saveSelectedOption('Crear Ticket');
                               _mainMenuController
@@ -137,12 +138,12 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                           ),
                         ),
                         Positioned(
-                          bottom: constraints.maxHeight * 0.070,
-                          left: horizontalPadding,
+                          left: offset,
+                          top: bottomOffset,
                           child: _buildMenuButton(
                             context,
                             icon: Symbols.unknown_document,
-                            label: 'Tickets Resueltos',
+                            label: 'Resuelto',
                             onPressed: () async {
                               await _saveSelectedOption('Tickets Resueltos');
                               _ticketsController
@@ -169,32 +170,41 @@ class MainMenuScreenState extends State<MainMenuScreen> {
       required String label,
       required VoidCallback onPressed,
       required double buttonSize}) {
-    final iconSize = buttonSize * 0.60;
+    final iconSize = buttonSize * 0.5 + 10;
 
-    return Column(
-      children: [
-        SizedBox(
-          width: buttonSize,
-          height: buttonSize,
-          child: FloatingActionButton(
-            onPressed: onPressed,
-            backgroundColor: Colors.white,
-            child: Icon(icon, color: Colors.blueGrey, size: iconSize),
-          ),
+    return SizedBox(
+      width: buttonSize,
+      height: buttonSize,
+      child: FloatingActionButton(
+        onPressed: onPressed,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: buttonSize,
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon,
+                color: Theme.of(context).colorScheme.primaryContainer,
+                size: iconSize),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  fontSize: 16.5,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

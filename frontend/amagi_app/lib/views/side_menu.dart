@@ -5,6 +5,7 @@ import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import '../theme/app_theme.dart';
 
 /// Esta vista representa el menú lateral de la aplicación, que permite a los usuarios
 /// navegar a diferentes secciones de la aplicación, como la creación y consulta de tickets.
@@ -104,27 +105,22 @@ class _SideMenuState extends State<SideMenu>
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isPortrait =
-        MediaQuery.of(context).orientation == Orientation.portrait;
     final horizontalPadding = screenWidth * 0.04;
     final verticalPadding = screenHeight * 0.02;
-    final avatarSize = screenWidth * 0.18;
-    final logoWidth = screenWidth * 0.38;
-    final logoHeight = isPortrait ? screenHeight * 0.13 : screenHeight * 0.20;
 
     return WillPopScope(
       onWillPop: () async => true,
       child: Drawer(
         child: Container(
           width: screenWidth * 0.75,
-          color: Colors.white,
+          color: AppColors.white,
           child: LayoutBuilder(
             builder: (context, constraints) {
               final isSmallScreen = constraints.maxWidth < 400;
               final fontSizeTitle = isSmallScreen ? 17.0 : 22.0;
               final fontSize = isSmallScreen ? 17.0 : 22.0;
               final iconSize = isSmallScreen ? 28.0 : 32.0;
-              const iconColor = Color(0xFF005586);
+              const iconColor = AppColors.darkBlue;
 
               return Column(
                 children: <Widget>[
@@ -165,7 +161,7 @@ class _SideMenuState extends State<SideMenu>
                                                 ''),
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: fontSizeTitle,
+                                              fontSize: fontSizeTitle - .5,
                                             ),
                                           ),
                                           Row(
@@ -244,7 +240,7 @@ class _SideMenuState extends State<SideMenu>
                               vertical: verticalPadding * 0.5),
                           child: const Divider(
                             thickness: 1,
-                            color: Colors.grey,
+                            color: AppColors.blueGrey,
                           ),
                         ),
                         Column(
@@ -273,8 +269,8 @@ class _SideMenuState extends State<SideMenu>
                                             'Inicio',
                                             style: TextStyle(
                                               color: value == 'Inicio'
-                                                  ? const Color(0xFF005586)
-                                                  : Colors.black,
+                                                  ? AppColors.darkBlue
+                                                  : AppColors.black,
                                               fontSize: fontSize,
                                             ),
                                           ),
@@ -306,12 +302,12 @@ class _SideMenuState extends State<SideMenu>
                                         child: Align(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
-                                            'Consulta de Tickets',
+                                            'Tickets en Proceso',
                                             style: TextStyle(
                                               color:
                                                   value == 'Consulta de Tickets'
-                                                      ? const Color(0xFF005586)
-                                                      : Colors.black,
+                                                      ? AppColors.darkBlue
+                                                      : AppColors.black,
                                               fontSize: fontSize,
                                             ),
                                           ),
@@ -351,8 +347,8 @@ class _SideMenuState extends State<SideMenu>
                                             'Crear Ticket',
                                             style: TextStyle(
                                               color: value == 'Crear Ticket'
-                                                  ? const Color(0xFF005586)
-                                                  : Colors.black,
+                                                  ? AppColors.darkBlue
+                                                  : AppColors.black,
                                               fontSize: fontSize,
                                             ),
                                           ),
@@ -390,8 +386,8 @@ class _SideMenuState extends State<SideMenu>
                                             style: TextStyle(
                                               color:
                                                   value == 'Tickets Resueltos'
-                                                      ? const Color(0xFF005586)
-                                                      : Colors.black,
+                                                      ? AppColors.darkBlue
+                                                      : AppColors.black,
                                               fontSize: fontSize,
                                             ),
                                           ),
@@ -409,7 +405,7 @@ class _SideMenuState extends State<SideMenu>
                               vertical: verticalPadding * 0.5),
                           child: const Divider(
                             thickness: 1,
-                            color: Colors.grey,
+                            color: AppColors.blueGrey,
                           ),
                         ),
                         Row(
@@ -432,7 +428,7 @@ class _SideMenuState extends State<SideMenu>
                                   child: Text(
                                     'Acerca de',
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: AppColors.black,
                                       fontSize: fontSize,
                                     ),
                                   ),
@@ -456,7 +452,7 @@ class _SideMenuState extends State<SideMenu>
                                   child: Text(
                                     'Cerrar Sesión',
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: AppColors.black,
                                       fontSize: fontSize,
                                     ),
                                   ),

@@ -31,6 +31,11 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Ignorar carpetas de builds generados automáticamente
+build/
+ios/build/
+android/build/
+
 # Symbolication related
 app.*.symbols
 
@@ -44,3 +49,23 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Ignorar archivos grandes comunes
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.exe
+*.dll
+*.iso
+*.bin
+*.ipa
+*.apk
+
+# Ignorar archivo de dependencias de Dart
+.packages

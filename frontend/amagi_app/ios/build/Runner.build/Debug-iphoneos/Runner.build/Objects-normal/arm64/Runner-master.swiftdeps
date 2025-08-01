@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)"
-options: "56bbe696396becfaadad0c501a1b2c2ed07bf5bb7018cba806c40596cd09ec8f"
-build_start_time: [1753303141, 587061882]
-build_end_time: [1753303141, 947455883]
-inputs:
-  "/Users/xirimiri/Documents/carpeta/amagi_app/frontend/amagi_app/ios/Runner/AppDelegate.swift": !private [1752083662, 391801357]

@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../widgets/table_calendar.dart';
 import '../models/ticket.dart';
 import '../controllers/filter_ticket_menu_controller.dart';
+import '../theme/app_theme.dart'; // Importa el tema
 
 /// Este archivo contiene la pantalla de menú de filtro de tickets, que permite a los usuarios filtrar tickets
 /// según diferentes criterios, como ID de ticket, tipo, estado y rango de fechas.
@@ -138,7 +139,7 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
       alignment: Alignment.centerRight,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.60,
-        color: Colors.white,
+        color: AppColors.white, // Usar color del tema
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -184,15 +185,16 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     labelText: 'Tipo',
                     labelStyle: TextStyle(fontSize: 16),
                   ),
-                  dropdownColor: Colors.grey[200],
+                  dropdownColor: AppColors.white,
                   items: const [
                     DropdownMenuItem<String>(
                       value: 'Requerimiento',
                       child: Row(
                         children: [
-                          Icon(Icons.help, color: Color(0xFF009FDA), size: 12),
+                          Icon(Icons.help, color: AppColors.blue, size: 12),
                           SizedBox(width: 8),
-                          Text('Requerimiento', style: TextStyle(fontSize: 14)),
+                          Text('Requerimiento',
+                              style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -200,9 +202,9 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       value: 'Incidente',
                       child: Row(
                         children: [
-                          Icon(Icons.error, color: Color(0xFFE98300), size: 12),
+                          Icon(Icons.error, color: AppColors.orange, size: 12),
                           SizedBox(width: 8),
-                          Text('Incidente', style: TextStyle(fontSize: 14)),
+                          Text('Incidente', style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -225,15 +227,15 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                     labelText: 'Estado',
                     labelStyle: TextStyle(fontSize: 16),
                   ),
-                  dropdownColor: Colors.grey[200],
+                  dropdownColor: AppColors.white,
                   items: const [
                     DropdownMenuItem<String>(
                       value: 'Nuevo',
                       child: Row(
                         children: [
-                          Icon(Icons.circle, color: Colors.green, size: 12),
+                          Icon(Icons.circle, color: AppColors.green, size: 12),
                           SizedBox(width: 8),
-                          Text('Nuevo', style: TextStyle(fontSize: 14)),
+                          Text('Nuevo', style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -242,10 +244,10 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       child: Row(
                         children: [
                           Icon(Icons.circle_outlined,
-                              color: Colors.green, size: 12),
+                              color: AppColors.green, size: 12),
                           SizedBox(width: 8),
                           Text('En curso (asignado)',
-                              style: TextStyle(fontSize: 14)),
+                              style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -254,10 +256,10 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       child: Row(
                         children: [
                           Icon(Icons.calendar_today,
-                              color: Colors.black, size: 12),
+                              color: AppColors.black, size: 12),
                           SizedBox(width: 8),
                           Text('En curso (Planificado)',
-                              style: TextStyle(fontSize: 13)),
+                              style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -265,10 +267,9 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       value: 'En espera',
                       child: Row(
                         children: [
-                          Icon(Icons.circle,
-                              color: Color(0xFFE98300), size: 12),
+                          Icon(Icons.circle, color: AppColors.orange, size: 12),
                           SizedBox(width: 8),
-                          Text('En espera', style: TextStyle(fontSize: 14)),
+                          Text('En espera', style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -277,9 +278,9 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       child: Row(
                         children: [
                           Icon(Icons.check_circle_outline,
-                              color: Colors.green, size: 12),
+                              color: AppColors.green, size: 12),
                           SizedBox(width: 8),
-                          Text('Resuelto', style: TextStyle(fontSize: 14)),
+                          Text('Resuelto', style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -287,9 +288,9 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                       value: 'Cerrado',
                       child: Row(
                         children: [
-                          Icon(Icons.circle, color: Colors.black, size: 12),
+                          Icon(Icons.circle, color: AppColors.black, size: 12),
                           SizedBox(width: 8),
-                          Text('Cerrado', style: TextStyle(fontSize: 14)),
+                          Text('Cerrado', style: TextStyle(fontSize: 11.8)),
                         ],
                       ),
                     ),
@@ -318,23 +319,25 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               vertical: 16.0, horizontal: 4.0),
-                          backgroundColor: Colors.red,
+                          backgroundColor: AppColors.red, // Color del tema
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 5,
-                          shadowColor: Colors.black.withOpacity(0.2),
+                          shadowColor: AppColors.black
+                              .withOpacity(0.2), // Color del tema
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               ' Seleccionar rango de fechas ',
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.white),
+                              style: TextStyle(
+                                  fontSize: 11.8,
+                                  color: AppColors.white), // Color del tema
                             ),
                             Icon(Icons.edit_calendar_rounded,
-                                color: Colors.white),
+                                color: AppColors.white), // Color del tema
                           ],
                         ),
                       ),
@@ -402,16 +405,18 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                         onPressed: _applyFilters,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          backgroundColor: const Color(0xFF005586),
+                          backgroundColor: AppColors.darkBlue, // Color del tema
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 5,
-                          shadowColor: Colors.black.withOpacity(0.2),
+                          shadowColor: AppColors.black
+                              .withOpacity(0.2), // Color del tema
                         ),
                         child: const Text(
                           'Filtrar',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: AppColors.white), // Color del tema
                         ),
                       ),
                     ),
@@ -430,17 +435,19 @@ class _FilterTicketMenuState extends State<FilterTicketMenu> {
                                   _selectedType == null &&
                                   _selectedStatus == null &&
                                   _selectedDateRange == null)
-                              ? Colors.grey[300]
-                              : Colors.red,
+                              ? AppColors
+                                  .blueGrey // Color deshabilitado del tema
+                              : AppColors.red, // Color del tema
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 5,
-                          shadowColor: Colors.black.withOpacity(0.2),
+                          shadowColor: AppColors.black
+                              .withOpacity(0.2), // Color del tema
                         ),
                         child: const Icon(
                           Icons.cleaning_services,
-                          color: Colors.white,
+                          color: AppColors.white, // Color del tema
                         ),
                       ),
                     ),

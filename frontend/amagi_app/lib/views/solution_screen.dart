@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../controllers/tickets_controller.dart';
 import '../models/ticket.dart';
+import '../theme/app_theme.dart';
 
 /// Esta vista permite a los usuarios ver la solución de un ticket específico y decidir si lo aprueban o lo rechazan.
 /// La vista muestra la fecha y hora de creación de la solución, el nombre del usuario que la creó y el contenido de la solución.
@@ -23,16 +24,24 @@ class SolucionScreenState extends State<SolucionScreen> {
   @override
   Widget build(BuildContext context) {
     final fecha = widget.solucion['date_creation'] ?? '';
-    final formattedFecha = DateFormat('dd-MM-yy HH:mm').format(DateTime.tryParse(fecha) ?? DateTime(1970));
+    final formattedFecha = DateFormat('dd-MM-yy HH:mm')
+        .format(DateTime.tryParse(fecha) ?? DateTime(1970));
     final usuarioNombre = widget.solucion['nombre_usuario'] ?? '';
+    AppTheme.of(context);
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Ticket: ${widget.ticket.id}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,)),
-        backgroundColor: const Color(0xFF005586),
+        title: Text(
+          'Ticket: ${widget.ticket.id}',
+          style: const TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: AppColors.darkBlue,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -72,7 +81,7 @@ class SolucionScreenState extends State<SolucionScreen> {
               ],
             ),
             const Divider(
-              color: Color.fromARGB(171, 255, 255, 255),
+              color: AppColors.blueGrey,
               thickness: 1,
               indent: 1,
               endIndent: 1,
@@ -81,9 +90,10 @@ class SolucionScreenState extends State<SolucionScreen> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0), 
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15.0, horizontal: 10.0),
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: AppColors.blueGrey.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: Scrollbar(
@@ -91,7 +101,8 @@ class SolucionScreenState extends State<SolucionScreen> {
                   child: SingleChildScrollView(
                     child: Text(
                       widget.solucion['content'],
-                      style: const TextStyle(fontSize: 16),
+                      style:
+                          const TextStyle(fontSize: 16, color: AppColors.black),
                     ),
                   ),
                 ),
@@ -102,57 +113,69 @@ class SolucionScreenState extends State<SolucionScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: _isLoadingRechazar ? null : () async {
-                    setState(() {
-                      _isLoadingAprobar = true;
-                    });
-                    await widget.ticketsController.closeTicket(context, widget.ticket);
-                    setState(() {
-                      _isLoadingAprobar = false;
-                    });
-                  },
+                  onPressed: _isLoadingRechazar
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isLoadingAprobar = true;
+                          });
+                          await widget.ticketsController
+                              .closeTicket(context, widget.ticket);
+                          setState(() {
+                            _isLoadingAprobar = false;
+                          });
+                        },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, 
+                    backgroundColor: AppColors.green,
                   ),
                   child: _isLoadingAprobar
                       ? const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(AppColors.white),
                         )
                       : const Row(
                           children: [
-                            Icon(Icons.check, color: Colors.white),
+                            Icon(Icons.check, color: AppColors.white),
                             SizedBox(width: 5),
                             Text(
                               'Aprobar',
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), // Letras blancas y en negrita
+                              style: TextStyle(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
                 ),
                 ElevatedButton(
-                  onPressed: _isLoadingAprobar ? null : () async {
-                    setState(() {
-                      _isLoadingRechazar = true;
-                    });
-                    await widget.ticketsController.deniedTicket(context, widget.ticket);
-                    setState(() {
-                      _isLoadingRechazar = false;
-                    });
-                  },
+                  onPressed: _isLoadingAprobar
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isLoadingRechazar = true;
+                          });
+                          await widget.ticketsController
+                              .deniedTicket(context, widget.ticket);
+                          setState(() {
+                            _isLoadingRechazar = false;
+                          });
+                        },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, 
+                    backgroundColor: AppColors.red,
                   ),
                   child: _isLoadingRechazar
                       ? const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(AppColors.white),
                         )
                       : const Row(
                           children: [
-                            Icon(Icons.close, color: Colors.white), 
+                            Icon(Icons.close, color: AppColors.white),
                             SizedBox(width: 5),
                             Text(
                               'Rechazar',
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold), // Letras blancas y en negrita
+                              style: TextStyle(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -162,7 +185,7 @@ class SolucionScreenState extends State<SolucionScreen> {
           ],
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
     );
   }
 }
