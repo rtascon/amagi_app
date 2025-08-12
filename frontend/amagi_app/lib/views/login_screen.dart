@@ -73,7 +73,7 @@ class LoginScreenState extends State<LoginScreen> {
                             width: 150,
                             height: 150,
                             child: Image.asset(
-                                'assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png'),
+                                'assets/picture/shared_logo_gia_blanco.png'),
                           ),
                           const SizedBox(height: 50),
                           Container(
@@ -224,7 +224,7 @@ class LoginScreenState extends State<LoginScreen> {
                       children: [
                         const SizedBox(height: 30),
                         Image.asset(
-                          'assets/Amagi logo blanco.png',
+                          'assets/picture/shared_logo_completo_digital_blanco.png',
                           alignment: Alignment.bottomCenter,
                           width: 100,
                           height: 100,

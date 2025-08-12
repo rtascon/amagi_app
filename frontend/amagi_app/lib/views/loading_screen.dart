@@ -73,7 +73,7 @@ class LoadingScreenState extends State<LoadingScreen>
                   ScaleTransition(
                     scale: _scaleAnimation,
                     child: Image.asset(
-                      'assets/a de Amagi Blanca.png',
+                      'assets/picture/shared_logo_a_sola_blanca.png',
                       width: 100,
                       height: 100,
                     ),

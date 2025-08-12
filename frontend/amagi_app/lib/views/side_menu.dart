@@ -473,14 +473,14 @@ class _SideMenuState extends State<SideMenu>
                         alignment: const Alignment(0.0, -2),
                         children: [
                           Image.asset(
-                            'assets/Amagi logo azul_Pequeño(3).png',
+                            'assets/picture/shared_logo_completo_azul_sin_a.png',
                             alignment: const Alignment(0.0, -2),
                             width: 150,
                             height: 100,
                           ),
                           if (!_showAnimatedImage)
                             Image.asset(
-                              'assets/Amagi logo azul_Pequeño(2).png',
+                              'assets/picture/shared_logo_completo_azul_solo_a.png',
                               alignment: const Alignment(0.0, -2),
                               width: 150,
                               height: 61,
@@ -489,7 +489,7 @@ class _SideMenuState extends State<SideMenu>
                             SlideTransition(
                               position: _offsetAnimation,
                               child: Image.asset(
-                                'assets/Amagi logo azul_Pequeño(2).png',
+                                'assets/picture/shared_logo_completo_azul_solo_a.png',
                                 width: 150,
                                 height: 61,
                                 alignment: const Alignment(0.0, -2),

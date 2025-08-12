@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0 #versión de ios
+version: 1.2.0 #versión
 
 environment:
   sdk: ^3.5.0
@@ -83,21 +83,21 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/GIA IOT BLANCO.png
-   - assets/A logo azul_sin_Digital (1).png
-   - assets/Amagi logo azul_Pequeño.png
-   - assets/Amagi logo azul_Pequeño(2).png
-   - assets/Amagi logo azul_Pequeño(3).png
-   - assets/GIA IOT AZUL Y BLANCO.png
-   - assets/Amagi logo azul_sin_Digital.png
-   - assets/Amagi logo blanco.png
+   - assets/picture/shared_logo_gia_iot_blanco.png
+   - assets/picture/shared_logo_a_sola_azul.png
+   - assets/picture/shared_logo_completo_digital_azul.png
+   - assets/picture/shared_logo_completo_azul_solo_a.png
+   - assets/picture/shared_logo_completo_azul_sin_a.png
+   - assets/picture/shared_logo_gia_iot_azul.png
+   - assets/picture/shared_logo_completo_azul.png
+   - assets/picture/shared_logo_completo_digital_blanco.png
    - assets/Solo la a (1).png
-   - assets/SOLO GIA SIN FONDO (BLANCO) (1) (1).png
-   - assets/a de Amagi Blanca.png
+   - assets/picture/shared_logo_gia_blanco.png
+   - assets/picture/shared_logo_a_sola_blanca.png
    - general.env
    - assets/fonts/BrandonGrotesque-Bold.ttf
    - assets/fonts/BrandonGrotesque-Light.ttf
-   - assets/captcha_image.png
+   - assets/picture/captcha_image.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -123,7 +123,7 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icons/app_icon1024.jpg"
+  image_path: "assets/icons/shared_icon_app@1024.jpg"
   remove_alpha_ios: true
 
 

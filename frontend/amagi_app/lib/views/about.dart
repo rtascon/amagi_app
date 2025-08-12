@@ -85,7 +85,7 @@ class _AboutScreenState extends State<AboutScreen>
                         ),
                         TextSpan(
                           text:
-                              'Versión iOS ${_version.isNotEmpty ? _version : "..."}\n\n',
+                              'Versión ${_version.isNotEmpty ? _version : "..."}\n\n',
                           style: const TextStyle(
                             fontSize: 15.0,
                             color: AppColors.darkBlue,

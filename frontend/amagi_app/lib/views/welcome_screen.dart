@@ -27,7 +27,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: Image.asset(
-          'assets/Amagi logo azul_Pequeño.png',
+          'assets/picture/shared_logo_completo_digital_azul.png',
           width: 200,
           height: 200,
         ),
