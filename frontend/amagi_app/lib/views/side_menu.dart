@@ -136,7 +136,7 @@ class _SideMenuState extends State<SideMenu>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Image.asset(
-                              'assets/Solo la a (1).png',
+                              'assets/picture/shared_logo_a_sola_azul.png',
                               width: 80,
                               height: 120,
                               fit: BoxFit.contain,
@@ -173,8 +173,8 @@ class _SideMenuState extends State<SideMenu>
                                               Text(
                                                 snapshot.data?['glpiname'] ??
                                                     '',
-                                                style: TextStyle(
-                                                  fontSize: fontSize,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
                                                   color: iconColor,
                                                 ),
                                               ),
@@ -192,8 +192,8 @@ class _SideMenuState extends State<SideMenu>
                                                         ?.replaceAll(
                                                             '_', ' ') ??
                                                     '',
-                                                style: TextStyle(
-                                                  fontSize: fontSize - 2,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
                                                   color: iconColor,
                                                 ),
                                               ),
@@ -210,8 +210,8 @@ class _SideMenuState extends State<SideMenu>
                                                             'glpiactive_entity_name']
                                                         ?.substring(0, 3) ??
                                                     '',
-                                                style: TextStyle(
-                                                  fontSize: fontSize - 2,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
                                                   color: iconColor,
                                                 ),
                                               ),
@@ -475,23 +475,23 @@ class _SideMenuState extends State<SideMenu>
                           Image.asset(
                             'assets/picture/shared_logo_completo_azul_sin_a.png',
                             alignment: const Alignment(0.0, -2),
-                            width: 150,
+                            width: 200,
                             height: 100,
                           ),
                           if (!_showAnimatedImage)
                             Image.asset(
                               'assets/picture/shared_logo_completo_azul_solo_a.png',
                               alignment: const Alignment(0.0, -2),
-                              width: 150,
-                              height: 61,
+                              width: 200,
+                              height: 70,
                             ),
                           if (_showAnimatedImage)
                             SlideTransition(
                               position: _offsetAnimation,
                               child: Image.asset(
                                 'assets/picture/shared_logo_completo_azul_solo_a.png',
-                                width: 150,
-                                height: 61,
+                                width: 200,
+                                height: 70,
                                 alignment: const Alignment(0.0, -2),
                               ),
                             ),

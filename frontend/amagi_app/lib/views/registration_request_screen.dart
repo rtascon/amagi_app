@@ -258,7 +258,7 @@ class RegistrationRequestScreenState extends State<RegistrationRequestScreen> {
                       width: 400,
                       height: 180,
                       child: Image.asset(
-                        'assets/captcha_image.png',
+                        'assets/picture/captcha_image.png',
                         fit: BoxFit.fitWidth,
                       ),
                     ),

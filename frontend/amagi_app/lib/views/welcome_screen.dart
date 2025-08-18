@@ -28,7 +28,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       body: Center(
         child: Image.asset(
           'assets/picture/shared_logo_completo_digital_azul.png',
-          width: 200,
+          width: 350,
           height: 200,
         ),
       ),

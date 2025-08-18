@@ -219,17 +219,17 @@ class LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 5),
                     Column(
                       children: [
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 10),
                         Image.asset(
                           'assets/picture/shared_logo_completo_digital_blanco.png',
                           alignment: Alignment.bottomCenter,
-                          width: 100,
+                          width: 200,
                           height: 100,
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
                         Text(
                           'V ${_version.isNotEmpty ? _version : "..."}',
                           style: const TextStyle(color: AppColors.white),
