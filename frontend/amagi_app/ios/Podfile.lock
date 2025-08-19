@@ -113,10 +113,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  connectivity_plus: 8443422d4c5a53dee0d50779ec5dbcda1071251e
+  connectivity_plus: 481668c94744c30c53b8895afb39159d1e619bdf
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
-  file_picker: 5f42b9d5580e30b57b4863f9d94b448016b702e5
+  file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_downloader: 78da0da1084e709cbfd3b723c7ea349c71681f09
   flutter_pdfview: 54e283d5851b0b247b3cc57877d35f1a05a204de
