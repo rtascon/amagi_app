@@ -7,9 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import '../theme/app_theme.dart';
 
-/// Esta vista representa el menú lateral de la aplicación, que permite a los usuarios
-/// navegar a diferentes secciones de la aplicación, como la creación y consulta de tickets.
-
 class SideMenu extends StatefulWidget {
   final SideMenuController sideMenuController;
   final TicketsController ticketsController;
@@ -94,11 +91,16 @@ class _SideMenuState extends State<SideMenu>
     });
   }
 
-  /// Abrevia el nombre si tiene más de 25 caracteres, usando las iniciales de cada palabra.
   String abbreviateName(String name) {
     if (name.length <= 25) return name;
     final words = name.split(' ');
     return words.map((w) => w.isNotEmpty ? w[0] : '').join();
+  }
+
+  Future<void> _closeDrawerAndNavigate(
+      Future<void> Function() navigateFunction) async {
+    Navigator.of(context).pop();
+    await navigateFunction();
   }
 
   @override
@@ -225,14 +227,6 @@ class _SideMenuState extends State<SideMenu>
                               ],
                             ),
                             const Spacer(),
-/*
-                            IconButton(
-                              icon: Icon(Icons.settings),
-                              onPressed: () {
-                                // Handle settings button tap
-                              },
-                            ),
-                            */
                           ],
                         ),
                         Padding(
@@ -243,224 +237,81 @@ class _SideMenuState extends State<SideMenu>
                             color: AppColors.blueGrey,
                           ),
                         ),
+                        // ====================== MENÚ BOTONES ======================
                         Column(
                           children: [
-                            Row(
-                              children: [
-                                Icon(Icons.home_outlined,
-                                    color: iconColor, size: iconSize),
-                                SizedBox(width: screenWidth * 0.02),
-                                Expanded(
-                                  child: ValueListenableBuilder<String>(
-                                    valueListenable: selectedOptionMenu,
-                                    builder: (context, value, child) {
-                                      return TextButton(
-                                        onPressed: () async {
-                                          selectedOptionMenu.value = 'Inicio';
-                                          await _saveSelectedOptionMenu(
-                                              'Inicio');
-                                          widget.sideMenuController
-                                              .navigateToMainMenuScreen(
-                                                  context);
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Inicio',
-                                            style: TextStyle(
-                                              color: value == 'Inicio'
-                                                  ? AppColors.darkBlue
-                                                  : AppColors.black,
-                                              fontSize: fontSize,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                            _buildMenuButton(
+                              icon: Icons.home_outlined,
+                              label: 'Inicio',
+                              selectedValue: 'Inicio',
+                              onTap: () => _closeDrawerAndNavigate(() async =>
+                                  widget.sideMenuController
+                                      .navigateToMainMenuScreen(context)),
+                              fontSize: fontSize,
+                              iconColor: iconColor,
+                              iconSize: iconSize,
                             ),
-                            Row(
-                              children: [
-                                Icon(Symbols.document_search,
-                                    color: iconColor, size: iconSize),
-                                SizedBox(width: screenWidth * 0.02),
-                                Expanded(
-                                  child: ValueListenableBuilder<String>(
-                                    valueListenable: selectedOptionMenu,
-                                    builder: (context, value, child) {
-                                      return TextButton(
-                                        onPressed: () async {
-                                          selectedOptionMenu.value =
-                                              'Consulta de Tickets';
-                                          await _saveSelectedOptionMenu(
-                                              'Consulta de Tickets');
-                                          widget.ticketsController
-                                              .navigateToTicketsScreen(context);
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Tickets en Proceso',
-                                            style: TextStyle(
-                                              color:
-                                                  value == 'Consulta de Tickets'
-                                                      ? AppColors.darkBlue
-                                                      : AppColors.black,
-                                              fontSize: fontSize,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                            _buildMenuButton(
+                              icon: Symbols.document_search,
+                              label: 'Tickets en Proceso',
+                              selectedValue: 'Consulta de Tickets',
+                              onTap: () => _closeDrawerAndNavigate(() async =>
+                                  widget.ticketsController
+                                      .navigateToTicketsScreen(context)),
+                              fontSize: fontSize,
+                              iconColor: iconColor,
+                              iconSize: iconSize,
                             ),
-                            Row(
-                              children: [
-                                Stack(
-                                  children: [
-                                    Icon(Symbols.note_add,
-                                        color: iconColor, size: iconSize),
-                                  ],
-                                ),
-                                SizedBox(width: screenWidth * 0.02),
-                                Expanded(
-                                  child: ValueListenableBuilder<String>(
-                                    valueListenable: selectedOptionMenu,
-                                    builder: (context, value, child) {
-                                      return TextButton(
-                                        onPressed: () async {
-                                          selectedOptionMenu.value =
-                                              'Crear Ticket';
-                                          await _saveSelectedOptionMenu(
-                                              'Crear Ticket');
-                                          widget.sideMenuController
-                                              .navigateToCreateTicketScreen(
-                                                  context);
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Crear Ticket',
-                                            style: TextStyle(
-                                              color: value == 'Crear Ticket'
-                                                  ? AppColors.darkBlue
-                                                  : AppColors.black,
-                                              fontSize: fontSize,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                            _buildMenuButton(
+                              icon: Symbols.note_add,
+                              label: 'Crear Ticket',
+                              selectedValue: 'Crear Ticket',
+                              onTap: () => _closeDrawerAndNavigate(() async =>
+                                  widget.sideMenuController
+                                      .navigateToCreateTicketScreen(context)),
+                              fontSize: fontSize,
+                              iconColor: iconColor,
+                              iconSize: iconSize,
                             ),
-                            Row(
-                              children: [
-                                Icon(Symbols.unknown_document,
-                                    color: iconColor, size: iconSize),
-                                SizedBox(width: screenWidth * 0.02),
-                                Expanded(
-                                  child: ValueListenableBuilder<String>(
-                                    valueListenable: selectedOptionMenu,
-                                    builder: (context, value, child) {
-                                      return TextButton(
-                                        onPressed: () async {
-                                          selectedOptionMenu.value =
-                                              'Tickets Resueltos';
-                                          await _saveSelectedOptionMenu(
-                                              'Tickets Resueltos');
-                                          widget.ticketsController
-                                              .navigateToTicketsResolvedScreen(
-                                                  context,
-                                                  filters: {'status': 5});
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Tickets Resueltos',
-                                            style: TextStyle(
-                                              color:
-                                                  value == 'Tickets Resueltos'
-                                                      ? AppColors.darkBlue
-                                                      : AppColors.black,
-                                              fontSize: fontSize,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                            _buildMenuButton(
+                              icon: Symbols.unknown_document,
+                              label: 'Tickets Resueltos',
+                              selectedValue: 'Tickets Resueltos',
+                              onTap: () => _closeDrawerAndNavigate(() async =>
+                                  widget.ticketsController
+                                      .navigateToTicketsResolvedScreen(context,
+                                          filters: {'status': 5})),
+                              fontSize: fontSize,
+                              iconColor: iconColor,
+                              iconSize: iconSize,
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: verticalPadding * 0.5),
-                          child: const Divider(
-                            thickness: 1,
-                            color: AppColors.blueGrey,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Icon(Icons.info_outline,
-                                color: iconColor, size: iconSize),
-                            SizedBox(width: screenWidth * 0.02),
-                            Expanded(
-                              child: TextButton(
-                                onPressed: () {
+                            _buildMenuButton(
+                              icon: Icons.info_outline,
+                              label: 'Acerca de',
+                              selectedValue: '',
+                              onTap: () => _closeDrawerAndNavigate(() async =>
                                   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const AboutScreen()),
-                                  );
-                                },
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Acerca de',
-                                    style: TextStyle(
-                                      color: AppColors.black,
-                                      fontSize: fontSize,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              const AboutScreen()))),
+                              fontSize: fontSize,
+                              iconColor: iconColor,
+                              iconSize: iconSize,
+                            ),
+                            _buildMenuButton(
+                              icon: Icons.logout,
+                              label: 'Cerrar Sesión',
+                              selectedValue: '',
+                              onTap: () => _closeDrawerAndNavigate(() async =>
+                                  widget.sideMenuController.logOut(context)),
+                              fontSize: fontSize,
+                              iconColor: iconColor,
+                              iconSize: iconSize,
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Icon(Icons.logout,
-                                color: iconColor, size: iconSize),
-                            SizedBox(width: screenWidth * 0.02),
-                            Expanded(
-                              child: TextButton(
-                                onPressed: () {
-                                  widget.sideMenuController.logOut(context);
-                                },
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Cerrar Sesión',
-                                    style: TextStyle(
-                                      color: AppColors.black,
-                                      fontSize: fontSize,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        // ===========================================================
                       ],
                     ),
                   ),
@@ -505,6 +356,51 @@ class _SideMenuState extends State<SideMenu>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMenuButton({
+    required IconData icon,
+    required String label,
+    required String selectedValue,
+    required Future<void> Function() onTap,
+    required double fontSize,
+    required Color iconColor,
+    required double iconSize,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, color: iconColor, size: iconSize),
+        SizedBox(width: 10),
+        Expanded(
+          child: ValueListenableBuilder<String>(
+            valueListenable: selectedOptionMenu,
+            builder: (context, value, child) {
+              return TextButton(
+                onPressed: () async {
+                  if (selectedValue.isNotEmpty) {
+                    selectedOptionMenu.value = selectedValue;
+                    await _saveSelectedOptionMenu(selectedValue);
+                  }
+                  await onTap();
+                },
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      color: selectedValue.isNotEmpty && value == selectedValue
+                          ? AppColors.darkBlue
+                          : AppColors.black,
+                      fontSize: fontSize,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
