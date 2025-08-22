@@ -1,5 +1,6 @@
-package com.example.startup_namer
+package com.gia_app.amagigroup
 
 import io.flutter.embedding.android.FlutterActivity
 
-class MainActivity: FlutterActivity()
+class MainActivity: FlutterActivity() {
+}
