@@ -9,9 +9,12 @@ import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'mime_extension.dart';
+import 'package:flutter/material.dart';
+import '../views/common_pop_ups.dart';
+import 'package:http/io_client.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
-
 class TicketService {
   final String url = Environment.apiUrl;
   static const _storage = FlutterSecureStorage();
@@ -33,10 +36,27 @@ class TicketService {
     'forcedisplay[8]': '14', // tipo
   };
 
+  // Client con timeout de conexión corto para evitar cuelgues al no estar en la red local
+  http.Client _newClient() {
+    final io = HttpClient()..connectionTimeout = const Duration(seconds: 5);
+    return IOClient(io);
+  }
+
+  // Verifica conectividad básica antes de llamar a la red
+  Future<void> _ensureConnectivity(BuildContext? context) async {
+    final connectivity = await Connectivity().checkConnectivity();
+    if (connectivity == ConnectivityResult.none) {
+      if (context != null) showNoInternetMessage(context);
+      throw const SocketException('No Internet connection');
+    }
+  }
+
   /// Obtiene los tickets del usuario con un filtro predeterminado.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<List<dynamic>> getUserTicketFilterDefault(int userId) async {
+  Future<List<dynamic>> getUserTicketFilterDefault(int userId,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -47,7 +67,10 @@ class TicketService {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
-    criteriaBaseTicketAutogestion['criteria[0][value]'] = userId.toString();
+    // Evitar mutación global
+    final Map<String, String> criteriaBase =
+        Map<String, String>.from(criteriaBaseTicketAutogestion)
+          ..['criteria[0][value]'] = userId.toString();
     Map<String, String> criteriaBodyAutogestion = {
       'criteria[1][link]': 'AND NOT',
       'criteria[1][field]': '12',
@@ -59,26 +82,38 @@ class TicketService {
       'criteria[2][value]': '5',
     };
     final params = {
-      ...criteriaBaseTicketAutogestion,
+      ...criteriaBase,
       ...criteriaBodyAutogestion,
       ...forceDisplayTicket
     };
 
+    final client = _newClient();
     try {
-      final response = await http
+      final response = await client
           .get(ticketsUrl.replace(queryParameters: params), headers: headers)
-          .timeout(const Duration(seconds: 15));
+          .timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close(); // cancela la solicitud
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
       } else {
         throw Exception("Error al obtener tickets: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al obtener tickets: $e");
+    } finally {
+      client.close();
     }
   }
 
@@ -86,7 +121,9 @@ class TicketService {
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
   Future<List<dynamic>> getUserTicketFiltered(
-      int userId, Map<String, dynamic> filters) async {
+      int userId, Map<String, dynamic> filters,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -97,8 +134,9 @@ class TicketService {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
-    criteriaBaseTicketAutogestion['criteria[0][value]'] = userId.toString();
-    Map<String, String> criteria = criteriaBaseTicketAutogestion;
+    Map<String, String> criteria =
+        Map<String, String>.from(criteriaBaseTicketAutogestion)
+          ..['criteria[0][value]'] = userId.toString();
 
     int criteriaIndex = 1;
     if (filters['ticketId'] != null) {
@@ -142,28 +180,42 @@ class TicketService {
 
     final params = {...criteria, ...forceDisplayTicket};
 
+    final client = _newClient();
     try {
-      final response = await http
+      final response = await client
           .get(ticketsUrl.replace(queryParameters: params), headers: headers)
-          .timeout(const Duration(seconds: 15));
+          .timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
       } else {
         throw Exception("Error al obtener tickets: ${response.body}");
       }
-    } on TimeoutException catch (e) {
-      throw Exception("La solicitud ha excedido el tiempo de espera: $e");
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
+    } on TimeoutException {
+      rethrow;
     } catch (e) {
       throw Exception("Error al obtener tickets: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Actualiza un ticket con los datos proporcionados.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<void> updateTicket(
-      int ticketId, Map<String, dynamic> updateData) async {
+  Future<void> updateTicket(int ticketId, Map<String, dynamic> updateData,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -174,23 +226,32 @@ class TicketService {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
-    final body = jsonEncode({
-      "input": updateData,
-    });
+    final body = jsonEncode({"input": updateData});
 
+    final client = _newClient();
     try {
-      final response = await http
-          .put(ticketUrl, headers: headers, body: body)
-          .timeout(const Duration(seconds: 15));
+      final response =
+          await client.put(ticketUrl, headers: headers, body: body).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode != 200) {
         throw Exception("Error al actualizar el ticket: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al actualizar el ticket: $e");
+    } finally {
+      client.close();
     }
   }
 
@@ -231,7 +292,9 @@ class TicketService {
   /// Obtiene los comentarios de seguimiento de un ticket.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<List<dynamic>> getTicketFollowup(int idTicket) async {
+  Future<List<dynamic>> getTicketFollowup(int idTicket,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -243,10 +306,17 @@ class TicketService {
       'Content-Type': 'application/json',
     };
 
+    final client = _newClient();
     try {
-      final response = await http
-          .get(comentariosUrl, headers: headers)
-          .timeout(const Duration(seconds: 15));
+      final response =
+          await client.get(comentariosUrl, headers: headers).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode == 200 || response.statusCode == 206) {
         return jsonDecode(response.body);
@@ -254,18 +324,24 @@ class TicketService {
         throw Exception(
             "Error al obtener comentarios del ticket: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al obtener comentarios del ticket: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Obtiene un documento asociado a un seguimiento de ticket.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<Map<String, dynamic>> getDocFollowup(int docId) async {
+  Future<Map<String, dynamic>> getDocFollowup(int docId,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -277,13 +353,18 @@ class TicketService {
       'Content-Type': 'application/json',
     };
 
+    final client = _newClient();
     try {
-      final response = await http
-          .get(documentoUrl, headers: headers)
-          .timeout(const Duration(seconds: 15));
+      final response = await client.get(documentoUrl, headers: headers).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode == 200) {
-        // Extraer el tipo MIME del header
         final mimeType =
             response.headers['content-type'] ?? 'application/octet-stream';
         final ext = extensionFromMime(mimeType) ?? 'bin';
@@ -295,18 +376,24 @@ class TicketService {
         throw Exception(
             "Error al obtener documento del ticket: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al obtener documento del ticket: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Obtiene el contenido bruto de un documento asociado a un seguimiento de ticket.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<String> getRawDoc(int docId, {String? appToken}) async {
+  Future<String> getRawDoc(int docId,
+      {String? appToken, BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -318,15 +405,20 @@ class TicketService {
       'Session-Token': sessionToken,
       'Accept': 'application/octet-stream',
     };
-
     if (appToken != null) {
       headers['App-Token'] = appToken;
     }
 
+    final client = _newClient();
     try {
-      final response = await http
-          .get(documentoUrl, headers: headers)
-          .timeout(const Duration(seconds: 15));
+      final response = await client.get(documentoUrl, headers: headers).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode == 200) {
         final mimeType =
@@ -341,18 +433,24 @@ class TicketService {
         throw Exception(
             "Error al obtener documento del ticket: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al obtener documento del ticket: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Obtiene el detalle de un comentario de seguimiento de un ticket.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<List<dynamic>> getFollowupDetail(int ticketCommentId) async {
+  Future<List<dynamic>> getFollowupDetail(int ticketCommentId,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -365,10 +463,17 @@ class TicketService {
       'Content-Type': 'application/json',
     };
 
+    final client = _newClient();
     try {
-      final response = await http
-          .get(comentarioUrl, headers: headers)
-          .timeout(const Duration(seconds: 15));
+      final response =
+          await client.get(comentarioUrl, headers: headers).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -376,19 +481,24 @@ class TicketService {
         throw Exception(
             "Error al obtener detalle del comentario: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al obtener detalle del comentario: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Crea un nuevo ticket con los datos proporcionados.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<Map<String, dynamic>> createTicket(
-      Map<String, dynamic> ticketData) async {
+  Future<Map<String, dynamic>> createTicket(Map<String, dynamic> ticketData,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -410,13 +520,15 @@ class TicketService {
       }
     });
 
+    final client = _newClient();
     try {
       final response =
-          await http.post(ticketUrl, headers: headers, body: body).timeout(
+          await client.post(ticketUrl, headers: headers, body: body).timeout(
         const Duration(seconds: 15),
         onTimeout: () {
-          throw TimeoutException(
-              "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
         },
       );
 
@@ -429,58 +541,61 @@ class TicketService {
       } else {
         throw Exception("Error al crear ticket: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al crear ticket: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Sube archivos asociados a un seguimiento de ticket.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<void> uploadFiles(
-      List<PlatformFile> selectedFiles, int followupId) async {
+  Future<void> uploadFiles(List<PlatformFile> selectedFiles, int followupId,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
 
     final uploadUrl = Uri.parse('$url/Document');
-    final headers = {
-      'Session-Token': sessionToken,
-      'Content-Type': 'multipart/form-data',
-    };
+    final headers = {'Session-Token': sessionToken};
 
-    for (var file in selectedFiles) {
-      final bytes = await File(file.path!).readAsBytes();
+    final client = _newClient();
+    try {
+      for (var file in selectedFiles) {
+        final bytes = await File(file.path!).readAsBytes();
 
-      final request = http.MultipartRequest('POST', uploadUrl)
-        ..headers.addAll(headers)
-        ..fields['uploadManifest'] = jsonEncode({
-          'input': {
-            'name': 'Uploaded document',
-            '_filename': [file.name],
-            'itemtype': 'ITILFollowup',
-            'items_id': followupId,
-          }
-        })
-        ..files.add(http.MultipartFile.fromBytes(
-          'file',
-          bytes,
-          filename: file.name,
-          contentType:
-              MediaType('application', file.extension ?? 'octet-stream'),
-        ));
+        final request = http.MultipartRequest('POST', uploadUrl)
+          ..headers.addAll(headers)
+          ..fields['uploadManifest'] = jsonEncode({
+            'input': {
+              'name': 'Uploaded document',
+              '_filename': [file.name],
+              'itemtype': 'ITILFollowup',
+              'items_id': followupId,
+            }
+          })
+          ..files.add(http.MultipartFile.fromBytes(
+            'file',
+            bytes,
+            filename: file.name,
+            contentType:
+                MediaType('application', file.extension ?? 'octet-stream'),
+          ));
 
-      try {
-        final streamedResponse = await request.send().timeout(
+        final streamedResponse = await client.send(request).timeout(
           const Duration(seconds: 15),
           onTimeout: () {
-            request.finalize();
-            throw TimeoutException(
-                "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+            client.close();
+            if (context != null) showTimeoutMessage(context);
+            throw TimeoutException("Upload cancelado por timeout");
           },
         );
         final response = await http.Response.fromStream(streamedResponse);
@@ -488,19 +603,25 @@ class TicketService {
         if (response.statusCode != 201) {
           throw Exception("Error al subir el archivo: ${response.body}");
         }
-      } on TimeoutException {
-        throw Exception(
-            "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
-      } catch (e) {
-        throw Exception("Error al subir el archivo: $e");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
+    } on TimeoutException {
+      rethrow;
+    } catch (e) {
+      throw Exception("Error al subir el archivo: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Añade un seguimiento a un ticket existente.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<int> addFollowupToTicket(int ticketId, String descripcion) async {
+  Future<int> addFollowupToTicket(int ticketId, String descripcion,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
@@ -513,7 +634,6 @@ class TicketService {
     };
 
     int followupId = 0;
-
     final body = jsonEncode({
       "input": {
         "items_id": ticketId,
@@ -523,13 +643,15 @@ class TicketService {
       }
     });
 
+    final client = _newClient();
     try {
       final response =
-          await http.post(followupUrl, headers: headers, body: body).timeout(
+          await client.post(followupUrl, headers: headers, body: body).timeout(
         const Duration(seconds: 15),
         onTimeout: () {
-          throw TimeoutException(
-              "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
         },
       );
 
@@ -538,29 +660,40 @@ class TicketService {
         followupId = responseData['id'];
       }
       return followupId;
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al añadir el comentario/histórico: $e");
+    } finally {
+      client.close();
     }
   }
 
   /// Obtiene el comentario de la solución de un ticket.
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
-  Future<List<dynamic>> getTicketSolution(
-      int idTicket, String sessionToken) async {
+  Future<List<dynamic>> getTicketSolution(int idTicket, String sessionToken,
+      {BuildContext? context}) async {
+    await _ensureConnectivity(context);
     final solucionUrl = Uri.parse('$url/Ticket/$idTicket/ITILSolution');
     final headers = {
       'Session-Token': sessionToken,
       'Content-Type': 'application/json',
     };
 
+    final client = _newClient();
     try {
-      final response = await http
-          .get(solucionUrl, headers: headers)
-          .timeout(const Duration(seconds: 15));
+      final response = await client.get(solucionUrl, headers: headers).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          client.close();
+          if (context != null) showTimeoutMessage(context);
+          throw TimeoutException("Solicitud cancelada por timeout");
+        },
+      );
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -570,11 +703,15 @@ class TicketService {
         throw Exception(
             "Error al obtener la solución del ticket: ${response.body}");
       }
+    } on SocketException {
+      if (context != null) showNoInternetMessage(context);
+      throw Exception("Sin conexión a Internet");
     } on TimeoutException {
-      throw Exception(
-          "La solicitud ha tardado demasiado. Por favor, intente de nuevo.");
+      rethrow;
     } catch (e) {
       throw Exception("Error al obtener la solución del ticket: $e");
+    } finally {
+      client.close();
     }
   }
 }

@@ -28,6 +28,18 @@ void main() async {
       await storage.write(key: 'session_token', value: sessionToken);
     }
 
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarContrastEnforced: false,
+    ));
+
     // Ejecuta la aplicación.
     runApp(const MyApp());
   });
@@ -42,6 +54,20 @@ class MyApp extends StatelessWidget {
       title: 'GIA App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
+      builder: (context, child) {
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+            systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarDividerColor: Colors.transparent,
+            systemNavigationBarIconBrightness: Brightness.dark,
+            systemNavigationBarContrastEnforced: false,
+          ),
+          child: child!,
+        );
+      },
       home: const WelcomeScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),

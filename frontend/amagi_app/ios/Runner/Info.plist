@@ -26,12 +26,30 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	
+	<!-- Permisos de privacidad -->
 	<key>NSCameraUsageDescription</key>
-	<string>Esta aplicación requiere acceso a la cámara para tomar fotos y adjuntar imágenes.</string>
-	<key>NSDocumentsFolderUsageDescription</key>
-	<string>Esta aplicación requiere acceso a los documentos para adjuntar archivos PDF.</string>
+	<string>Necesitamos acceso a la cámara para tomar fotos y adjuntarlas en los tickets de autogestión.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Esta aplicación requiere acceso a la galería para adjuntar imágenes (JPG, PNG, JPEG) y PDF.</string>
+	<string>Necesitamos acceso a la galería para seleccionar imágenes y adjuntarlas en los tickets de autogestión.</string>
+
+	<!-- App Transport Security para permitir HTTP en GLPI con IP -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>172.20.1.55</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<false/>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSTemporaryExceptionMinimumTLSVersion</key>
+				<string>TLSv1.0</string>
+			</dict>
+		</dict>
+	</dict>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

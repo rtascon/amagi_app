@@ -31,7 +31,7 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  # Fijamos a una versión compatible con Xcode 16.2
+  # Fijamos a una versión compatible con Xcode 16.2 
   pod 'SDWebImage', '~> 5.20.0'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
