@@ -9,6 +9,7 @@ import 'views/create_ticket_screen.dart';
 import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'theme/app_theme.dart';
+import 'services/ticket_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,13 +41,28 @@ void main() async {
       systemNavigationBarContrastEnforced: false,
     ));
 
-    // Ejecuta la aplicación.
-    runApp(const MyApp());
+    // Configurar keys globales y TicketService antes de ejecutar la app
+    final navKey = GlobalKey<NavigatorState>();
+    final smKey = GlobalKey<ScaffoldMessengerState>();
+    TicketService.configureGlobalKeys(navKey: navKey, smKey: smKey);
+
+    // Ejecuta la aplicación con las keys
+    runApp(MyApp(
+      navigatorKey: navKey,
+      scaffoldMessengerKey: smKey,
+    ));
   });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    super.key,
+    required this.navigatorKey,
+    required this.scaffoldMessengerKey,
+  });
+
+  final GlobalKey<NavigatorState> navigatorKey;
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +70,8 @@ class MyApp extends StatelessWidget {
       title: 'GIA App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       builder: (context, child) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: const SystemUiOverlayStyle(

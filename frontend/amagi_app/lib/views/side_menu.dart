@@ -29,6 +29,7 @@ class _SideMenuState extends State<SideMenu>
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   bool _showAnimatedImage = false;
+  bool _isNavigating = false; // evita múltiples toques
 
   @override
   void initState() {
@@ -99,7 +100,13 @@ class _SideMenuState extends State<SideMenu>
 
   Future<void> _closeDrawerAndNavigate(
       Future<void> Function() navigateFunction) async {
-    Navigator.of(context).pop();
+    // Cierra el Drawer
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    // Espera un frame para asegurar que el Drawer se cerró
+    await Future.delayed(const Duration(milliseconds: 50));
+    if (!mounted) return;
     await navigateFunction();
   }
 
@@ -257,7 +264,10 @@ class _SideMenuState extends State<SideMenu>
                               selectedValue: 'Consulta de Tickets',
                               onTap: () => _closeDrawerAndNavigate(() async =>
                                   widget.ticketsController
-                                      .navigateToTicketsScreen(context)),
+                                      .navigateToTicketsScreen(
+                                    Navigator.of(context, rootNavigator: true)
+                                        .context,
+                                  )),
                               fontSize: fontSize,
                               iconColor: iconColor,
                               iconSize: iconSize,
@@ -279,8 +289,11 @@ class _SideMenuState extends State<SideMenu>
                               selectedValue: 'Tickets Resueltos',
                               onTap: () => _closeDrawerAndNavigate(() async =>
                                   widget.ticketsController
-                                      .navigateToTicketsResolvedScreen(context,
-                                          filters: {'status': 5})),
+                                      .navigateToTicketsResolvedScreen(
+                                    Navigator.of(context, rootNavigator: true)
+                                        .context,
+                                    filters: {'status': 5},
+                                  )),
                               fontSize: fontSize,
                               iconColor: iconColor,
                               iconSize: iconSize,
@@ -327,14 +340,14 @@ class _SideMenuState extends State<SideMenu>
                             'assets/picture/shared_logo_completo_azul_sin_a.png',
                             alignment: const Alignment(0.0, -2),
                             width: 200,
-                            height: 100,
+                            height: 120,
                           ),
                           if (!_showAnimatedImage)
                             Image.asset(
                               'assets/picture/shared_logo_completo_azul_solo_a.png',
                               alignment: const Alignment(0.0, -2),
                               width: 200,
-                              height: 70,
+                              height: 80,
                             ),
                           if (_showAnimatedImage)
                             SlideTransition(
@@ -342,7 +355,7 @@ class _SideMenuState extends State<SideMenu>
                               child: Image.asset(
                                 'assets/picture/shared_logo_completo_azul_solo_a.png',
                                 width: 200,
-                                height: 70,
+                                height: 80,
                                 alignment: const Alignment(0.0, -2),
                               ),
                             ),
@@ -378,11 +391,17 @@ class _SideMenuState extends State<SideMenu>
             builder: (context, value, child) {
               return TextButton(
                 onPressed: () async {
-                  if (selectedValue.isNotEmpty) {
-                    selectedOptionMenu.value = selectedValue;
-                    await _saveSelectedOptionMenu(selectedValue);
+                  if (_isNavigating) return;
+                  _isNavigating = true;
+                  try {
+                    if (selectedValue.isNotEmpty) {
+                      selectedOptionMenu.value = selectedValue;
+                      await _saveSelectedOptionMenu(selectedValue);
+                    }
+                    await onTap();
+                  } finally {
+                    _isNavigating = false;
                   }
-                  await onTap();
                 },
                 child: Align(
                   alignment: Alignment.centerLeft,
