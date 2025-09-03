@@ -10,6 +10,9 @@ import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'theme/app_theme.dart';
 import 'services/ticket_service.dart';
+import 'dart:io' show Platform;
+import 'package:workmanager/workmanager.dart';
+import 'notifications/estado.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +43,32 @@ void main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
       systemNavigationBarContrastEnforced: false,
     ));
+
+    // Inicializar notificaciones locales
+    await TicketNotifications.init();
+
+    // Test de notificaciones locales en primer arranque
+    final tested = prefs.getBool('local_notification_tested') ?? false;
+    if (!tested) {
+      await TicketNotifications.showTestNotification();
+      await prefs.setBool('local_notification_tested', true);
+    }
+
+    // Inicializar y registrar tarea periódica (Android)
+    if (Platform.isAndroid) {
+      await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+      await Workmanager().registerPeriodicTask(
+        'giaTicketPoll', // uniqueName
+        'gia.ticket.poll', // taskName
+        frequency: const Duration(minutes: 15),
+        existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+        constraints: Constraints(
+          networkType: NetworkType.connected,
+        ),
+        backoffPolicy: BackoffPolicy.exponential,
+        backoffPolicyDelay: const Duration(minutes: 10),
+      );
+    }
 
     // Configurar keys globales y TicketService antes de ejecutar la app
     final navKey = GlobalKey<NavigatorState>();
