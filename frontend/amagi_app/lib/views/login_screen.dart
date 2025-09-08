@@ -70,7 +70,7 @@ class LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           SizedBox(
-                            width: 150,
+                            width: 250,
                             height: 150,
                             child: Image.asset(
                                 'assets/picture/shared_logo_gia_blanco.png'),

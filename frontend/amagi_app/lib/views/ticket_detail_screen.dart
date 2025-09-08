@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
 import '../controllers/ticket_detail_controller.dart';
 import '../models/user.dart';
 import 'dart:io';
@@ -319,7 +318,11 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                             );
                           } else if (mime == 'application/pdf') {
                             return GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                final safePath = await _ticketDetailController
+                                    .prepareFileForPreview(
+                                        filePath, documento['filename']);
+                                if (!mounted || safePath == null) return;
                                 showDialog(
                                   context: context,
                                   builder: (context) => Dialog(
@@ -327,7 +330,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                       children: [
                                         Expanded(
                                           child: PDFView(
-                                            filePath: file.path,
+                                            filePath: safePath,
                                           ),
                                         ),
                                         Row(
@@ -350,7 +353,6 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                                                         context,
                                                         filePath,
                                                         documento['filename']);
-                                                OpenFile.open(filePath);
                                               },
                                               icon: const Icon(
                                                   Icons.file_open_outlined,
