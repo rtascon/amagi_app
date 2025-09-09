@@ -7,6 +7,7 @@ import '../views/side_menu.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import '../services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../notifications/estado.dart';
 
 /// Esta vista representa el menú principal de la aplicación, desde donde los usuarios
 /// pueden navegar a diferentes secciones, como la creación y consulta de tickets.
@@ -149,6 +150,21 @@ class MainMenuScreenState extends State<MainMenuScreen> {
                               _ticketsController
                                   .navigateToTicketsResolvedScreen(context,
                                       filters: {'status': 5});
+                            },
+                            buttonSize: buttonSize,
+                          ),
+                        ),
+                        Positioned(
+                          top: bottomOffset,
+                          right: offset,
+                          child: _buildMenuButton(
+                            context,
+                            icon: Symbols.refresh,
+                            label: 'Chequear',
+                            onPressed: () async {
+                              await _saveSelectedOption('Chequear Cambios');
+                              await TicketNotifications.checkAndNotify(
+                                  manual: true);
                             },
                             buttonSize: buttonSize,
                           ),

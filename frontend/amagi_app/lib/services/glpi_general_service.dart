@@ -28,8 +28,7 @@ class GlpiGeneralService {
     try {
       final response = await http
           .get(Uri.parse('$url/RequestType'), headers: headers)
-          .timeout(const Duration(
-              seconds: 15));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -58,8 +57,7 @@ class GlpiGeneralService {
     try {
       final response = await http
           .get(Uri.parse('$url/getMyEntities'), headers: headers)
-          .timeout(const Duration(
-              seconds: 15));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -94,8 +92,7 @@ class GlpiGeneralService {
       final response = await http
           .post(Uri.parse('$url/changeActiveEntities'),
               headers: headers, body: body)
-          .timeout(const Duration(
-              seconds: 15));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode != 200) {
         throw Exception('Error al cambiar la entidad activa');
@@ -107,8 +104,8 @@ class GlpiGeneralService {
     }
   }
 
- /// Obtiene LOS PERFILES del usuario desde la API.
-  /// 
+  /// Obtiene LOS PERFILES del usuario desde la API.
+  ///
   /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
   Future<Map<String, dynamic>> getMyProfiles() async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
@@ -137,15 +134,16 @@ class GlpiGeneralService {
   }
 
   /// Cambia EL PERFIL activO del usuario en la API.
-  /// 
+  ///
   /// Lanza una excepción si no se encuentra el token de sesión o si ocurre un error durante la solicitud.
   Future<void> changeActiveProfile(int profilesId) async {
     final sessionToken = await _storage.read(key: _sessionTokenKey);
     if (sessionToken == null) {
       throw Exception("No session token found");
     }
-    
-    final response = await http.put(Uri.parse('$url/changeActiveProfile'),
+
+    final response = await http.put(
+      Uri.parse('$url/changeActiveProfile'),
       headers: <String, String>{
         'Session-Token': sessionToken,
         'Content-Type': 'application/json; charset=UTF-8',

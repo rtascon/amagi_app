@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import '../views/common_pop_ups.dart';
 import 'package:http/io_client.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
 class TicketService {
@@ -1042,5 +1043,76 @@ class TicketService {
     } finally {
       client.close();
     }
+  }
+
+  /// Intenta obtener el userId actual desde la sesión remota y lo persiste.
+  Future<int?> fetchCurrentUserId({BuildContext? context}) async {
+    _log('fetchCurrentUserId()');
+    _rememberContext(context);
+    await _ensureConnectivity(context);
+    final sessionToken = await _storage.read(key: _sessionTokenKey);
+    if (sessionToken == null) {
+      _log('No session token');
+      return null;
+    }
+    final urlFull = Uri.parse('${url}/getFullSession');
+    final headers = {'Session-Token': sessionToken};
+    final client = _newClient();
+    try {
+      final resp =
+          await _getWithRetry(urlFull, headers, client, context: context);
+      _log('getFullSession status ${resp.statusCode}');
+      if (resp.statusCode == 200) {
+        _log('getFullSession raw: ${resp.body}');
+        final body = jsonDecode(resp.body);
+        int? extracted;
+        if (body is Map) {
+          _log('getFullSession top-level keys: ${body.keys.toList()}');
+          // 1. Top-level common fields
+          extracted = int.tryParse(body['id']?.toString() ?? '');
+          extracted ??= int.tryParse(body['user_id']?.toString() ?? '');
+          extracted ??= int.tryParse(body['users_id']?.toString() ?? '');
+          // 2. user object
+          final userObj = body['user'];
+          if (userObj is Map) {
+            _log('user keys: ${userObj.keys.toList()}');
+            extracted ??= int.tryParse(userObj['id']?.toString() ?? '');
+            extracted ??= int.tryParse(userObj['users_id']?.toString() ?? '');
+          }
+          // 3. session object (GLPI suele incluir glpiID / glpi_currenttime)
+          final sessionObj = body['session'];
+          if (sessionObj is Map) {
+            _log('session keys: ${sessionObj.keys.toList()}');
+            extracted ??= int.tryParse(sessionObj['user_id']?.toString() ?? '');
+            extracted ??=
+                int.tryParse(sessionObj['users_id']?.toString() ?? '');
+            extracted ??= int.tryParse(sessionObj['glpiID']?.toString() ?? '');
+          }
+          // 4. data / meta anidados
+          final dataObj = body['data'];
+          if (dataObj is Map) {
+            _log('data keys: ${dataObj.keys.toList()}');
+            extracted ??= int.tryParse(dataObj['user_id']?.toString() ?? '');
+            extracted ??= int.tryParse(dataObj['id']?.toString() ?? '');
+          }
+        }
+        if (extracted != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('userId', extracted);
+          await prefs.setString('last_full_session_json', resp.body);
+          _log('Persisted userId=$extracted from getFullSession');
+          return extracted;
+        } else {
+          _log('No se pudo extraer userId del JSON');
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('last_full_session_json', resp.body);
+        }
+      }
+    } catch (e) {
+      _log('fetchCurrentUserId error: $e');
+    } finally {
+      client.close();
+    }
+    return null;
   }
 }
