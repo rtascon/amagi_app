@@ -13,6 +13,10 @@ class UserService {
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
+  static int? _cachedUserId; // cache en memoria
+  static DateTime? _cachedAt;
+  static const Duration _userIdTtl = Duration(minutes: 10);
+
   /// Obtiene la información completa del usuario y la almacena en el objeto [usuario].
   ///
   /// Lanza una excepción si ocurre un error durante la solicitud.
@@ -156,5 +160,27 @@ class UserService {
     } catch (_) {
       return null;
     }
+  }
+
+  // Intento centralizado para obtener userId desde cache o red
+  Future<int?> getCachedOrFetchUserId() async {
+    if (_cachedUserId != null && _cachedAt != null) {
+      if (DateTime.now().difference(_cachedAt!) < _userIdTtl) {
+        return _cachedUserId;
+      }
+    }
+    final prefs = await SharedPreferences.getInstance();
+    final local = prefs.getInt('userId');
+    if (local != null) {
+      _cachedUserId = local;
+      _cachedAt = DateTime.now();
+      return local;
+    }
+    final fetched = await fetchUserIdAndCache();
+    if (fetched != null) {
+      _cachedUserId = fetched;
+      _cachedAt = DateTime.now();
+    }
+    return fetched;
   }
 }

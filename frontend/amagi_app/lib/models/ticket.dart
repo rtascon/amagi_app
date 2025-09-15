@@ -9,7 +9,7 @@ abstract class Ticket {
   int estado;
   String entidadAsociada;
   int prioridad;
-  List<Map<String, dynamic>>? historicos; 
+  List<Map<String, dynamic>>? historicos;
   List<Map<String, dynamic>> soluciones;
 
   Ticket({
@@ -22,7 +22,7 @@ abstract class Ticket {
     required this.estado,
     required this.entidadAsociada,
     required this.prioridad,
-    this.historicos, 
+    this.historicos,
     List<Map<String, dynamic>>? soluciones,
   }) : soluciones = soluciones ?? [];
 }

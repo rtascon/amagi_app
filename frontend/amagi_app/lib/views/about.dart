@@ -93,14 +93,14 @@ class _AboutScreenState extends State<AboutScreen>
                         ),
                         const TextSpan(
                           text:
-                              'Aplicación de autogestión para usuarios del servicio GIA de Amagi Group.\n\n'
-                              '✨ Características clave\n\n'
-                              '📝 Creación de tickets.\n'
-                              '📋 Visualización detallada de todos los casos del usuario.\n'
-                              '🔍 Acceso al historial, seguimiento y soluciones de cada ticket.\n'
-                              '💬 Comunicación mediante chat integrado con el equipo de asistencia.\n'
-                              '📎 Posibilidad de agregar comentarios, archivos y fotos.\n'
-                              '✅ Validación o rechazo de soluciones.',
+                              'Aplicación de autogestión diseñada para los usuarios del servicio GIA de Amagi Group.\n\n'
+                              '✨ Funcionalidades principales\n\n'
+                              '📝 Creación rápida y sencilla de tickets.\n'
+                              '📋 Visualización clara y organizada de todos los casos del usuario.\n'
+                              '🔍 Consulta del historial, seguimiento y soluciones aplicadas a cada ticket.\n'
+                              '💬 Comunicación directa mediante chat integrado con el equipo de soporte.\n'
+                              '📎 Posibilidad de adjuntar comentarios, archivos y fotografías.\n'
+                              '✅ Validación o rechazo de las soluciones propuestas.',
                           style: TextStyle(
                             fontSize: 15.0,
                             color: AppColors.black,

@@ -5,7 +5,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
-import '../services/ticket_service.dart';
+import '../repositories/ticket_repository.dart';
+import '../models/type_conversion.dart';
+import '../services/user_service.dart';
+import '../models/ticket.dart';
 
 class TicketNotifications {
   static final FlutterLocalNotificationsPlugin _plugin =
@@ -15,6 +18,8 @@ class TicketNotifications {
   static const String _androidChannelName = 'Actualizaciones de tickets';
   static const String _androidChannelDesc =
       'Avisos de cambios de estado de tickets';
+
+  static final TypeConversion _typeConv = TypeConversion(); // nueva instancia
 
   static Future<void> init() async {
     // Inicialización en la app (primer plano)
@@ -87,16 +92,24 @@ class TicketNotifications {
     );
   }
 
-  static Future<void> _showStatusChange(
-      {required int ticketId,
-      String? oldStatus,
-      required String newStatus}) async {
-    final title = 'Ticket #$ticketId actualizado';
-    final body = (oldStatus == null || oldStatus.isEmpty)
-        ? 'Nuevo estado: $newStatus'
-        : 'Estado: $oldStatus → $newStatus';
+  static Future<void> _showStatusChange({
+    required int ticketId,
+    required String newStatus,
+  }) async {
+    // Intentar convertir el código numérico de estado a su nombre
+    String statusNombre = (() {
+      final intCode = int.tryParse(newStatus.trim());
+      if (intCode != null) {
+        return _typeConv.getEstado(intCode);
+      }
+      return newStatus; // ya podría venir como texto
+    })();
+
+    final title = 'Ticket N°$ticketId recibió una actualización';
+    final body = 'Su estado ha cambiado a $statusNombre';
+
     await _plugin.show(
-      1000 + ticketId, // id único por ticket
+      1000 + ticketId,
       title,
       body,
       NotificationDetails(
@@ -159,10 +172,9 @@ class TicketNotifications {
       } catch (_) {}
     }
 
-    // Último recurso: consultar a la API para obtener el userId y persistirlo
+    // Último recurso: usar UserService centralizado
     try {
-      final service = TicketService();
-      final fetched = await service.fetchCurrentUserId();
+      final fetched = await UserService().getCachedOrFetchUserId();
       if (fetched != null) return fetched;
     } catch (_) {}
 
@@ -172,10 +184,7 @@ class TicketNotifications {
   // Consulta los tickets y notifica cambios vs. la caché local
   static Future<void> checkAndNotify({bool manual = false}) async {
     final prefs = await SharedPreferences.getInstance();
-
-    // Resolver userId de forma robusta
     final userId = await _resolveUserId(prefs);
-
     if (userId == null) {
       if (manual) {
         await _plugin.show(
@@ -197,37 +206,15 @@ class TicketNotifications {
       return;
     }
 
-    // Validar existencia de session_token en secure storage indirectamente (SharedPreferences copia)
-    final sessionTokenShadow = prefs.getString('sessionToken');
-    if (sessionTokenShadow == null || sessionTokenShadow.isEmpty) {
-      if (manual) {
-        await _plugin.show(
-          900002,
-          'Verificación de tickets',
-          'Session token ausente. Reingrese a la aplicación.',
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              _androidChannelId,
-              _androidChannelName,
-              channelDescription: _androidChannelDesc,
-              importance: Importance.defaultImportance,
-              priority: Priority.defaultPriority,
-            ),
-            iOS: DarwinNotificationDetails(),
-          ),
-        );
-      }
-      // Continuamos igual; el TicketService leerá el seguro y fallará si realmente no está.
-    }
-
     final rawCache = prefs.getString('ticket_status_cache');
     final Map<String, String> cached =
         rawCache != null ? Map<String, String>.from(jsonDecode(rawCache)) : {};
 
-    final service = TicketService();
-    List<dynamic> data = [];
+    // usar repositorio (cache + servicio)
+    final repo = TicketRepository.instance;
+    List<Ticket> tickets = [];
     try {
-      data = await service.getUserTicketFilterDefault(userId, context: null);
+      tickets = await repo.load(force: true);
     } catch (_) {
       if (manual) {
         await _plugin.show(
@@ -252,40 +239,47 @@ class TicketNotifications {
     final Map<String, String> latest = {};
     bool anyChange = false;
     int changeCount = 0;
+    final List<int> changedIds = [];
 
-    for (final item in data) {
-      final String? idStr = (() {
-        if (item is Map) {
-          return item['2']?.toString() ??
-              item['id']?.toString() ??
-              item['ID']?.toString();
-        }
-        return null;
-      })();
-      final String? statusStr = (() {
-        if (item is Map) {
-          return item['12']?.toString() ??
-              item['status']?.toString() ??
-              item['Estado']?.toString();
-        }
-        return null;
-      })();
-
-      if (idStr == null || statusStr == null) continue;
-
+    for (final ticket in tickets) {
+      final idStr = ticket.id.toString();
+      final statusStr = ticket.estado.toString();
       latest[idStr] = statusStr;
-
       final prev = cached[idStr];
-      final int? ticketId = int.tryParse(idStr);
-      if (ticketId != null && prev != null && prev != statusStr) {
+      if (prev != null && prev != statusStr) {
         anyChange = true;
         changeCount++;
-        await _showStatusChange(
-            ticketId: ticketId, oldStatus: prev, newStatus: statusStr);
+        changedIds.add(ticket.id);
       }
     }
 
     await prefs.setString('ticket_status_cache', jsonEncode(latest));
+
+    if (changeCount == 1 && changedIds.isNotEmpty) {
+      final onlyId = changedIds.first;
+      final newStatus = latest[onlyId.toString()]!;
+      await _showStatusChange(ticketId: onlyId, newStatus: newStatus);
+    } else if (changeCount > 1) {
+      final title = 'Tickets actualizados ($changeCount)';
+      final body =
+          'Se detectaron cambios en ${changedIds.take(5).join(', ')}${changeCount > 5 ? '…' : ''}';
+      await _plugin.show(
+        910000,
+        title,
+        body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _androidChannelId,
+            _androidChannelName,
+            channelDescription: _androidChannelDesc,
+            importance: Importance.defaultImportance,
+            priority: Priority.defaultPriority,
+            styleInformation: const InboxStyleInformation([]),
+          ),
+          iOS: const DarwinNotificationDetails(),
+        ),
+      );
+    }
 
     if (manual) {
       if (!anyChange) {

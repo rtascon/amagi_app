@@ -7,10 +7,7 @@ class TypeConversion {
     6: 'Mayor'
   };
 
-  final Map<int, String> tipoMap = {
-    1: 'Incidente',
-    2: 'Requerimiento'
-  };
+  final Map<int, String> tipoMap = {1: 'Incidente', 2: 'Requerimiento'};
 
   final Map<int, String> estadoMap = {
     1: 'Nuevo',
@@ -29,10 +26,7 @@ class TypeConversion {
     'Mayor': 6
   };
 
-  final Map<String, int> tipoReversaMap = {
-    'Incidente': 1,
-    'Requerimiento': 2
-  };
+  final Map<String, int> tipoReversaMap = {'Incidente': 1, 'Requerimiento': 2};
 
   final Map<String, int> estadoReversaMap = {
     'Nuevo': 1,

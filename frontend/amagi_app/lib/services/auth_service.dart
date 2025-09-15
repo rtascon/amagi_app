@@ -58,14 +58,15 @@ class AuthService {
           UserService userService = UserService();
           User usuario = User();
           final success = await userService.getUserInfo(usuario);
+
           final sideMenuController = SideMenuController();
           final userProfile = await sideMenuController.getUserProfile();
           SharedPreferences prefs = await SharedPreferences.getInstance();
           userProfile.forEach((key, value) {
             prefs.setString(key, value.toString());
           });
-          // Extraer y persistir userId de forma robusta
-          _persistUserIdFromProfile(userProfile, prefs);
+          // userId centralizado ahora en UserService
+          await UserService().getCachedOrFetchUserId();
           return success;
         } else {
           throw Exception("Error al iniciar sesión: ${response.body}");
@@ -86,7 +87,7 @@ class AuthService {
         userProfile.forEach((key, value) {
           prefs.setString(key, value.toString());
         });
-        _persistUserIdFromProfile(userProfile, prefs);
+        await UserService().getCachedOrFetchUserId();
         return success;
       } else {
         throw Exception("Error al iniciar sesión: ${response.body}");
@@ -95,20 +96,6 @@ class AuthService {
       throw Exception("La solicitud ha excedido el tiempo de espera: $e");
     } catch (e) {
       throw Exception("Error al iniciar sesión: $e");
-    }
-  }
-
-  void _persistUserIdFromProfile(
-      Map<String, dynamic> profile, SharedPreferences prefs) {
-    final keys = ['userId', 'users_id', 'id', 'ID', '_users_id_requester'];
-    for (final k in keys) {
-      final v = profile[k];
-      if (v == null) continue;
-      final parsed = int.tryParse(v.toString());
-      if (parsed != null) {
-        prefs.setInt('userId', parsed);
-        return;
-      }
     }
   }
 
