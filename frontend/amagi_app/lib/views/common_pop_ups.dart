@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 /// Este archivo contiene funciones para mostrar mensajes emergentes comunes,
-/// como mensajes de error de conexión a Internet y mensajes de tiempo de espera agotado.
+/// como mensajes de error de conexión a la red y mensajes de tiempo de espera agotado.
+
+void logMessage(String message, {String tag = 'UI'}) {
+  if (kDebugMode) {
+    debugPrint('[$tag] $message');
+  }
+}
 
 void _dismissActivePopups(BuildContext context) {
   try {
@@ -12,16 +19,16 @@ void _dismissActivePopups(BuildContext context) {
     if (localNav != rootNav) {
       localNav.popUntil((route) => route is! PopupRoute);
     }
-    debugPrint('[Popups] Dismissed active popups (if any)');
+    logMessage('Dismissed active popups (if any)', tag: 'Popups');
   } catch (e) {
-    debugPrint('[Popups] Error dismissing popups: $e');
+    logMessage('Error dismissing popups: $e', tag: 'Popups');
   }
 }
 
 void showNoInternetMessage(BuildContext context) {
-  debugPrint('[Popups] showNoInternetMessage()');
+  logMessage('showNoInternetMessage()', tag: 'Popups');
   if (!context.mounted) {
-    debugPrint('[Popups] Context not mounted, aborting dialog.');
+    logMessage('Context not mounted, aborting dialog.', tag: 'Popups');
     return;
   }
   Color defaultTextButtonColor =
@@ -29,7 +36,7 @@ void showNoInternetMessage(BuildContext context) {
           Theme.of(context).primaryColor;
 
   _dismissActivePopups(context);
-  debugPrint('[Popups] Opening NoInternet AlertDialog');
+  logMessage('Opening NoInternet AlertDialog', tag: 'Popups');
 
   showDialog(
     context: context,
@@ -41,13 +48,13 @@ void showNoInternetMessage(BuildContext context) {
         ),
         title: const Column(
           children: [
-            Icon(Icons.wifi_off, color: Colors.red, size: 40),
+            Icon(Icons.wifi_off, color: Colors.orange, size: 40),
             SizedBox(height: 10),
-            Text('Sin conexión a Internet'),
+            Text('Sin conexión a la red'),
           ],
         ),
         content: const Text(
-            'Por favor, verifique su conexión a Internet e intente de nuevo.'),
+            'Por favor, verifique su conexión a la red e intente de nuevo.'),
         actions: [
           TextButton(
             onPressed: () {
@@ -63,9 +70,9 @@ void showNoInternetMessage(BuildContext context) {
 }
 
 void showTimeoutMessage(BuildContext context) {
-  debugPrint('[Popups] showTimeoutMessage()');
+  logMessage('showTimeoutMessage()', tag: 'Popups');
   if (!context.mounted) {
-    debugPrint('[Popups] Context not mounted, aborting dialog.');
+    logMessage('Context not mounted, aborting dialog.', tag: 'Popups');
     return;
   }
   Color defaultTextButtonColor =
@@ -73,7 +80,7 @@ void showTimeoutMessage(BuildContext context) {
           Theme.of(context).primaryColor;
 
   _dismissActivePopups(context);
-  debugPrint('[Popups] Opening Timeout AlertDialog');
+  logMessage('Opening Timeout AlertDialog', tag: 'Popups');
 
   showDialog(
     context: context,
@@ -85,7 +92,7 @@ void showTimeoutMessage(BuildContext context) {
         ),
         title: const Column(
           children: [
-            Icon(Icons.timer_off, color: Colors.red, size: 40),
+            Icon(Icons.timer_off, color: Colors.orange, size: 40),
             SizedBox(height: 10),
             Text('Tiempo de espera agotado'),
           ],
@@ -115,7 +122,7 @@ void _dismissActiveOverlay() {
       _activeOverlay?.remove();
     } catch (_) {}
     _activeOverlay = null;
-    debugPrint('[Popups] Dismissed active overlay');
+    logMessage('Dismissed active overlay', tag: 'Popups');
   }
 }
 
@@ -128,14 +135,10 @@ void _showOverlayBanner(
   Duration duration = const Duration(seconds: 3),
 }) {
   if (!context.mounted) {
-    debugPrint('[Popups] Context not mounted for overlay.');
+    logMessage('Context not mounted for overlay.', tag: 'Popups');
     return;
   }
   final overlay = Overlay.of(context, rootOverlay: true);
-  if (overlay == null) {
-    debugPrint('[Popups] No overlay found.');
-    return;
-  }
 
   _dismissActiveOverlay();
   final theme = Theme.of(context);
@@ -195,20 +198,20 @@ void _showOverlayBanner(
   );
 
   overlay.insert(_activeOverlay!);
-  debugPrint('[Popups] Overlay banner shown: $title');
+  logMessage('Overlay banner shown: $title', tag: 'Popups');
 
   Future.delayed(duration, () {
     _dismissActiveOverlay();
   });
 }
 
-// Fallbacks públicos: Overlay para No Internet / Timeout
+// Fallbacks públicos: Overlay para No red / Timeout
 void showNoInternetOverlayMessage(BuildContext context) {
   _showOverlayBanner(
     context,
     icon: Icons.wifi_off,
-    title: 'Sin conexión a Internet',
-    message: 'Por favor, verifique su conexión e intente de nuevo.',
+    title: 'Sin conexión a la red',
+    message: 'Por favor, verifique su conexión a la red e intente de nuevo.',
   );
 }
 

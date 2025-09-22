@@ -34,7 +34,7 @@ class DoubleBackToExitAppState extends State<DoubleBackToExitApp> {
           );
           return false;
         }
-        // Cierra sesión antes de salir
+
         SideMenuController().logOut(context);
         return false;
       },

@@ -13,7 +13,7 @@ class UserService {
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
-  static int? _cachedUserId; // cache en memoria
+  static int? _cachedUserId;
   static DateTime? _cachedAt;
   static const Duration _userIdTtl = Duration(minutes: 10);
 
@@ -133,14 +133,13 @@ class UserService {
         int? extracted;
         try {
           if (data is Map) {
-            // GLPI expone glpiID dentro de session
             final session = data['session'];
             if (session is Map) {
               extracted = int.tryParse(session['glpiID']?.toString() ?? '');
               extracted ??= int.tryParse(session['user_id']?.toString() ?? '');
               extracted ??= int.tryParse(session['users_id']?.toString() ?? '');
             }
-            // Fallbacks adicionales
+
             extracted ??= int.tryParse(data['id']?.toString() ?? '');
             final userObj = data['user'];
             if (userObj is Map) {
@@ -162,7 +161,7 @@ class UserService {
     }
   }
 
-  // Intento centralizado para obtener userId desde cache o red
+  /// Obtiene el userId desde la caché o lo recupera si ha expirado.
   Future<int?> getCachedOrFetchUserId() async {
     if (_cachedUserId != null && _cachedAt != null) {
       if (DateTime.now().difference(_cachedAt!) < _userIdTtl) {

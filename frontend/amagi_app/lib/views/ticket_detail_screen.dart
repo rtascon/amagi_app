@@ -35,17 +35,20 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
     _controller.addListener(_scrollListener);
   }
 
+  @override
+  void dispose() {
+    _controller.removeListener(_scrollListener);
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _scrollListener() {
-    if (_controller.position.maxScrollExtent >
-        _controller.position.pixels + 100) {
-      setState(() {
-        _showScrollButton = true;
-      });
-    } else {
-      setState(() {
-        _showScrollButton = false;
-      });
-    }
+    final maxScroll = _controller.position.maxScrollExtent;
+    final current = _controller.position.pixels;
+
+    setState(() {
+      _showScrollButton = maxScroll - current > 100;
+    });
   }
 
   void _scrollDown() {
@@ -390,41 +393,49 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
               },
             ),
           ),
-          if (widget.ticket.estado != 5 && widget.ticket.estado != 6)
-            Positioned(
-              bottom: 18,
-              right: MediaQuery.of(context).size.width * 0.08,
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CreateHistoricalScreen(
-                            ticketId: widget.ticket.id, ticket: widget.ticket)),
-                  );
-                },
-                backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.add, color: Colors.white),
-              ),
+
+          // FABs agrupados en columna
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 20,
+            right: MediaQuery.of(context).size.width * 0.08,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_showScrollButton)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: FloatingActionButton.small(
+                      onPressed: _scrollDown,
+                      backgroundColor: const Color(0xFF005586),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child:
+                          const Icon(Icons.arrow_downward, color: Colors.white),
+                    ),
+                  ),
+                if (widget.ticket.estado != 5 && widget.ticket.estado != 6)
+                  FloatingActionButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateHistoricalScreen(
+                            ticketId: widget.ticket.id,
+                            ticket: widget.ticket,
+                          ),
+                        ),
+                      );
+                    },
+                    backgroundColor: Colors.orange,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.add, color: Colors.white),
+                  ),
+              ],
             ),
-          if (_showScrollButton)
-            Positioned(
-              bottom: widget.ticket.estado == 5 || widget.ticket.estado == 6
-                  ? 18
-                  : 80,
-              right: MediaQuery.of(context).size.width * 0.08,
-              child: FloatingActionButton.small(
-                onPressed: _scrollDown,
-                backgroundColor: const Color(0xFF005586),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.arrow_downward, color: Colors.white),
-              ),
-            ),
+          ),
         ],
       ),
     );
@@ -452,8 +463,8 @@ class MessageBubble extends StatelessWidget {
     final themeColors = AppTheme.of(context);
 
     final List<Color> solutionGradient = [
-      const Color(0xFF388E3C),
-      const Color(0xFF66BB6A),
+      const Color(0xFFFF8300),
+      const Color(0xFFFFC56D),
     ];
 
     final List<Color> myMessageGradient = [

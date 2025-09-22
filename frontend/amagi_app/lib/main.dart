@@ -10,77 +10,47 @@ import 'views/registration_request_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'theme/app_theme.dart';
 import 'services/ticket_service.dart';
-import 'dart:io' show Platform;
-import 'package:workmanager/workmanager.dart';
-import 'notifications/estado.dart';
 
-void main() async {
+@pragma('vm:entry-point')
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: "general.env");
 
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  ]);
 
-    String? sessionToken = prefs.getString('sessionToken');
+  SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (sessionToken != null) {
-      const storage = FlutterSecureStorage();
-      await storage.write(key: 'session_token', value: sessionToken);
-    }
+  String? sessionToken = prefs.getString('sessionToken');
 
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  if (sessionToken != null) {
+    const storage = FlutterSecureStorage();
+    await storage.write(key: 'session_token', value: sessionToken);
+  }
 
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
-      systemNavigationBarContrastEnforced: false,
-    ));
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    // Inicializar notificaciones locales
-    await TicketNotifications.init();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+    systemNavigationBarContrastEnforced: false,
+  ));
 
-    // Test de notificaciones locales en primer arranque
-    final tested = prefs.getBool('local_notification_tested') ?? false;
-    if (!tested) {
-      await TicketNotifications.showTestNotification();
-      await prefs.setBool('local_notification_tested', true);
-    }
+  final navKey = GlobalKey<NavigatorState>();
+  final smKey = GlobalKey<ScaffoldMessengerState>();
+  TicketService.configureGlobalKeys(navKey: navKey, smKey: smKey);
 
-    // Inicializar y registrar tarea periódica (Android)
-    if (Platform.isAndroid) {
-      await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-      await Workmanager().registerPeriodicTask(
-        'giaTicketPoll', // uniqueName
-        'gia.ticket.poll', // taskName
-        frequency: const Duration(minutes: 15),
-        existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
-        constraints: Constraints(
-          networkType: NetworkType.connected,
-        ),
-        backoffPolicy: BackoffPolicy.exponential,
-        backoffPolicyDelay: const Duration(minutes: 10),
-      );
-    }
-
-    // Configurar keys globales y TicketService antes de ejecutar la app
-    final navKey = GlobalKey<NavigatorState>();
-    final smKey = GlobalKey<ScaffoldMessengerState>();
-    TicketService.configureGlobalKeys(navKey: navKey, smKey: smKey);
-
-    // Ejecuta la aplicación con las keys
-    runApp(MyApp(
-      navigatorKey: navKey,
-      scaffoldMessengerKey: smKey,
-    ));
-  });
+  runApp(MyApp(
+    navigatorKey: navKey,
+    scaffoldMessengerKey: smKey,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -126,19 +96,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Updated to use non-deprecated color properties
 MaterialColor createMaterialColor(Color color) {
-  List strengths = <double>[.05];
-
+  List<double> strengths = <double>[.05];
   Map<int, Color> swatch = {};
 
-  final int r = color.red, g = color.green, b = color.blue;
+  final int r = (color.red).toInt();
+  final int g = (color.green).toInt();
+  final int b = (color.blue).toInt();
 
   for (int i = 1; i < 10; i++) {
     strengths.add(0.1 * i);
   }
   for (var strength in strengths) {
     final double ds = 0.5 - strength;
-
     swatch[(strength * 1000).round()] = Color.fromRGBO(
       r + ((ds < 0 ? r : (255 - r)) * ds).round(),
       g + ((ds < 0 ? g : (255 - g)) * ds).round(),

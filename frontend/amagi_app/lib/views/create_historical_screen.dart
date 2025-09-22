@@ -45,6 +45,7 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text(
@@ -307,7 +308,7 @@ class CreateHistoricalScreenState extends State<CreateHistoricalScreen> {
                                             icon: const Icon(
                                                 Icons.close_rounded,
                                                 size: 25,
-                                                color: Colors.red),
+                                                color: Colors.orange),
                                             onPressed: () {
                                               setState(() {
                                                 _selectedFiles.remove(file);

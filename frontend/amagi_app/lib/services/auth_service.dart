@@ -65,7 +65,7 @@ class AuthService {
           userProfile.forEach((key, value) {
             prefs.setString(key, value.toString());
           });
-          // userId centralizado ahora en UserService
+
           await UserService().getCachedOrFetchUserId();
           return success;
         } else {

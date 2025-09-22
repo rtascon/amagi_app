@@ -47,142 +47,145 @@ class SolucionScreenState extends State<SolucionScreen> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text(
-                  "Solución: ",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Icon(Icons.access_time, size: 16, color: Colors.black),
-                const SizedBox(width: 5),
-                Text(formattedFecha),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                const Text(
-                  "Por: ",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Icon(Icons.person, size: 20, color: Colors.black),
-                const SizedBox(width: 5),
-                Flexible(
-                  child: Text(
-                    usuarioNombre,
-                    overflow: TextOverflow.ellipsis,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+              16.0, 16.0, 16.0, 24.0), // padding inferior extra
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    "Solución: ",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
-            ),
-            const Divider(
-              color: AppColors.blueGrey,
-              thickness: 1,
-              indent: 1,
-              endIndent: 1,
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    vertical: 15.0, horizontal: 10.0),
-                decoration: BoxDecoration(
-                  color: AppColors.blueGrey.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
+                  const Icon(Icons.access_time, size: 16, color: Colors.black),
+                  const SizedBox(width: 5),
+                  Text(formattedFecha),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  const Text(
+                    "Por: ",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const Icon(Icons.person, size: 20, color: Colors.black),
+                  const SizedBox(width: 5),
+                  Flexible(
                     child: Text(
-                      widget.solucion['content'],
-                      style:
-                          const TextStyle(fontSize: 16, color: AppColors.black),
+                      usuarioNombre,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(
+                color: AppColors.blueGrey,
+                thickness: 1,
+                indent: 1,
+                endIndent: 1,
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.blueGrey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        widget.solucion['content'],
+                        style: const TextStyle(
+                            fontSize: 16, color: AppColors.black),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: _isLoadingRechazar
-                      ? null
-                      : () async {
-                          setState(() {
-                            _isLoadingAprobar = true;
-                          });
-                          await widget.ticketsController
-                              .closeTicket(context, widget.ticket);
-                          setState(() {
-                            _isLoadingAprobar = false;
-                          });
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.green,
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: _isLoadingRechazar
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isLoadingAprobar = true;
+                            });
+                            await widget.ticketsController
+                                .closeTicket(context, widget.ticket);
+                            setState(() {
+                              _isLoadingAprobar = false;
+                            });
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.blue,
+                    ),
+                    child: _isLoadingAprobar
+                        ? const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(AppColors.white),
+                          )
+                        : const Row(
+                            children: [
+                              Icon(Icons.check, color: AppColors.white),
+                              SizedBox(width: 5),
+                              Text(
+                                'Aprobar',
+                                style: TextStyle(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                   ),
-                  child: _isLoadingAprobar
-                      ? const CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(AppColors.white),
-                        )
-                      : const Row(
-                          children: [
-                            Icon(Icons.check, color: AppColors.white),
-                            SizedBox(width: 5),
-                            Text(
-                              'Aprobar',
-                              style: TextStyle(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                ),
-                ElevatedButton(
-                  onPressed: _isLoadingAprobar
-                      ? null
-                      : () async {
-                          setState(() {
-                            _isLoadingRechazar = true;
-                          });
-                          await widget.ticketsController
-                              .deniedTicket(context, widget.ticket);
-                          setState(() {
-                            _isLoadingRechazar = false;
-                          });
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.red,
+                  ElevatedButton(
+                    onPressed: _isLoadingAprobar
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isLoadingRechazar = true;
+                            });
+                            await widget.ticketsController
+                                .deniedTicket(context, widget.ticket);
+                            setState(() {
+                              _isLoadingRechazar = false;
+                            });
+                          },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.orange,
+                    ),
+                    child: _isLoadingRechazar
+                        ? const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(AppColors.white),
+                          )
+                        : const Row(
+                            children: [
+                              Icon(Icons.close, color: AppColors.white),
+                              SizedBox(width: 5),
+                              Text(
+                                'Rechazar',
+                                style: TextStyle(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                   ),
-                  child: _isLoadingRechazar
-                      ? const CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(AppColors.white),
-                        )
-                      : const Row(
-                          children: [
-                            Icon(Icons.close, color: AppColors.white),
-                            SizedBox(width: 5),
-                            Text(
-                              'Rechazar',
-                              style: TextStyle(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       backgroundColor: AppColors.white,

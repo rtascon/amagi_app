@@ -158,7 +158,7 @@ class LoginController {
           ),
           title: const Column(
             children: [
-              Icon(Icons.error, color: Colors.red, size: 40),
+              Icon(Icons.error, color: Colors.orange, size: 40),
               SizedBox(height: 10),
               Text('Fallo al iniciar sesión'),
             ],

@@ -14,6 +14,14 @@ import '../views/common_pop_ups.dart';
 import 'package:http/io_client.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
+
+/// Logger simple: solo emite en modo debug.
+void logMessage(String message, {String tag = 'App'}) {
+  if (kDebugMode) {
+    debugPrint('[$tag] $message');
+  }
+}
 
 /// Servicio para manejar operaciones relacionadas con los tickets.
 class TicketService {
@@ -21,16 +29,20 @@ class TicketService {
   static const _storage = FlutterSecureStorage();
   static const _sessionTokenKey = 'session_token';
 
-  // Toggle para logs
-  static bool enableDebugLogs = true;
+  // Toggle para logs: por defecto reflejará el modo de compilación (debug/release)
+  static bool enableDebugLogs = kDebugMode;
+
   void _log(String msg) {
-    if (enableDebugLogs) debugPrint('[TicketService] $msg');
+    // Salida rápida: si no estamos en modo debug o si el toggle está desactivado,
+    // evitamos cualquier llamado y posible trabajo extra.
+    if (!kDebugMode || !enableDebugLogs) return;
+    logMessage(msg, tag: 'TicketService');
   }
 
   // Nuevas constantes para estandarizar timeouts y reintentos
   static const Duration kConnectTimeout = Duration(seconds: 5);
   static const Duration kRequestTimeout = Duration(seconds: 15);
-  static const int kMaxGetRetries = 2; // total intentos = kMaxGetRetries + 1
+  static const int kMaxGetRetries = 2;
   static const Duration kRetryBaseDelay = Duration(milliseconds: 600);
 
   static final Map<String, String> criteriaBaseTicketAutogestion = {
@@ -1045,7 +1057,6 @@ class TicketService {
     }
   }
 
-  /// Intenta obtener el userId actual desde la sesión remota y lo persiste.
   Future<int?> fetchCurrentUserId({BuildContext? context}) async {
     _log('fetchCurrentUserId()');
     _rememberContext(context);
@@ -1068,18 +1079,18 @@ class TicketService {
         int? extracted;
         if (body is Map) {
           _log('getFullSession top-level keys: ${body.keys.toList()}');
-          // 1. Top-level common fields
+
           extracted = int.tryParse(body['id']?.toString() ?? '');
           extracted ??= int.tryParse(body['user_id']?.toString() ?? '');
           extracted ??= int.tryParse(body['users_id']?.toString() ?? '');
-          // 2. user object
+
           final userObj = body['user'];
           if (userObj is Map) {
             _log('user keys: ${userObj.keys.toList()}');
             extracted ??= int.tryParse(userObj['id']?.toString() ?? '');
             extracted ??= int.tryParse(userObj['users_id']?.toString() ?? '');
           }
-          // 3. session object (GLPI suele incluir glpiID / glpi_currenttime)
+
           final sessionObj = body['session'];
           if (sessionObj is Map) {
             _log('session keys: ${sessionObj.keys.toList()}');
@@ -1088,7 +1099,7 @@ class TicketService {
                 int.tryParse(sessionObj['users_id']?.toString() ?? '');
             extracted ??= int.tryParse(sessionObj['glpiID']?.toString() ?? '');
           }
-          // 4. data / meta anidados
+
           final dataObj = body['data'];
           if (dataObj is Map) {
             _log('data keys: ${dataObj.keys.toList()}');

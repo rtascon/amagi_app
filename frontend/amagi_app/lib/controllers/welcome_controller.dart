@@ -21,7 +21,8 @@ class WelcomeController {
     bool isLoggedIn = await _checkLoginStatus();
     await Future.delayed(const Duration(seconds: 3));
     if (!context.mounted) return;
-    Navigator.pushReplacementNamed(context, isLoggedIn ? '/mainMenu' : '/login');
+    Navigator.pushReplacementNamed(
+        context, isLoggedIn ? '/mainMenu' : '/login');
   }
 
   /// Verifica el estado de inicio de sesión almacenado en las preferencias compartidas.
@@ -40,50 +41,17 @@ class WelcomeController {
         UserService userService = UserService();
         await userService.getUserInfo(usuario);
         GlpiGeneralService glpiGeneralService = GlpiGeneralService();
-        await glpiGeneralService.changeActiveEntity(prefs.getInt('root_entity') ?? 0);
+        await glpiGeneralService
+            .changeActiveEntity(prefs.getInt('root_entity') ?? 0);
       } catch (e) {
         isLoggedIn = false;
         await prefs.clear();
         if (e is TimeoutException) {
           showTimeoutMessage(context);
-        } 
+        }
       }
     }
 
     return isLoggedIn;
-  }
-
-  /// Muestra un mensaje de error cuando ocurre un problema al verificar el estado de inicio de sesión.
-  ///
-  /// Parámetros:
-  /// - [context]: El contexto de la aplicación.
-  void _showErrorMessage(BuildContext context) {
-    Color defaultTextButtonColor = TextButton.styleFrom().foregroundColor?.resolve({}) ?? Theme.of(context).primaryColor;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          title: const Column(
-            children: [
-              Icon(Icons.error, color: Colors.red, size: 40),
-              SizedBox(height: 10),
-              Text('Hubo un error al verificar el estado de inicio de sesión'),
-            ],
-          ),
-          content: const Text('Por favor intente de nuevo.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Aceptar', style: TextStyle(color: defaultTextButtonColor)),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

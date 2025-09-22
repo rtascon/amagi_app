@@ -114,7 +114,7 @@ class CreateTicketController {
           ),
           title: const Column(
             children: [
-              Icon(Icons.error, color: Colors.red, size: 40),
+              Icon(Icons.error, color: Colors.orange, size: 40),
               SizedBox(height: 10),
               Text('Error'),
             ],
@@ -156,7 +156,8 @@ class CreateTicketController {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const MainMenuScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const MainMenuScreen()),
                 );
               },
               child: Text(

@@ -210,7 +210,7 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                           decoration:
                                                               const BoxDecoration(
                                                             color:
-                                                                AppColors.green,
+                                                                AppColors.blue,
                                                             shape:
                                                                 BoxShape.circle,
                                                           ),
@@ -230,7 +230,7 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                               BoxDecoration(
                                                             border: Border.all(
                                                                 color: AppColors
-                                                                    .green),
+                                                                    .blue),
                                                             shape:
                                                                 BoxShape.circle,
                                                           ),
@@ -288,7 +288,7 @@ class TicketsResolvedScreenState extends State<TicketsResolvedScreen> {
                                                             Icons
                                                                 .check_circle_outline,
                                                             color:
-                                                                AppColors.green,
+                                                                AppColors.blue,
                                                             size: 16,
                                                           ),
                                                         ),

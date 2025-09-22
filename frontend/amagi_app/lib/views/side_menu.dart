@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gia_app/views/about.dart';
+import '../views/about.dart';
 import '../controllers/side_menu_controller.dart';
 import '../controllers/tickets_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +29,7 @@ class _SideMenuState extends State<SideMenu>
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   bool _showAnimatedImage = false;
-  bool _isNavigating = false; // evita múltiples toques
+  bool _isNavigating = false;
 
   @override
   void initState() {
@@ -100,11 +100,10 @@ class _SideMenuState extends State<SideMenu>
 
   Future<void> _closeDrawerAndNavigate(
       Future<void> Function() navigateFunction) async {
-    // Cierra el Drawer
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
-    // Espera un frame para asegurar que el Drawer se cerró
+
     await Future.delayed(const Duration(milliseconds: 50));
     if (!mounted) return;
     await navigateFunction();

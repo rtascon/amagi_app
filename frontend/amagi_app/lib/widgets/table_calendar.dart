@@ -80,21 +80,6 @@ class _CalendarDialogState extends State<CalendarDialog> {
         focusedDay);
   }
 
-  bool _isValidDay(String value) {
-    final day = int.tryParse(value);
-    return day != null && day >= 1 && day <= 31;
-  }
-
-  bool _isValidMonth(String value) {
-    final month = int.tryParse(value);
-    return month != null && month >= 1 && month <= 12;
-  }
-
-  bool _isValidYear(String value) {
-    final year = int.tryParse(value);
-    return year != null && year >= 2020 && year <= 2025;
-  }
-
   String _formatDateRange(DateTime? start, DateTime? end) {
     final startDate =
         start != null ? DateFormat('d MMM', 'es').format(start) : 'Inicio';

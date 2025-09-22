@@ -138,10 +138,6 @@ amagi_app/
 - Detalle con histórico
 - Creación con adjuntos y MIME correcto
 
-### Notificaciones
-- Locales para cambios y recordatorios
-- Canales configurables (Android)
-
 ### Descargas y Archivos
 - Descargas en background con progreso
 - Visualización de PDF y apertura de archivos
